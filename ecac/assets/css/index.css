@@ -303,6 +303,171 @@ header h1 {
   object-fit: cover;
 }
 
+/* PALESTRANTES */
+
+.section-with-image {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 30px;
+  padding: 40px 20px;
+  margin: 0 auto 20px;
+  max-width: 1200px;
+}
+
+.section-with-image.reverse {
+  flex-direction: row-reverse;
+}
+
+.image-container {
+  flex: 1;
+  max-width: 300px;
+}
+
+.image-container img {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.text-container {
+  flex: 1;
+  padding: 0 20px;
+  max-width: 600px;
+}
+
+.text-container h2 {
+  color: #24381d;
+  margin-bottom: 15px;
+  font-size: 24px;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 10px;
+}
+
+.text-container p {
+  font-size: 16px;
+  color: #555;
+  line-height: 1.6;
+}
+
+/* ORGANIZADORES */
+
+.organizadores-grid {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  flex-wrap: wrap;
+  margin-top: 30px;
+}
+
+.organizador-card {
+  background: #f5f5dc; /* light beige */
+  border-radius: 10px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  width: 250px;
+  height: auto;
+}
+
+.organizador-img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin: 0 auto 15px;
+  background: #ddd;
+}
+
+.organizador-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.organizador-card h3 {
+  margin: 10px 0;
+  color: #24381d;
+  font-weight: bold;
+}
+
+.organizador-card p {
+  margin: 0;
+  font-size: 14px;
+  color: #555;
+  font-weight: normal;
+}
+
+/* FORMULÁRIO DE CONTATO */
+
+.contact-form {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.contact-form label {
+  display: block;
+  margin-top: 15px;
+  font-weight: bold;
+  color: #24381d;
+}
+
+.contact-form input,
+.contact-form textarea {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.contact-form input[type="submit"] {
+  background: #6d7f41;
+  color: #fff;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 20px;
+}
+
+.contact-form input[type="submit"]:hover {
+  background: #5a6b36;
+}
+
+/* LAYOUT DE CONTATO */
+
+.contact-layout {
+  display: flex;
+  gap: 40px;
+  align-items: flex-start;
+}
+
+.contact-info {
+  flex: 1;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: left;
+}
+
+.contact-info h2 {
+  color: #24381d;
+  margin-bottom: 15px;
+  font-size: 28px;
+}
+
+.contact-info p {
+  margin-bottom: 10px;
+  line-height: 1.6;
+}
+
+.contact-form-container {
+  flex: 1;
+}
+
 /* SLIDER */
 
 .slider {

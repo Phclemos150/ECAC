@@ -119,7 +119,24 @@ $logado = (bool) $user;
           institucional. <br>
           Com palestras, workshops e apresentação de trabalhos,
           o evento promove conexão e atualização técnica.
-        </p>
+      </section>
+      <section class="section-with-image">
+        <div class="image-container">
+          <img src="../assets/img/sobreoevento.png" alt="Sobre o Evento">
+        </div>
+        <div class="text-container">
+          <h2>Sobre o Evento</h2>
+          <p>O Encontro Carioca de Alimentação Coletiva é um espaço dedicado a profissionais da nutrição, gastronomia e gestão alimentar. Aqui, discutimos as melhores práticas para alimentação coletiva sustentável e saudável.</p>
+        </div>
+      </section>
+      <section class="section-with-image reverse">
+        <div class="image-container">
+          <img src="../assets/img/objetivoevento.png" alt="Objetivo do Evento">
+        </div>
+        <div class="text-container">
+          <h2>Objetivo do Evento</h2>
+          <p>Promover o intercâmbio de conhecimentos, fomentar inovações e fortalecer a rede de profissionais comprometidos com a alimentação coletiva de qualidade em todo o Rio de Janeiro.</p>
+        </div>
       </section>
       <div class="slider">
         <div class="slides">
@@ -154,6 +171,34 @@ $logado = (bool) $user;
           <div class="card-img"><img src="../assets/img/Networking.png" alt=""></div>
         </div>
       </section>
+      <section class="section">
+        <h1>Organizadores</h1>
+        <div class="section-divider"></div>
+        <p>Conheça a equipe responsável pela organização do Encontro Carioca de Alimentação Coletiva.</p>
+        <div class="organizadores-grid">
+          <div class="organizador-card">
+            <div class="organizador-img">
+              <img src="../assets/img/organizador1.png" alt="Organizador 1">
+            </div>
+            <h3>Maria Silva</h3>
+            <p>Coordenadora Geral</p>
+          </div>
+          <div class="organizador-card">
+            <div class="organizador-img">
+              <img src="../assets/img/organizador2.png" alt="Organizador 2">
+            </div>
+            <h3>João Pereira</h3>
+            <p>Diretor de Programação</p>
+          </div>
+          <div class="organizador-card">
+            <div class="organizador-img">
+              <img src="../assets/img/organizador3.png" alt="Organizador 3">
+            </div>
+            <h3>Ana Costa</h3>
+            <p>Coordenadora de Comunicação</p>
+          </div>
+        </div>
+      </section>
     </div>
   </div>
   <footer class="footer">
@@ -162,9 +207,9 @@ $logado = (bool) $user;
         <strong>E.C.A.C</strong>
         <ul>
           <li><a href="./index.php">Início</a></li>
-          <li><a href="#">Sobre</a></li>
+          <li><a href="./contato.php">Contato</a></li>
           <li><a href="#">Programação</a></li>
-          <li><a href="#">Contato</a></li>
+          <li><a href="#">Sobre</a></li>
           <li><a href="#">Politicas de Privacidade</a></li>
         </ul>
       </div>
@@ -181,7 +226,7 @@ $logado = (bool) $user;
             <img src="../assets/img/x.png" alt="X" class="img-rodape">
           </a>
           <a href="#">
-            <img src="../assets/img/telefone.png" alt="Telefone" class="img-rodape">
+            <img src="../assets/img/telefone.png" alt="telefone" class="img-rodape">
           </a>
         </div>
         <p>(21) 99999-9999</p>
