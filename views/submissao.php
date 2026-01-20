@@ -112,10 +112,6 @@ unset($_SESSION['redirecionar_login']);
             <input type="text" name="titulo" placeholder="Ex: Análise de Dados em Ambientes Distribuídos">
           </div>
           <div class="form-group">
-            <label>Autor</label>
-            <input type="text" name="autor" placeholder="Ex: João Silva">
-          </div>
-          <div class="form-group">
             <label>Resumo</label>
             <textarea name="resumo" rows="4" placeholder="Breve resumo do trabalho..."></textarea>
           </div>
