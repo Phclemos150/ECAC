@@ -1,5 +1,10 @@
 <?php
-session_start();
+
+require_once __DIR__ . '/../config/config.php';
+require_once __DIR__ . '/../controllers/EventosController.php';
+
+$eventoController = new EventoController($con);
+$eventos = $eventoController->carregarEventos();
 
 $user = $_SESSION["user_logado"] ?? null;
 
@@ -9,9 +14,22 @@ $email = $user["email"] ?? null;
 $foto = $user["foto"] ?? null;
 
 $logado = (bool) $user;
+
+function formatarLinkExterno($url)
+{
+  if (empty($url))
+    return "javascript:void(0);";
+
+  // Verifica se já começa com http:// ou https://
+  if (!preg_match("~^(?:f|ht)tps?://~i", $url)) {
+    $url = "https://" . $url;
+  }
+  return htmlspecialchars($url);
+}
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -20,6 +38,7 @@ $logado = (bool) $user;
   <link rel="website icon" type="png" href="../assets/img/logo.png">
   <link rel="stylesheet" href="../assets/css/eventos.css">
 </head>
+
 <body>
   <header>
     <div class="header-content">
@@ -38,7 +57,7 @@ $logado = (bool) $user;
           ?>
           <div class="user-dropdown">
             <div class="user-profile" onclick="ativarDropdown()">
-              <div class="img-wrapper">
+              <div>
                 <img src="<?= $caminho_perfil ?>" class="img-perfil-nav">
               </div>
               <i class="fa fa-chevron-down arrow-icon"></i>
@@ -97,127 +116,200 @@ $logado = (bool) $user;
         <h1>Eventos</h1>
         <p>Confira os eventos do Encontro Carioca de Alimentação Coletiva.</p>
         <div class="eventos-cards">
-          <div class="evento-card atual">
-            <img src="../assets/img/logo com fundo.png">
-            <div class="evento-info">
-              <span class="badge atual">Evento Atual</span>
-              <h3>Encontro Carioca de Alimentação Coletiva</h3>
-              <p>Evento presencial com palestras, painéis e networking.</p>
-              <button class="btn-primary" onclick="abrirModalEvento()">Detalhes</button>
-            </div>
-          </div>
-          <div class="evento-card passado">
-            <img src="../assets/img/evento-passado.jpg">
-            <div class="evento-info">
-              <span class="badge passado">Encerrado</span>
-              <h3>Encontro Carioca 2024</h3>
-              <p>Edição anterior do evento.</p>
-              <button class="btn-disabled" disabled>Encerrado</button>
-            </div>
-          </div>
+          <?php if (!empty($eventos)): ?>
+            <?php foreach ($eventos as $ev):
+              $ehAtivo = ($ev['status_evento'] === 'ativo');
+              $classeCard = $ehAtivo ? 'atual' : 'passado';
+              $idModalUnico = "modalEvento_" . $ev['id_evento'];
+              ?>
+              <div class="evento-card <?= $classeCard ?>">
+                <div class="card-banner">
+                  <img src="<?= !empty($ev['capa_evento']) ? $ev['capa_evento'] : '../assets/img/logo com fundo.png' ?>">
+                </div>
+                <div class="evento-info">
+                  <span class="badge <?= $classeCard ?>">
+                    <?= $ehAtivo ? 'Evento Atual' : 'Encerrado' ?>
+                  </span>
+                  <h3><?= htmlspecialchars($ev['titulo']) ?></h3>
+                  <p><i class="fa fa-map-marker-alt"></i> Local:
+                    <strong><?= htmlspecialchars($ev['local_evento']) ?></strong>
+                  </p>
+                  <p><i class="fa fa-calendar-day"></i> Data:
+                    <strong><?= date('d/m/Y', strtotime($ev['data_evento'])) ?></strong>
+                  </p>
+                  <?php if ($ehAtivo): ?>
+                    <p><i class="fa fa-hourglass-half"></i> Inscrições:
+                      <strong><?= date('d/m/Y', strtotime($ev['data_inscricao_inicio'])) ?></strong> a
+                      <strong><?= date('d/m/Y', strtotime($ev['data_inscricao_fim'])) ?></strong>
+                    </p>
+                  <?php else: ?>
+                    <p class="erro-inscricao">Inscrições encerradas!</p>
+                  <?php endif; ?>
+                </div>
+                <div class="card-footer">
+                  <button class="btn-primary" onclick="abrirModalEvento('<?= $idModalUnico ?>')">
+                    Detalhes do Evento
+                  </button>
+                  <?php if ($ehAtivo): ?>
+                    <button class="btn-inscrever" onclick="irParaInscricao()"> Inscreva-se </button>
+                  <?php else: ?>
+                    <button class="btn-disabled" disabled> Inscreva-se </button>
+                  <?php endif; ?>
+                </div>
+              </div>
+              <div id="<?= $idModalUnico ?>" class="modal-evento" style="display:none;">
+                <div class="modal-box">
+                  <span class="fechar-modal" onclick="fecharModalEvento('<?= $idModalUnico ?>')">&times;</span>
+                  <section class="modal-header">
+                    <div class="capa-container">
+                      <img src="<?= !empty($ev['capa_evento']) ? $ev['capa_evento'] : '../assets/img/logo com fundo.png' ?>"
+                        class="modal-capa">
+                    </div>
+                    <div class="header-info">
+                      <h2 class="evento-titulo"><?= htmlspecialchars($ev['titulo']) ?></h2>
+                      <p><?= htmlspecialchars($ev['descricao'] ?? 'Descrição não disponível.') ?></p>
+                      <div class="info-colunas">
+                        <div class="info-col">
+                          <p><i class="fa fa-map-marker-alt"></i> <strong>Local:</strong>
+                            <?= htmlspecialchars($ev['local_evento']) ?></p>
+                          <p><i class="fa fa-calendar"></i> <strong>Data:</strong>
+                            <?= date('d/m/Y', strtotime($ev['data_evento'])) ?></p>
+                        </div>
+                        <div class="info-col">
+                          <p><i class="fa fa-laptop"></i> <strong>Modalidade:</strong>
+                            <?= htmlspecialchars($ev['modalidade'] ?? 'Presencial') ?></p>
+                          <p><i class="fa fa-clock"></i> <strong>Horário:</strong>
+                            <?= htmlspecialchars(date('H:i', strtotime($ev['horario_inicio']))) ?> às
+                            <?= htmlspecialchars(date('H:i', strtotime($ev['horario_fim']))) ?>
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </section>
+                  <hr class="divisor">
+                  <section class="modal-section">
+                    <h3 class="section-title">Programação</h3>
+                    <div class="timeline">
+                      <?php if (!empty($ev['atividades'])): ?>
+                        <?php foreach ($ev['atividades'] as $at): ?>
+                          <div class="atividade-item">
+                            <div class="hora"><?= date('H:i', strtotime($at['horario_inicio'])) ?></div>
+                            <div class="atividade-detalhe">
+                              <span class="tipo-badge"><?= htmlspecialchars($at['tipo_atividade']) ?></span>
+                              <h4><?= htmlspecialchars($at['titulo']) ?></h4>
+                              <p class="atividade-desc">
+                                <i class="fa fa-file-lines"></i>
+                                <strong>Descrição:</strong>
+                                <?= htmlspecialchars($at['descricao'] ?? '') ?>
+                              </p>
+                              <?php if (!empty($at['local_atividade'])): ?>
+                                <p class="atividade-local">
+                                  <i class="fa fa-building"></i>
+                                  <strong>Local:</strong>
+                                  <?= htmlspecialchars($at['local_atividade']) ?>
+                                </p>
+                              <?php endif; ?>
+                              <?php if (!empty($at['palestrantes'])): ?>
+                                <div class="atividade-palestrante">
+                                  <p> <i class="fa fa-user-tie"></i>
+                                    <strong>Palestrante:</strong>
+                                    <?= htmlspecialchars($at['palestrantes'][0]['nome_palestrante']) ?>
+                                  </p>
+                                </div>
+                              <?php endif; ?>
+                            </div>
+                          </div>
+                        <?php endforeach; ?>
+                      <?php else: ?>
+                        <p class="msg-vazia">Nenhuma atividade agendada.</p>
+                      <?php endif; ?>
+                    </div>
+                  </section>
+                  <hr class="divisor">
+                  <section class="modal-section">
+                    <h3 class="section-title">Convidados</h3>
+                    <div class="convidados-grid">
+                      <?php
+                      $temConvidados = false;
+                      if (!empty($ev['atividades'])):
+                        foreach ($ev['atividades'] as $at):
+                          if (!empty($at['palestrantes'])):
+                            foreach ($at['palestrantes'] as $pal):
+                              $temConvidados = true; ?>
+                              <div class="card-convidado">
+                                <img
+                                  src="<?= (!empty($pal['foto_palestrante'])) ? '../assets/uploads/palestrantes/fotos_perfil/' . htmlspecialchars($pal['foto_palestrante']) : '../assets/uploads/palestrantes/fotos_perfil/org3.png'; ?>"
+                                  class="foto-perfil" alt="Palestrante">
+                                <div class="convidado-info">
+                                  <h4><?= htmlspecialchars($pal['nome_palestrante']) ?></h4>
+                                  <p class="tag-funcao"> PALESTRANTE </p>
+                                  <p class="cargo"><?= htmlspecialchars($pal['grau_academico']) ?> |
+                                    <?= htmlspecialchars($pal['cargo']) ?>
+                                  </p>
+                                  <p class="mini-bio"><?= htmlspecialchars($pal['mini_bio']) ?></p>
+                                  <div class="social-links">
+                                    <?php if (!empty($pal['instagram'])):
+                                      $instagramLimpo = ltrim($pal['instagram'], '@'); ?>
+                                      <a href="https://www.instagram.com/<?= $instagramLimpo; ?>/" target="_blank">
+                                        <img src="../assets/img/instagram.png" alt="Instagram">
+                                      </a>
+                                    <?php endif; ?>
+                                    <?php if (!empty($pal['linkedin_url'])): ?>
+                                      <a href="<?= htmlspecialchars($pal['linkedin_url']) ?>" target="_blank">
+                                        <img src="../assets/img/linkedin.png" alt="LinkedIn">
+                                      </a>
+                                    <?php endif; ?>
+                                  </div>
+                                </div>
+                              </div>
+                            <?php endforeach;
+                          endif;
+                          if (!empty($at['expositores'])):
+                            foreach ($at['expositores'] as $exp):
+                              $temConvidados = true; ?>
+                              <div class="card-convidado">
+                                <img
+                                  src="<?= (!empty($exp['foto_expositor'])) ? '../assets/uploads/expositores/fotos_perfil/' . htmlspecialchars($exp['foto_expositor']) : '../assets/uploads/expositores/fotos_perfil/org3.png'; ?>"
+                                  class="foto-perfil" alt="Expositor">
+                                <div class="convidado-info">
+                                  <h4><?= htmlspecialchars($exp['nome_expositor']) ?></h4>
+                                  <p class="tag-funcao"> EXPOSITOR </p>
+                                  <p class="cargo"><?= htmlspecialchars($exp['cargo']) ?> | <?= htmlspecialchars($exp['empresa']) ?>
+                                  </p>
+                                  <p class="mini-bio"><?= htmlspecialchars($exp['descricao']) ?></p>
+                                  <div class="social-links">
+                                    <?php
+                                    $caminhoLogo = (!empty($exp['logo']))
+                                      ? '../assets/uploads/expositores/logo_empresa/' . htmlspecialchars($exp['logo'])
+                                      : '../assets/uploads/expositores/logo_empresa/unisuam.png';
+                                    ?>
+
+                                    <?php if (!empty($exp['link_empresa'])): ?>
+                                      <a href="<?= formatarLinkExterno($exp['link_empresa']) ?>" target="_blank">
+                                        <img src="<?= $caminhoLogo ?>" alt="Logo da Empresa">
+                                      </a>
+                                    <?php else: ?>
+                                      <img src="<?= $caminhoLogo ?>" alt="Logo da Empresa">
+                                    <?php endif; ?>
+                                  </div>
+                                </div>
+                              </div>
+                            <?php endforeach;
+                          endif;
+                        endforeach;
+                      endif;
+                      if (!$temConvidados): ?>
+                        <p class="msg-vazia">Nenhum convidado listado.</p>
+                      <?php endif; ?>
+                    </div>
+                  </section>
+                </div>
+              </div>
+            <?php endforeach; ?>
+          <?php else: ?>
+            <p class="erro-evento">Nenhum evento disponível no momento.</p>
+          <?php endif; ?>
         </div>
-      </div>
-    </div>
-  </div>
-  <div id="modalEvento" class="modal-evento">
-    <div class="modal-box">
-      <span class="fechar-modal" onclick="fecharModalEvento()">&times;</span>
-      <img src="../assets/img/logo com fundo.png" class="modal-capa" alt="Capa do Evento">
-      <h2>Encontro Carioca de Alimentação Coletiva</h2>
-      <p><strong>Descrição:</strong> Evento voltado à troca de experiências, debates e atualização profissional na área
-        de Alimentação Coletiva.</p>
-      <p><strong>Local:</strong> Auditório Sylvia Bisaggio – UNISUAM (Bonsucesso)</p>
-      <p><strong>Data:</strong> 27 de setembro de 2025</p>
-      <p><strong>Horário:</strong> 08h30 às 16h30</p>
-      <p><strong>Modalidade:</strong> Presencial</p>
-      <hr>
-      <h3>Programação</h3>
-      <ul class="programacao">
-        <li><strong>08h30 – 09h00:</strong> Credenciamento e Boas-vindas</li>
-        <li><strong>09h10 – 09h40:</strong> Alimentação Coletiva no RJ: Desafios Atuais e Perspectivas para o Futuro
-        </li>
-        <li><strong>09h45 – 10h15:</strong> Planejamento em Serviços de Alimentação</li>
-        <li><strong>10h25 – 10h55:</strong> Elaboração do Termo de Referência em Contas Públicas</li>
-        <li><strong>11h00 – 11h30:</strong> Cultura de Segurança dos Alimentos</li>
-        <li><strong>11h40 – 12h10:</strong> Sustentabilidade na Produção de Refeições</li>
-        <li><strong>12h15 – 12h45:</strong> Marketing Digital e Uso de Mídias Sociais</li>
-        <li><strong>14h20 – 14h50:</strong> Uso de Alimentos Regionais nos Cardápios Institucionais</li>
-        <li><strong>15h00 – 15h30:</strong> Atuação do Nutricionista em Equipamentos Públicos de SAN</li>
-        <li><strong>15h35 – 16h05:</strong> Gestão de Serviços de Alimentação Escolar</li>
-      </ul>
-      <hr>
-      <h3>Palestrantes e Mini Bio</h3>
-      <div class="palestrante">
-        <strong>Camila das Neves Didini</strong>
-        <p>
-          Nutricionista pela UFRJ, Especialista em Gastronomia Aplicada à Nutrição (Nutrinew),
-          Mestre em Nutrição Humana (UFRJ) e Doutoranda em Alimentos e Nutrição (UNIRIO).
-          Atua com ênfase em gastronomia, alimentação coletiva, PANC e rotulagem.
-          Professora da PUC-Rio, Centro Universitário La Salle e colaboradora do CEAC/UFRJ.
-        </p>
-      </div>
-      <div class="palestrante">
-        <strong>Marcela Maltez</strong>
-        <p>
-          Nutricionista pela UFF, Especialista em Gestão da Segurança de Alimentos e Bebidas
-          (FIRJAN/SENAI-RJ) e Mestre em Ciências e Tecnologia de Alimentos pelo IFRJ.
-        </p>
-      </div>
-      <div class="palestrante">
-        <strong>Kátia Alessandra Mendes</strong>
-        <p>
-          Nutricionista com atuação em Alimentação Coletiva. Mestre em Ciência e Tecnologia de Alimentos.
-          Pesquisadora Culinafro, Coordenadora da Linha de Culinária Africana (CM-UFRJ/Macaé),
-          Sommelière de Chá, docente de graduação e pós-graduação.
-          Coordenadora do MBA em Gestão da Qualidade e Segurança do Alimento (Nutmed/RJ)
-          e Conselheira do CRN4 (gestão 2025).
-        </p>
-      </div>
-      <div class="palestrante">
-        <strong>Renata Nogueira</strong>
-        <p>
-          Nutricionista com mais de 20 anos de experiência em Alimentação Coletiva.
-          Servidora pública federal desde 2018, Responsável Técnica do PNAE no Colégio Pedro II.
-          Especialista em Gestão da Segurança dos Alimentos, Mestre em Educação Profissional em Saúde
-          (FIOCRUZ) e Doutora em Ciências (UERJ).
-        </p>
-      </div>
-      <div class="palestrante">
-        <strong>Katiana dos Santos Teléfora</strong>
-        <p>
-          Nutricionista (UERJ) e Sanitarista (UFRJ). Mestre em Saúde Pública (ENSP/FIOCRUZ).
-          Servidora Pública da carreira de Especialista em Políticas Públicas e Gestão Governamental
-          da Secretaria de Estado de Planejamento e Gestão do RJ.
-        </p>
-      </div>
-      <div class="palestrante">
-        <strong>Luana Limoeiro</strong>
-        <p>
-          Nutricionista, Mestra em Ciência dos Alimentos e Doutora em Ciência e Tecnologia dos Alimentos.
-          Possui ampla experiência em produção de refeições, gestão de UAN,
-          atuação como nutricionista de produção e planejamento.
-          Atualmente é Coordenadora do Curso de Nutrição da UCAM,
-          professora da LaSalle e Presidente do CRN4.
-        </p>
-      </div>
-      <div class="palestrante">
-        <strong>Fernanda Bainha</strong>
-        <p>
-          Nutricionista (UFF) com atuação há 15 anos em gestão de UANs offshore, hospitalares e escolares.
-          Docente na especialização em Nutrição Hospitalar do Hospital Sírio-Libanês (SP).
-          Assessora Técnica em Segurança Alimentar e Nutricional no Governo do Estado.
-          Mestra em Engenharia de Produção (UFF) e Doutoranda em Alimentação, Nutrição e Saúde (UERJ).
-        </p>
-      </div>
-      <div class="palestrante">
-        <strong>Tatiana Schiavone</strong>
-        <p>
-          Nutricionista do Sistema Integrado de Alimentação da UFRJ (SIA/UFRJ).
-          Atua com consultoria em serviços de alimentação e qualidade.
-          Mestre em Ciência e Tecnologia dos Alimentos (IFRJ),
-          Pós-graduada em Gestão de Alimentação e Nutrição e em Qualidade de Alimentos.
-          Experiência em Alimentação Coletiva desde 2001.
-        </p>
       </div>
     </div>
   </div>
@@ -263,4 +355,5 @@ $logado = (bool) $user;
   </footer>
   <script src="../assets/js/eventos.js"></script>
 </body>
+
 </html>

@@ -37,8 +37,7 @@ unset($_SESSION['redirecionar_login']);
   <main>
     <div class="container">
       <h1>Cadastro de Usuário</h1>
-      <form method="post" action="../controllers/AutentController.php?acao=cadastro" novalidate
-        enctype="multipart/form-data">
+      <form method="post" action="../controllers/AutentController.php?acao=cadastro" novalidate enctype="multipart/form-data">
         <div class="grupo">
           <label>Nome completo</label>
           <input type="text" name="nome_usuario">

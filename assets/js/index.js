@@ -127,3 +127,7 @@ function abrirWhatsApp(e) {
 
   window.open(url, "_blank");
 }
+
+function toggleMenu() {
+  document.querySelector('.sidebar').classList.toggle('open');
+}

@@ -103,6 +103,7 @@ class SubmissaoModel
             ) VALUES (?, ?, ?, ?)";
         $stmt = $this->con->prepare($sql);
         $stmt->bind_param("isss",
+            $submissao_id,
             $coautor["nome"],
             $coautor["email"],
             $coautor["inst"]
