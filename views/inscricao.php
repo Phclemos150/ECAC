@@ -93,50 +93,73 @@ $logado = (bool) $user;
     <div class="page-content">
       <div class="content-wrapper">
         <h2>Inscrição</h2>
-        <p class="subtitle">
-          Escolha um dos eventos abaixo para realizar sua inscrição.
-        </p>
-        <div class="cards">
-          <div class="card">
-            <div class="card-banner">*Banner do evento*</div>
-            <div class="card-body">
-              <h3>Palestra: Gestão de Estoque</h3>
-              <p><i class="fa fa-calendar"></i> Período de inscrição: <strong>01/05/2024</strong> até
-                <strong>31/05/2024</strong>
-              </p>
-            </div>
-            <div class="card-footer">
-              <button class="btn-inscrever">INSCREVA-SE</button>
-            </div>
+        <p class="subtitle">Garanta sua participação e conecte-se com profissionais da alimentação coletiva.</p>
+        <p class="small-print"><strong>Leia:</strong> Leia atentamente as normas e orientações antes de prosseguir com a inscrição.</p>
+
+        <!-- Seção de Normas (colapsável) -->
+        <section class="normas" aria-labelledby="normasTitle">
+          <div class="normas-header">
+            <h3 id="normasTitle">📜 Normas Gerais de Inscrição</h3>
+            <button class="normas-toggle" aria-expanded="false" aria-controls="normasContent" title="Mostrar normas">
+              <i class="fa fa-chevron-down" aria-hidden="true"></i>
+            </button>
           </div>
-          <div class="card">
-            <div class="card-banner">*Banner do evento*</div>
-            <div class="card-body">
-              <h3>E-Book: Tendências Nutricionais</h3>
-              <p><i class="fa fa-calendar"></i> Período de inscrição: <strong>01/04/2024</strong> até
-                <strong>30/04/2024</strong>
-              </p>
-            </div>
-            <div class="card-footer">
-              <button class="btn-inscrever">INSCREVA-SE</button>
-            </div>
+
+          <div id="normasContent" class="normas-content" aria-hidden="true">
+            <p>Seja bem-vindo(a)! Para garantir sua participação, leia atentamente as regras abaixo:</p>
+            <ol>
+              <li>
+                <strong>Processo de Inscrição e Pagamento</strong>
+                <ul>
+                  <li><em>Fluxo de Cadastro:</em> A inscrição inicia-se em nosso site oficial e é processada através da plataforma Even3. O participante deve completar todas as etapas de redirecionamento para garantir a reserva da vaga.</li>
+                  <li><em>Confirmação:</em> A vaga só será garantida após a confirmação do pagamento. Você receberá um e-mail automático da Even3 assim que o sistema identificar a transação.</li>
+                  <li><em>Meios de Pagamento:</em> Serão aceitos os métodos disponíveis na plataforma (Cartão de Crédito, Boleto ou PIX). Atente-se aos prazos de vencimento de boletos para não perder o lote.</li>
+                </ul>
+              </li>
+              <li>
+                <strong>Categorias e Comprovações</strong>
+                <p>Estudantes/Profissionais: Certifique-se de selecionar a categoria correta. Inscrições que exigem comprovação (ex: meia-entrada ou estudante) deverão anexar o documento solicitado no painel do inscrito ou apresentá-lo no credenciamento. A ausência de comprovação válida implicará no pagamento da diferença do valor de "Inteira".</p>
+              </li>
+              <li>
+                <strong>Política de Cancelamento e Reembolso</strong>
+                <p>Desistência: O cancelamento com reembolso integral pode ser solicitado em até 7 dias corridos após a compra, conforme o Código de Defesa do Consumidor. Após o prazo de 7 dias, não haverá devolução de valores, salvo em casos específicos previstos na legislação ou por cancelamento do evento. Transferência: A transferência da inscrição para outra pessoa pode ser feita através da área do participante na Even3 até [Inserir Prazo, ex: 48 horas] antes do evento.</p>
+              </li>
+              <li>
+                <strong>Certificados e Credenciamento</strong>
+                <p>Dados Pessoais: O nome preenchido no formulário será o mesmo utilizado na emissão do certificado. Revise a digitação antes de finalizar. Frequência: Para eventos com certificação, será exigida a presença mínima de [Inserir %, ex: 75%] aferida através do credenciamento ou listas de presença. Disponibilidade: Os certificados ficarão disponíveis para download na plataforma Even3 em até [Inserir dias] após o término do evento.</p>
+              </li>
+              <li>
+                <strong>Disposições Finais</strong>
+                <p>Ao realizar a inscrição, o participante autoriza o uso de sua imagem em fotos e vídeos capturados durante o evento para fins de divulgação institucional. A organização reserva-se o direito de alterar a programação por motivos de força maior, comunicando os inscritos via e-mail.</p>
+              </li>
+            </ol>
           </div>
-          <div class="card">
-            <div class="card-banner">*Banner do evento*</div>
-            <div class="card-body">
-              <h3>Artigo: Segurança Alimentar e Coletiva</h3>
-              <p><i class="fa fa-calendar"></i> Período de inscrição: <strong>01/12/2023</strong> até
-                <strong>11/01/2024</strong>
-              </p>
-              <div class="alert">
-                O período de inscrições para esse evento já acabou!
-              </div>
-            </div>
-            <div class="card-footer">
-              <button class="btn-encerrado">ENCERRADO</button>
-            </div>
+
+          <!-- Tabela de Preços (fixa, sempre visível) -->
+          <div class="price-wrapper">
+            <h4>Tabela de Preços</h4>
+            <table class="price-table" aria-label="Tabela de preços">
+              <thead>
+                <tr>
+                  <th>Categoria</th>
+                  <th>Valor</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>Estudantes de Graduação</td><td>Isento</td></tr>
+                <tr><td>Pós-Graduação</td><td>R$ 100,00</td></tr>
+                <tr><td>Profissionais de Educação Básica</td><td>R$ 50,00</td></tr>
+                <tr><td>Professores de Ensino Superior</td><td>R$ 150,00</td></tr>
+                <tr><td>Outros Profissionais</td><td>R$ 150,00</td></tr>
+              </tbody>
+            </table>
           </div>
-        </div>
+
+          <!-- CTA para Even3 -->
+          <div class="cta-area">
+            <a class="cta-button" href="https://www.even3.com.br" target="_blank" rel="noopener noreferrer">INSCREVA-SE NO EVENT3</a>
+          </div>
+        </section>
       </div>
     </div>
   </div>

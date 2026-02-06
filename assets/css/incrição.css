@@ -209,6 +209,134 @@ header h1 {
   font-size: 21px;
 }
 
+/* Seção de Normas */
+.normas {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 12px 22px 18px 22px;
+  margin-bottom: 30px;
+  box-shadow: 0 6px 12px rgba(45, 62, 30, 0.06);
+}
+
+.normas h3 {
+  margin: 0 0 10px;
+  font-size: 20px;
+  color: #2d3e1e;
+}
+
+.normas-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.normas-header h3 {
+  margin: 0;
+  font-size: 18px;
+  color: #2d3e1e;
+}
+
+/* Botão de toggle (seta) */
+.normas-toggle {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #2d3e1e;
+  transition: background 0.15s ease;
+}
+
+.normas-toggle:hover {
+  background: rgba(45, 62, 30, 0.06);
+}
+
+/* Conteúdo colapsável */
+.normas-content {
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height 0.28s ease;
+  margin-top: 12px;
+  color: #333;
+}
+
+.normas.open .normas-content {
+  /* max-height ajustado dinamicamente via JS para animação suave; serve como fallback */
+  max-height: 1000px;
+}
+
+/* Rotacionar a seta quando aberto */
+.normas-toggle i {
+  display: inline-block;
+  transition: transform 0.25s ease;
+}
+
+.normas.open .normas-toggle i {
+  transform: rotate(180deg);
+}
+
+/* Tabela de preços */
+.price-wrapper {
+  margin-top: 12px;
+  margin-bottom: 16px;
+}
+
+.price-wrapper h4 {
+  margin: 0 0 8px;
+  color: #2d3e1e;
+}
+
+.price-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fafafa;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.price-table thead th {
+  text-align: left;
+  padding: 10px 12px;
+  background: #f1f3ec;
+  color: #2d3e1e;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.price-table tbody td {
+  padding: 10px 12px;
+  border-top: 1px solid #eee;
+  font-size: 14px;
+  color: #333;
+}
+
+/* CTA Button */
+.cta-area {
+  margin-top: 14px;
+  text-align: center;
+}
+
+.cta-button {
+  display: inline-block;
+  background: #2d3e1e;
+  color: #fff;
+  padding: 14px 24px;
+  border-radius: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  box-shadow: 0 6px 16px rgba(45, 62, 30, 0.18);
+}
+
+.cta-button:hover {
+  background: #556b2f;
+  text-decoration: none;
+}
+
 /* CARDS */
 .cards {
   display: grid;
@@ -415,4 +543,32 @@ header h1 {
   .social {
     justify-content: center;
   }
+
+  .normas {
+    padding: 10px 16px;
+  }
+
+  .cta-button {
+    width: 100%;
+    padding: 12px;
+  }
+}
+
+/* NOVOS ESTILOS */
+.lead-text {
+  max-width: 900px;
+  margin: 8px auto 8px;
+  text-align: center;
+  color: #374151;
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+.small-print {
+  max-width: 900px;
+  margin: 0 auto 16px;
+  text-align: center;
+  color: #6b7280;
+  font-size: 13px;
+  line-height: 1.3;
 }

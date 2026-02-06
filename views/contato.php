@@ -107,6 +107,9 @@ $logado = (bool) $user;
               <label for="nome">Nome:</label>
               <input type="text" id="nome" name="nome">
 
+              <label for="assunto">Assunto:</label>
+              <input type="text" id="assunto" name="assunto">
+
               <label for="email">Email:</label>
               <input type="email" id="email" name="email">
 

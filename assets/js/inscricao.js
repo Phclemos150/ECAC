@@ -18,15 +18,18 @@ window.onclick = function(event) {
   }
 }
 
-userPerfil.addEventListener('mouseover', () =>{
-  userPerfil.classList.add("user-profile-hover");
-  arrowPerfil.classList.add("arrow-icon-hover");
-});
+/* proteger caso user-profile não exista (usuário não logado) */
+if (userPerfil) {
+  userPerfil.addEventListener('mouseover', () =>{
+    userPerfil.classList.add("user-profile-hover");
+    if (arrowPerfil) arrowPerfil.classList.add("arrow-icon-hover");
+  });
 
-userPerfil.addEventListener('mouseleave', () =>{
-  userPerfil.classList.remove("user-profile-hover");
-  arrowPerfil.classList.remove("arrow-icon-hover");
-});
+  userPerfil.addEventListener('mouseleave', () =>{
+    userPerfil.classList.remove("user-profile-hover");
+    if (arrowPerfil) arrowPerfil.classList.remove("arrow-icon-hover");
+  });
+}
 
 /* CONTATO */
 
@@ -61,3 +64,39 @@ function abrirWhatsApp(e) {
 
   window.open(url, "_blank");
 }
+
+/* Toggle para as normas (dropdown por seta) */
+(function() {
+  const normasSection = document.querySelector('.normas');
+  const normasToggle = document.querySelector('.normas-toggle');
+  const normasContent = document.getElementById('normasContent');
+
+  if (!normasSection || !normasToggle || !normasContent) return;
+
+  // garantir estado inicial fechado
+  normasSection.classList.remove('open');
+  normasContent.style.maxHeight = 0;
+  normasContent.setAttribute('aria-hidden', 'true');
+  normasToggle.setAttribute('aria-expanded', 'false');
+
+  normasToggle.addEventListener('click', () => {
+    const abrir = !normasSection.classList.contains('open');
+    normasSection.classList.toggle('open', abrir);
+    normasToggle.setAttribute('aria-expanded', abrir ? 'true' : 'false');
+    normasContent.setAttribute('aria-hidden', abrir ? 'false' : 'true');
+
+    if (abrir) {
+      // animação suave: ajustar maxHeight conforme conteúdo
+      normasContent.style.maxHeight = normasContent.scrollHeight + 'px';
+    } else {
+      normasContent.style.maxHeight = 0;
+    }
+  });
+
+  // opcional: ajustar maxHeight caso o conteúdo mude depois (ex.: imagens carreguem)
+  window.addEventListener('resize', () => {
+    if (normasSection.classList.contains('open')) {
+      normasContent.style.maxHeight = normasContent.scrollHeight + 'px';
+    }
+  });
+})();

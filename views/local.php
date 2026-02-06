@@ -94,21 +94,8 @@ $logado = (bool) $user;
         <p class="subtitle">Entre em contato conosco para dúvidas, informações ou suporte sobre o evento.</p>
         <div class="contato-container">
           <div class="contato-info">
-            <br><br>
-            <div class="contato-item">
-              <i class="fa fa-phone"></i>
-              <div>
-                <strong>Telefone e WhatsApp</strong>
-                <p>(21) 99214-1882</p>
-              </div>
-            </div>
-            <div class="contato-item">
-              <i class="fa fa-envelope"></i>
-              <div>
-                <strong>E-mail</strong>
-                <p>missaodesenvolver@gmail.com</p>
-              </div>
-            </div>
+            <h3 class="contato-title">Informações</h3>
+
             <div class="contato-item">
               <i class="fa fa-map-marker-alt"></i>
               <div>
@@ -120,10 +107,31 @@ $logado = (bool) $user;
                 </p>
               </div>
             </div>
+            <div class="section-divider"></div>
+            <div class="contato-item">
+              <i class="fa fa-envelope"></i>
+              <div>
+                <strong>E-mail</strong>
+                <p>missaodesenvolver@gmail.com</p>
+              </div>
+            </div>
+            <div class="section-divider"></div>
+            <div class="contato-item">
+              <i class="fa fa-phone"></i>
+              <div>
+                <strong>Telefone e WhatsApp</strong>
+                <p>(21) 99214-1882</p>
+              </div>
+            </div>
+
           </div>
           <div class="contato-mapa">
-            <iframe src="https://www.google.com/maps?q=UNISUAM%20Bonsucesso&output=embed" loading="lazy">
-            </iframe>
+            <div class="map-frame">
+              <iframe src="https://www.google.com/maps?q=UNISUAM%20Bonsucesso&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+            <div class="map-actions">
+              <a class="btn-google" href="https://www.google.com/maps?q=UNISUAM%20Bonsucesso" target="_blank" rel="noopener noreferrer">Ver no Google Maps</a>
+            </div>
           </div>
         </div>
       </div>
