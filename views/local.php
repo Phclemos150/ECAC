@@ -90,8 +90,8 @@ $logado = (bool) $user;
     </div>
     <div class="page-content">
       <div class="content-wrapper">
-        <h2>Contato</h2>
-        <p class="subtitle">Entre em contato conosco para dúvidas, informações ou suporte sobre o evento.</p>
+        <h2>Local do evento</h2>
+        <p class="subtitle">Preparamos tudo para sua chegada! Confira o mapa, as melhores rotas e detalhes sobre o espaço que nos receberá.</p>
         <div class="contato-container">
           <div class="contato-info">
             <h3 class="contato-title">Informações</h3>
