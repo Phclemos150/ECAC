@@ -41,13 +41,13 @@ CREATE TABLE IF NOT EXISTS evento (
     organizador_id INT NOT NULL,
     titulo VARCHAR(150) NOT NULL,
     descricao TEXT NOT NULL,
-    tipo_evento VARCHAR(50) NOT NULL,
     local_evento VARCHAR(255) NOT NULL,
-    data_inicio DATE NOT NULL,
-    data_fim DATE NOT NULL,
+    data_evento DATE NOT NULL,
     horario_inicio TIME NOT NULL,
     horario_fim TIME NOT NULL,
-    modalidade ENUM('presencial', 'online', 'hibrido') NOT NULL,
+    data_inscricao_inicio DATE NOT NULL,
+    data_inscricao_fim DATE NOT NULL,
+    modalidade ENUM('Presencial', 'Online', 'Hibrido') NOT NULL,
     status_evento ENUM('ativo', 'cancelado', 'concluido') NOT NULL DEFAULT 'ativo',
     capa_evento VARCHAR(255) NULL,
     data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -72,21 +72,18 @@ CREATE TABLE IF NOT EXISTS atividade_evento (
 
 CREATE TABLE IF NOT EXISTS palestrante (
     id_palestrante INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-    funcao_usuario_id INT NOT NULL,
+    atividade_evento_id INT NOT NULL,
+    nome_palestrante VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    telefone VARCHAR(25),
     grau_academico VARCHAR(100),
+    nome_curso VARCHAR(150),
     cargo VARCHAR(100),
     linkedin_url VARCHAR(255),
-    mini_bio TEXT,
-    UNIQUE(funcao_usuario_id),
-    FOREIGN KEY (funcao_usuario_id) REFERENCES funcao_usuario(id_funcao_usuario) ON DELETE CASCADE ON UPDATE CASCADE
-) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
-CREATE TABLE IF NOT EXISTS palestrante_atividade (
-    id_palestrante_atividade INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-    palestrante_id INT NOT NULL,
-    atividade_id INT NOT NULL,
-    FOREIGN KEY (palestrante_id) REFERENCES palestrante(id_palestrante) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (atividade_id) REFERENCES atividade_evento(id_atividade_evento) ON DELETE CASCADE ON UPDATE CASCADE
+    instagram VARCHAR(30),
+    mini_bio TEXT NOT NULL,
+    foto_palestrante VARCHAR(255) NOT NULL,
+    FOREIGN KEY (atividade_evento_id) REFERENCES atividade_evento(id_atividade_evento) ON DELETE CASCADE ON UPDATE CASCADE
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS inscricao (
@@ -94,7 +91,7 @@ CREATE TABLE IF NOT EXISTS inscricao (
     funcao_usuario_id INT NOT NULL,
     evento_id INT NOT NULL,
     categoria ENUM('estudante', 'profissional', 'convidado', 'inscrito'),
-    status_inscricao ENUM('pendente', 'confirmado', 'cortesia') NOT NULL DEFAULT 'pendente',
+    status_inscricao ENUM('Pendente', 'Confirmado', 'Cortesia') NOT NULL DEFAULT 'pendente',
     data_inscricao DATE NOT NULL,
     valor_pago DECIMAL(10, 2) NULL,
     UNIQUE(funcao_usuario_id, evento_id),
@@ -109,7 +106,6 @@ CREATE TABLE IF NOT EXISTS submissao (
     titulo VARCHAR(250) NOT NULL,
     resumo TEXT NOT NULL,
     palavras_chave VARCHAR(255), 
-    tipo_arquivo ENUM('resumo', 'artigo', 'pôster', 'apresentação'),
     status_arquivo ENUM('enviado', 'em avaliação', 'aceito', 'recusado') NOT NULL DEFAULT 'enviado',
     caminho_arquivo VARCHAR(255) NOT NULL,
     data_envio DATE NOT NULL,
@@ -144,14 +140,16 @@ CREATE TABLE IF NOT EXISTS avaliacao (
 
 CREATE TABLE IF NOT EXISTS expositor (
     id_expositor INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-    evento_id INT NOT NULL,
-    funcao_usuario_id INT NOT NULL,
+    atividade_evento_id INT NOT NULL,
+    nome_expositor VARCHAR(255) NOT NULL,
+    cargo VARCHAR(100) NOT NULL,
     empresa VARCHAR(150) NOT NULL,
-    logo VARCHAR(255) NULL,
-    site VARCHAR(255) NULL,
-    descricao TEXT NULL,
+    logo VARCHAR(255) NOT NULL,
+    site VARCHAR(255) NOT NULL,
+    descricao TEXT,
     tipo_espaco ENUM('estande', 'mesa') NOT NULL,
-    necessidades_tecnicas TEXT NULL,
+    necessidades_tecnicas TEXT,
+    foto_expositor VARCHAR(255),
     UNIQUE(evento_id, funcao_usuario_id),
     FOREIGN KEY (evento_id) REFERENCES evento(id_evento) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (funcao_usuario_id) REFERENCES funcao_usuario(id_funcao_usuario) ON DELETE CASCADE ON UPDATE CASCADE
@@ -199,8 +197,7 @@ INSERT INTO funcao (nome_funcao) VALUES
 ('Organizador'), 
 ('Staff'), 
 ('Comissão Organizadora'),
-('Comissão Ciêntifica'),
-('Expositor'), 
+('Comissão Ciêntifica'), 
 ('Patrocinador'), 
 ('Autor'), 
 ('Inscrito'), 

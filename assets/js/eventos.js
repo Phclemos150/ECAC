@@ -6,7 +6,12 @@ function ativarDropdown() {
   document.getElementById("dropdownMenu").classList.toggle("ativo");
 }
 
-window.onclick = function(event) {
+/* Função para redirecionar para a página de inscrição */
+function irParaInscricao() {
+    window.location.href = "./inscricao.php";
+}
+
+window.addEventListener = function(event) {
   if (!event.target.closest('.user-profile')) {
     const dropdowns = document.getElementsByClassName("dropdown-content");
     for (let i = 0; i < dropdowns.length; i++) {
@@ -63,11 +68,18 @@ function abrirWhatsApp(e) {
 }
 
 /* MODAL */
-
-function abrirModalEvento() {
-  document.getElementById("modalEvento").style.display = "flex";
+function abrirModalEvento(id) {
+  const modal = document.getElementById(id);
+  if (modal) {
+    modal.style.display = "flex";
+    document.body.style.overflow = "hidden";
+  }
 }
 
-function fecharModalEvento() {
-  document.getElementById("modalEvento").style.display = "none";
+function fecharModalEvento(id) {
+  const modal = document.getElementById(id);
+  if (modal) {
+    modal.style.display = "none";
+    document.body.style.overflow = "auto";
+  }
 }
