@@ -71,7 +71,7 @@ unset($_SESSION['redirecionar_login']);
         </div>
         <div class="grupo">
           <label>Nível de escolaridade</label>
-          <select name="nivel_escolaridade">
+          <select name="grau_academico">
             <option value="">Selecione</option>
             <option value="Ensino Fundamental">Ensino Fundamental</option>
             <option value="Ensino Médio">Ensino Médio</option>

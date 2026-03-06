@@ -43,13 +43,13 @@ function formatarLinkExterno($url)
   <header>
     <div class="header-content">
       <button class="menu-toggle" onclick="toggleMenu()">
-  <i class="fa fa-bars"></i>
-</button>
+        <i class="fa fa-bars"></i>
+      </button>
       <div class="header-title">
-  <a href="./index.php">
-    <h1>Encontro Carioca de Alimentação Coletiva</h1>
-  </a>
-</div>
+        <a href="./index.php">
+          <h1>Encontro Carioca de Alimentação Coletiva</h1>
+        </a>
+      </div>
       <div class="header-buttons">
         <?php if (!$logado): ?>
           <a href="./login.php"><button class="btn-login">Login</button></a>
@@ -220,6 +220,14 @@ function formatarLinkExterno($url)
                                   <p> <i class="fa fa-user-tie"></i>
                                     <strong>Palestrante:</strong>
                                     <?= htmlspecialchars($at['palestrantes'][0]['nome_palestrante']) ?>
+                                  </p>
+                                </div>
+                              <?php endif; ?>
+                              <?php if (!empty($at['expositores'])): ?>
+                                <div class="atividade-palestrante">
+                                  <p> <i class="fa fa-briefcase"></i>
+                                    <strong>Expositor:</strong>
+                                    <?= htmlspecialchars($at['expositores'][0]['nome_expositor']) ?>
                                   </p>
                                 </div>
                               <?php endif; ?>

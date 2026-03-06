@@ -1,14 +1,29 @@
 <?php
 session_start();
 
-$user = $_SESSION["user_logado"] ?? null;
+require_once __DIR__ . '/../config/config.php';
+require_once __DIR__ . '/../controllers/IndexController.php';
 
+/* Carregando os Dados do DB */
+$indexController = new IndexController($con);
+$dadosHome = $indexController->carregarDadosHome();
+
+/* Dados de Usuário do Login */
+$user = $_SESSION["user_logado"] ?? null;
+$logado = (bool) $user;
 $id_usuario = $user["id"] ?? null;
 $nome_usuario = $user["nome"] ?? null;
 $email = $user["email"] ?? null;
 $foto = $user["foto"] ?? null;
 
-$logado = (bool) $user;
+/* Separando os Dados do Banco em variáveis */
+$membrosOrg = $dadosHome['organizadores'];
+$membrosCient = $dadosHome['cientificos'];
+$patrocinadores = $dadosHome['patrocinadores'] ?? [];
+/* Organizando os patrocinadores */
+$ouro = array_filter($patrocinadores, fn($p) => $p['nivel_patrocinio'] === 'ouro');
+$prata = array_filter($patrocinadores, fn($p) => $p['nivel_patrocinio'] === 'prata');
+$bronze = array_filter($patrocinadores, fn($p) => $p['nivel_patrocinio'] === 'bronze');
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -26,13 +41,13 @@ $logado = (bool) $user;
   <header>
     <div class="header-content">
       <button class="menu-toggle" onclick="toggleMenu()">
-  <i class="fa fa-bars"></i>
-</button>
+        <i class="fa fa-bars"></i>
+      </button>
       <div class="header-title">
-  <a href="./index.php">
-    <h1>Encontro Carioca de Alimentação Coletiva</h1>
-  </a>
-</div>
+        <a href="./index.php">
+          <h1>Encontro Carioca de Alimentação Coletiva</h1>
+        </a>
+      </div>
       <div class="header-buttons">
         <?php if (!$logado): ?>
           <a href="./login.php"><button class="btn-login">Login</button></a>
@@ -99,7 +114,7 @@ $logado = (bool) $user;
     </div>
     <div class="content-area">
       <div class="banner">
-        
+
         <div class="banner-logo">
           <img src="../assets/img/Logo Comunidade Carioca Melhorada.png" alt="Logo ECAC">
         </div>
@@ -110,11 +125,11 @@ $logado = (bool) $user;
             de Alimentação Coletiva
           </h2>
           <p style="font-size:21px;">
-  Uma experiência única para profissionais de 
-  <span style="color:#3f5d2a; font-weight:600;">nutrição</span> e 
-  <span style="color:#f39c12; font-weight:600;">gastronomia</span>
-    </p>
-          <a href="./inscricao.php" class="btn-inscricao" >GARANTA SUA VAGA</a>
+            Uma experiência única para profissionais de
+            <span style="color:#3f5d2a; font-weight:600;">nutrição</span> e
+            <span style="color:#f39c12; font-weight:600;">gastronomia</span>
+          </p>
+          <a href="./inscricao.php" class="btn-inscricao">GARANTA SUA VAGA</a>
         </div>
       </div>
       <section class="section">
@@ -132,28 +147,28 @@ $logado = (bool) $user;
       <br><br><br>
 
       <section class="sobre-evento">
-  <div class="sobre-container">
+        <div class="sobre-container">
 
-   
-    <div class="sobre-imagem">
-      <img src="../assets/img/objetivoevento.png" alt="Evento ECAC">
-    </div>
 
-    <div class="sobre-texto">
-  <h2 class="titulo-com-linha">Propósito do Encontro</h2>
-  <div class="linha-titulo"></div>
-  <p>
-    O Encontro Carioca de Alimentação Coletiva nasceu com o propósito de valorizar,
-    conectar e fortalecer os profissionais que atuam na alimentação fora do lar,
-    promovendo um espaço de diálogo entre o conhecimento técnico, científico e a
-    prática cotidiana dos serviços de alimentação.
-  </p>
-</div>
+          <div class="sobre-imagem">
+            <img src="../assets/img/objetivoevento.png" alt="Evento ECAC">
+          </div>
 
-  </div>
-</section>
+          <div class="sobre-texto">
+            <h2 class="titulo-com-linha">Propósito do Encontro</h2>
+            <div class="linha-titulo"></div>
+            <p>
+              O Encontro Carioca de Alimentação Coletiva nasceu com o propósito de valorizar,
+              conectar e fortalecer os profissionais que atuam na alimentação fora do lar,
+              promovendo um espaço de diálogo entre o conhecimento técnico, científico e a
+              prática cotidiana dos serviços de alimentação.
+            </p>
+          </div>
 
-<br><br><br>
+        </div>
+      </section>
+
+      <br><br><br>
 
       <div class="slider">
         <div class="slides">
@@ -166,10 +181,10 @@ $logado = (bool) $user;
           <div class="slide" style="background-image: url('../assets/img/ecac7.jpeg');">
           </div>
         </div>
-     
+
         <button class="nav prev">&#10094;</button>
         <button class="nav next">&#10095;</button>
-     
+
         <div class="dots">
           <span class="dot active"></span>
           <span class="dot"></span>
@@ -179,55 +194,57 @@ $logado = (bool) $user;
       </div>
       <br><br>
 
-    <section class="section">
-      <h1>Propostas inovadoras</h1>
-      <div class="section-divider"></div>
-      <p>
-        Com o tema "Inovação, Tecnologia e Sustentabilidade: caminhos para a excelência na gestão da alimentação fora do lar", o II Encontro Carioca de Alimentação Coletiva
-        busca inspirar a transformação dos serviços de alimentação por meio da troca de experiências, da produção de conhecimento e do fortalecimento de redes colaborativas 
-      </p>
-    </section>
+      <section class="section">
+        <h1>Propostas inovadoras</h1>
+        <div class="section-divider"></div>
+        <p>
+          Com o tema "Inovação, Tecnologia e Sustentabilidade: caminhos para a excelência na gestão da alimentação fora
+          do lar", o II Encontro Carioca de Alimentação Coletiva
+          busca inspirar a transformação dos serviços de alimentação por meio da troca de experiências, da produção de
+          conhecimento e do fortalecimento de redes colaborativas
+        </p>
+      </section>
 
 
-    <section class="proposta-2026">
-  <div class="texto">
+      <section class="proposta-2026">
+        <div class="texto">
 
-<br>
+          <br>
 
-<p style="font-size:25px;"><strong>O evento contará com:</strong></p>
+          <p style="font-size:25px;"><strong>O evento contará com:</strong></p>
 
-    <ul>
-      <li>
-        <strong>Apresentação de trabalhos científicos e relatos de experiência exitosas</strong>
-        no campo da alimentação fora do lar, com menção honrosa para os quatro melhores resumos;
-      </li>
+          <ul>
+            <li>
+              <strong>Apresentação de trabalhos científicos e relatos de experiência exitosas</strong>
+              no campo da alimentação fora do lar, com menção honrosa para os quatro melhores resumos;
+            </li>
 
-      <li>
-        <strong>Painel com empresas do setor de alimentação</strong>, promovendo diálogo entre
-        academia, mercado e gestão pública;
-      </li>
+            <li>
+              <strong>Painel com empresas do setor de alimentação</strong>, promovendo diálogo entre
+              academia, mercado e gestão pública;
+            </li>
 
-      <li>
-        <strong>Feira de oportunidades de emprego</strong>, voltada a nutricionistas, técnicos
-        e demais profissionais da área de alimentos;
-      </li>
+            <li>
+              <strong>Feira de oportunidades de emprego</strong>, voltada a nutricionistas, técnicos
+              e demais profissionais da área de alimentos;
+            </li>
 
-      <li>
-        <strong>Pré-evento com oficinas práticas</strong>, abordando:
-        <ul class="sublista">
-          <li>Precificação de preparações e produtos alimentícios;</li>
-          <li>Cálculo de ficha técnica e planejamento de cardápios;</li>
-          <li>Dimensionamento de equipamentos, inovação e tecnologia a favor da sustentabilidade;</li>
-          <li>Cardápios inclusivos e sustentáveis.</li>
-        </ul>
-      </li>
-    </ul>
-  </div>
+            <li>
+              <strong>Pré-evento com oficinas práticas</strong>, abordando:
+              <ul class="sublista">
+                <li>Precificação de preparações e produtos alimentícios;</li>
+                <li>Cálculo de ficha técnica e planejamento de cardápios;</li>
+                <li>Dimensionamento de equipamentos, inovação e tecnologia a favor da sustentabilidade;</li>
+                <li>Cardápios inclusivos e sustentáveis.</li>
+              </ul>
+            </li>
+          </ul>
+        </div>
 
-   <div class="imagem">
-    <img src="../assets/img/ecac 1.jpeg" alt="Palestra e público do evento">
-  </div>
-</section>
+        <div class="imagem">
+          <img src="../assets/img/ecac 1.jpeg" alt="Palestra e público do evento">
+        </div>
+      </section>
       <section class="section">
         <h1>Um evento que vai te impressionar</h1>
         <div class="section-divider"></div>
@@ -241,108 +258,121 @@ $logado = (bool) $user;
       </section>
 
       <br><br><br>
-      
-    <section class="section">
-        <h1>Comissão Acadêmica</h1>
+
+      <section class="section">
+        <h1>Comissão Organizadora</h1>
         <div class="section-divider"></div>
-        <p class="subtitle">Conheça as pessoas e instituições responsáveis por tornar o Encontro Carioca de Alimentação Coletiva possível</p>
+        <p class="subtitle">Conheça as pessoas e instituições responsáveis por tornar o Encontro Carioca de Alimentação
+          Coletiva possível</p>
         <br><br>
-        
+
         <div class="organizadores-grid">
-          <div class="organizador-card">
-            <div class="organizador-img">
-              <img src="../assets/img/organizador1.png" alt="Organizador 1">
-            </div>
-            <h3>Maria Silva</h3>
-            <p>Coordenadora Geral</p>
-          </div>
-          <div class="organizador-card">
-            <div class="organizador-img">
-              <img src="../assets/img/organizador2.png" alt="Organizador 2">
-            </div>
-            <h3>João Pereira</h3>
-            <p>Diretor de Programação</p>
-          </div>
-          <div class="organizador-card">
-            <div class="organizador-img">
-              <img src="../assets/img/organizador3.png" alt="Organizador 3">
-            </div>
-            <h3>Ana Costa</h3>
-            <p>Coordenadora de Comunicação</p>
-          </div>
+          <?php if (!empty($membrosOrg)): ?>
+            <?php foreach ($membrosOrg as $membro):
+              $fotoMembro = !empty($membro['foto_perfil'])
+                ? "../assets/uploads/fotos_perfil/" . $membro['foto_perfil']
+                : "../assets/img/default-user.png";
+              ?>
+              <div class="organizador-card">
+                <div class="organizador-img">
+                  <img src="<?= $fotoMembro ?>" alt="<?= htmlspecialchars($membro['nome_usuario']) ?>">
+                </div>
+                <h3><?= htmlspecialchars($membro['nome_usuario']) ?></h3>
+                <p><?= htmlspecialchars($membro['funcao_org']) ?></p>
+              </div>
+            <?php endforeach; ?>
+          <?php else: ?>
+            <p class="msg-vazia"> Comissão Organizadora ainda está em andamento </p>
+          <?php endif; ?>
         </div>
       </section>
-
 
       <section class="section">
         <h1>Comissão Científica</h1>
         <div class="section-divider"></div>
-        <p class="subtitle">Conheça as pessoas e instituições responsáveis por tornar o Encontro Carioca de Alimentação Coletiva possível</p>
+        <p class="msg-vazia">Profissionais responsáveis pela curadoria técnica e científica do evento</p>
         <br><br>
-        
+
         <div class="organizadores-grid">
-          <div class="organizador-card">
-            <div class="organizador-img">
-              <img src="../assets/img/organizador1.png" alt="Organizador 1">
-            </div>
-            <h3>Maria Silva</h3>
-            <p>Coordenadora Geral</p>
-          </div>
-          <div class="organizador-card">
-            <div class="organizador-img">
-              <img src="../assets/img/organizador2.png" alt="Organizador 2">
-            </div>
-            <h3>João Pereira</h3>
-            <p>Diretor de Programação</p>
-          </div>
-          <div class="organizador-card">
-            <div class="organizador-img">
-              <img src="../assets/img/organizador3.png" alt="Organizador 3">
-            </div>
-            <h3>Ana Costa</h3>
-            <p>Coordenadora de Comunicação</p>
-          </div>
+          <?php if (!empty($membrosCient)): ?>
+            <?php foreach ($membrosCient as $cientista):
+              $fotoCient = !empty($cientista['foto_perfil'])
+                ? "../assets/uploads/fotos_perfil/" . $cientista['foto_perfil']
+                : "../assets/img/default-user.png";
+              ?>
+              <div class="organizador-card">
+                <div class="organizador-img">
+                  <img src="<?= $fotoCient ?>" alt="<?= htmlspecialchars($cientista['nome_usuario']) ?>">
+                </div>
+                <h3><?= htmlspecialchars($cientista['nome_usuario']) ?></h3>
+                <p><?= htmlspecialchars($cientista['funcao_cient']) ?></p>
+              </div>
+            <?php endforeach; ?>
+          <?php else: ?>
+            <p class="msg-vazia">Em breve, conheceremos nossa banca científica.</p>
+          <?php endif; ?>
         </div>
       </section>
 
-<section class="section">
-      <h1>Patrocinadores</h1>
-      <div class="section-divider"></div>
-      <p>
-        Junte-se a nós na construção de um evento que conecta profissionais, conhecimento e propósito em torno de uma alimentação mais inovadora, sustentável e humana
-      </p>
-    </section>
+      <section class="section">
+        <h1>Patrocinadores</h1>
+        <div class="section-divider"></div>
+        <p>
+          Junte-se a nós na construção de um evento que conecta profissionais, conhecimento e propósito em torno de uma
+          alimentação mais inovadora, sustentável e humana
+        </p>
+      </section>
 
-    <section class="caixa-branca patrocinio">
-  
-  <div class="titulo-simples">
-    <span>Patrocinador Master</span>
-  </div>
+      <?php if (!empty($ouro) || !empty($prata) || !empty($bronze)): ?>
+        <section class="caixa-branca patrocinio">
 
-  <div class="logos patrocinador-master">
-</div>
+          <div class="titulo-linha">
+            <span>Patrocinador Master</span>
+          </div>
+          <div class="logos patrocinador-master">
+            <?php if (!empty($ouro)): ?>
+              <?php foreach ($ouro as $p): ?>
+                <a href="<?= htmlspecialchars($p['site_empresa'] ?? '#') ?>" target="_blank">
+                  <img src="../assets/img/<?= $p['logo'] ?>" alt="<?= htmlspecialchars($p['nome_empresa']) ?>">
+                </a>
+              <?php endforeach; ?>
+            <?php else: ?>
+              <p class="sem-dados">Espaço disponível para Patrocinador Master</p>
+            <?php endif; ?>
+          </div>
 
-  <div class="titulo-linha">
-    <span>Patrocinadores</span>
-  </div>
-  
-  <div class="logos patrocinadores">
-  <img src="../assets/img/logo1.png" alt="">
-  <img src="../assets/img/logo2.png" alt="">
-  <img src="../assets/img/logo3.png" alt="">
-</div>
+          <div class="titulo-linha">
+            <span>Patrocinadores</span>
+          </div>
+          <div class="logos patrocinadores">
+            <?php if (!empty($prata)): ?>
+              <?php foreach ($prata as $p): ?>
+                <a href="<?= htmlspecialchars($p['site_empresa'] ?? '#') ?>" target="_blank">
+                  <img src="../assets/img/<?= $p['logo'] ?>" alt="<?= htmlspecialchars($p['nome_empresa']) ?>">
+                </a>
+              <?php endforeach; ?>
+            <?php else: ?>
+              <p class="sem-dados">Espaço disponível para Patrocinadores</p>
+            <?php endif; ?>
+          </div>
 
-  
-  <div class="titulo-linha">
-    <span>Apoiadores</span>
-  </div>
+          <div class="titulo-linha">
+            <span>Apoiadores</span>
+          </div>
+          <div class="logos apoiadores">
+            <?php if (!empty($bronze)): ?>
+              <?php foreach ($bronze as $p): ?>
+                <a href="<?= htmlspecialchars($p['site_empresa'] ?? '#') ?>" target="_blank">
+                  <img src="../assets/img/<?= $p['logo'] ?>" alt="<?= htmlspecialchars($p['nome_empresa']) ?>">
+                </a>
+              <?php endforeach; ?>
+            <?php else: ?>
+              <p class="sem-dados">Espaço disponível para Apoiadores</p>
+            <?php endif; ?>
+          </div>
 
- <div class="logos apoiadores">
-  <a href="https://www.unisuam.edu.br/" target="_blank"><img src="../assets/img/unisuam.png" alt="UNISUAM"></a>
-  <img src="../assets/img/logo5.png" alt="">
-</div>
-
-</section>
+        </section>
+      <?php endif; ?>
     </div>
   </div>
 
@@ -388,4 +418,5 @@ $logado = (bool) $user;
   </footer>
   <script src="../assets/js/index.js"></script>
 </body>
+
 </html>

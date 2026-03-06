@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS usuario (
     data_nascimento DATE NOT NULL,
     telefone VARCHAR(25),
     instagram VARCHAR(30),
-    nivel_escolaridade ENUM('Ensino Fundamental', 'Ensino Médio', 'Graduação', 'Pós-graduação', 'Mestrado', 'Doutorado') NOT NULL,
+    grau_academico ENUM('Ensino Fundamental', 'Ensino Médio', 'Graduação', 'Pós-graduação', 'Mestrado', 'Doutorado') NOT NULL,
     nome_curso VARCHAR(150) NOT NULL,
     cidade VARCHAR(100) NOT NULL,
     estado VARCHAR(2) NOT NULL,
@@ -76,13 +76,32 @@ CREATE TABLE IF NOT EXISTS palestrante (
     nome_palestrante VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL,
     telefone VARCHAR(25),
-    grau_academico VARCHAR(100),
+    grau_academico ENUM('Ensino Fundamental', 'Ensino Médio', 'Graduação', 'Pós-graduação', 'Mestrado', 'Doutorado') NOT NULL,
     nome_curso VARCHAR(150),
     cargo VARCHAR(100),
     linkedin_url VARCHAR(255),
     instagram VARCHAR(30),
     mini_bio TEXT NOT NULL,
     foto_palestrante VARCHAR(255) NOT NULL,
+    FOREIGN KEY (atividade_evento_id) REFERENCES atividade_evento(id_atividade_evento) ON DELETE CASCADE ON UPDATE CASCADE
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS expositor (
+    id_expositor INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    atividade_evento_id INT NOT NULL,
+    nome_expositor VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    telefone VARCHAR(25),
+    empresa VARCHAR(150) NOT NULL,
+    cargo VARCHAR(100) NOT NULL,
+    logo VARCHAR(255) NOT NULL,
+    link_empresa VARCHAR(255) NOT NULL,
+    linkedin_url VARCHAR(255),
+    instagram VARCHAR(30),
+    descricao TEXT,
+    tipo_espaco ENUM('estande', 'mesa') NOT NULL,
+    necessidades_tecnicas TEXT,
+    foto_expositor VARCHAR(255),
     FOREIGN KEY (atividade_evento_id) REFERENCES atividade_evento(id_atividade_evento) ON DELETE CASCADE ON UPDATE CASCADE
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -97,6 +116,24 @@ CREATE TABLE IF NOT EXISTS inscricao (
     UNIQUE(funcao_usuario_id, evento_id),
     FOREIGN KEY (funcao_usuario_id) REFERENCES funcao_usuario(id_funcao_usuario) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (evento_id) REFERENCES evento(id_evento) ON DELETE CASCADE ON UPDATE CASCADE 
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS comissao_org (
+	id_comissao_org INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    funcao_usuario_id INT NOT NULL,
+    funcao_org VARCHAR(100), -- mudar depois para enum, quando conseguir mais informações sobre as funções
+    linkedin_url VARCHAR(255),
+    UNIQUE(funcao_usuario_id),
+    FOREIGN KEY (funcao_usuario_id) REFERENCES funcao_usuario(id_funcao_usuario) ON DELETE CASCADE ON UPDATE CASCADE
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS comissao_cient (
+	id_comissao_cient INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    funcao_usuario_id INT NOT NULL,
+    funcao_cient VARCHAR(100), -- mudar depois para enum, quando conseguir mais informações sobre as funções
+    linkedin_url VARCHAR(255),
+    UNIQUE(funcao_usuario_id),
+    FOREIGN KEY (funcao_usuario_id) REFERENCES funcao_usuario(id_funcao_usuario) ON DELETE CASCADE ON UPDATE CASCADE
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS submissao (
@@ -138,34 +175,13 @@ CREATE TABLE IF NOT EXISTS avaliacao (
     FOREIGN KEY (funcao_usuario_id) REFERENCES funcao_usuario(id_funcao_usuario) ON DELETE CASCADE ON UPDATE CASCADE
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
-CREATE TABLE IF NOT EXISTS expositor (
-    id_expositor INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-    atividade_evento_id INT NOT NULL,
-    nome_expositor VARCHAR(255) NOT NULL,
-    cargo VARCHAR(100) NOT NULL,
-    empresa VARCHAR(150) NOT NULL,
-    logo VARCHAR(255) NOT NULL,
-    site VARCHAR(255) NOT NULL,
-    descricao TEXT,
-    tipo_espaco ENUM('estande', 'mesa') NOT NULL,
-    necessidades_tecnicas TEXT,
-    foto_expositor VARCHAR(255),
-    UNIQUE(evento_id, funcao_usuario_id),
-    FOREIGN KEY (evento_id) REFERENCES evento(id_evento) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (funcao_usuario_id) REFERENCES funcao_usuario(id_funcao_usuario) ON DELETE CASCADE ON UPDATE CASCADE
-) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
 CREATE TABLE IF NOT EXISTS patrocinador (
     id_patrocinador INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-    evento_id INT NOT NULL,
-    funcao_usuario_id INT NOT NULL,
-    empresa VARCHAR(150) NOT NULL,
+    nome_empresa VARCHAR(150) NOT NULL,
     logo VARCHAR(255) NULL,
-    site VARCHAR(255) NULL,
+    site_empresa VARCHAR(255) NULL,
     nivel_patrocinio ENUM('bronze', 'prata', 'ouro') NOT NULL,
-    beneficios TEXT NULL,
-    FOREIGN KEY (evento_id) REFERENCES evento(id_evento) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (funcao_usuario_id) REFERENCES funcao_usuario(id_funcao_usuario) ON DELETE CASCADE ON UPDATE CASCADE
+    beneficios TEXT NULL
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS certificado (
@@ -190,15 +206,3 @@ CREATE TABLE IF NOT EXISTS log_sistema (
     hora_log TIME NOT NULL,
     FOREIGN KEY (funcao_usuario_id) REFERENCES funcao_usuario(id_funcao_usuario) ON DELETE CASCADE ON UPDATE CASCADE
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
--- Inserção das funções solicitadas
-INSERT INTO funcao (nome_funcao) VALUES 
-('Admin'), 
-('Organizador'), 
-('Staff'), 
-('Comissão Organizadora'),
-('Comissão Ciêntifica'), 
-('Patrocinador'), 
-('Autor'), 
-('Inscrito'), 
-('Usuario');

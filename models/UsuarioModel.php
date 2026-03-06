@@ -66,7 +66,7 @@ class UsuarioModel
 
         try {
             $sql = "INSERT INTO usuario (
-            nome_usuario, email, senha_hash, documento, data_nascimento, telefone, instagram, nivel_escolaridade,
+            nome_usuario, email, senha_hash, documento, data_nascimento, telefone, instagram, grau_academico,
             nome_curso, cidade, estado, pais, foto_perfil
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
@@ -80,7 +80,7 @@ class UsuarioModel
                 $dados["data_nascimento"],
                 $dados["telefone"],
                 $dados["instagram"],
-                $dados["nivel_escolaridade"],
+                $dados["grau_academico"],
                 $dados["nome_curso"],
                 $dados["cidade"],
                 $dados["estado"],

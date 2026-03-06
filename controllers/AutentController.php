@@ -73,7 +73,7 @@ class AutentController
             'data_nascimento' => trim($_POST['data_nascimento'] ?? ''),
             'telefone' => trim($_POST['telefone'] ?? ''),
             'instagram' => trim($_POST['instagram'] ?? ''),
-            'nivel_escolaridade' => trim($_POST['nivel_escolaridade'] ?? ''),
+            'grau_academico' => trim($_POST['grau_academico'] ?? ''),
             'nome_curso' => trim($_POST['nome_curso'] ?? ''),
             'cidade' => trim($_POST['cidade'] ?? ''),
             'estado' => trim($_POST['estado'] ?? ''),
@@ -84,7 +84,7 @@ class AutentController
         /* Verifica se os campos estão vazios */
         if (trim(empty($dados['nome'])) || trim(empty($dados['email'])) || trim(empty($dados['senha_hash'])) ||
             trim(empty($dados['documento'])) || trim(empty($dados['data_nascimento'])) ||
-            trim(empty($dados['nivel_escolaridade'])) || trim(empty($dados['nome_curso'])) ||
+            trim(empty($dados['grau_academico'])) || trim(empty($dados['nome_curso'])) ||
             trim(empty($dados['cidade'])) || trim(empty($dados['estado'])) || trim(empty($dados['pais']))) {
             $this->erroCadastro("Erro de Validação", "Todos os campos devem ser preenchidos!");
         }
