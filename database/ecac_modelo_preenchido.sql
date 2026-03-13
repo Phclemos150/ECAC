@@ -3,7 +3,12 @@ USE ecac;
 INSERT INTO `usuario` (`id_usuario`, `nome_usuario`, `email`, `senha_hash`, `documento`, `data_nascimento`, `telefone`, `instagram`, `grau_academico`, `nome_curso`, `cidade`, `estado`, `pais`, `foto_perfil`, `data_criacao`, `data_atualizacao`, `status_conta`) VALUES
 (1, 'Roberta', 'roberta@email.com', '$2y$10$i3.HZ1BoRo1LvY4EdFAbjOrTfyIgEAe729481GZMmA71C4ECfo8Fm', '111.111.111-11', '2026-02-16', '(21) 99999-9999', '@usuario', 'Pós-graduação', 'Nutrição', 'Teste', 'TS', 'Brasil', 'user_69ab0ba51f762.png', '2026-02-16 15:47:13', '2026-02-16 15:47:13', 'ativo'),
 (2, 'Raquel', 'raquel@email.com', '$2y$10$XZWuwo9UxmvD1jPVztlBYuww8j6iomQ7PCplE.d503lRopZFRcZoG', '222.222.222-22', '2026-02-20', '(21) 99999-9999', '@usuario', 'Graduação', 'Marketing', 'Teste', 'TS', 'Brasil', 'user_69ab0b3a4a35d.png', '2026-02-16 15:47:13', '2026-02-16 15:47:13', 'ativo' ),
-(3, 'João', 'joao@email.com', '$2y$10$6GRBxio0GOUizpP9YMMDguSCQzxYa8/XdrJs4mrtqxg1YS2nZMi9W', '333.333.333-33', '2026-02-20', '(21) 99999-9999', '@usuario', 'Mestrado', 'Gestão de Recursos Humanos', 'Teste', 'TS', 'Brasil', 'user_69ab0c0521b86.png', '2026-02-16 15:47:13', '2026-02-16 15:47:13', 'ativo' );
+(3, 'João', 'joao@email.com', '$2y$10$6GRBxio0GOUizpP9YMMDguSCQzxYa8/XdrJs4mrtqxg1YS2nZMi9W', '333.333.333-33', '2026-02-20', '(21) 99999-9999', '@usuario', 'Mestrado', 'Gestão de Recursos Humanos', 'Teste', 'TS', 'Brasil', 'user_69ab0c0521b86.png', '2026-02-16 15:47:13', '2026-02-16 15:47:13', 'ativo' ),
+(4, 'Caio Silva', 'teste1@email.com', '$2y$10$Ck9tZC/HuWBj0iXc2ocwmuOPRH6FWfQsSqssMGjalSQLVNv60nFV.', '444.444.444-44', '2026-03-12', '(21) 94444-4444', '@usuario', 'Graduação', 'Teste', 'Teste', 'TS', 'Brasil', '' ,'2026-03-12 11:22:44', '2026-03-12 11:32:23', 'ativo'),
+(5, 'Felipe Santos', 'teste2@email.com', '$2y$10$NWQLTHUx5dz6ovTH7obS3ewmwWHn/aLKqfM6ViH12u5itB6/Q7wpm', '555.555.555-55', '2026-03-12', '(21) 95555-5555', '@usuario', 'Graduação', 'Teste', 'Teste', 'TS', 'Brasil', '', '2026-03-12 11:38:10', '2026-03-12 11:38:10', 'ativo'),
+(6, 'Marcela Costa', 'teste3@email.com', '$2y$10$ZMp0kWSJ7.j9AyRD.iluzudc/EXIIpagfT8GwHVRsKRn1FVXgbvBK', '666.666.666-66', '2026-03-12', '(21) 96666-6666', '@usuario', 'Pós-graduação', 'Teste', 'Teste', 'TS', 'Brasil', '', '2026-03-12 11:39:12', '2026-03-12 11:39:12', 'ativo'),
+(7, 'Verônica Almeida', 'teste4@email.com', '$2y$10$P5J7.g.M56jXQ8H9X14uJO4MntOvpJbZ8Q6m441gU9awCaesZZuMi', '777.777.777-77', '2026-03-12', '(21) 97777-7777', '@usuario', 'Mestrado', 'Teste', 'Teste', 'TS', 'Brasil', '', '2026-03-12 11:39:54', '2026-03-12 11:39:54', 'ativo'),
+(8, 'Rebeca Mattos', 'teste5@email.com', '$2y$10$PyP/QQ0OKLooEM8h1fTzseKjTzZtavb45Ugefd9LU3quUPMxPmyT6', '888.888.888-88', '2026-03-12', '(21) 98888-8888', '@usuario', 'Graduação', 'Teste', 'Teste', 'TS', 'Brasil', '', '2026-03-12 11:40:54', '2026-03-12 11:40:54', 'ativo');
 
 INSERT INTO funcao (nome_funcao) VALUES 
 ('Admin'), 
@@ -17,13 +22,13 @@ INSERT INTO funcao (nome_funcao) VALUES
 
 INSERT INTO `funcao_usuario` (`id_funcao_usuario`, `usuario_id`, `funcao_id`) VALUES
 (1, 1, 2),
-(2,2, 3),
-(3,3, 4);
-
-INSERT INTO `comissao_org` (`id_comissao_org`, `funcao_usuario_id`, `funcao_org`, `linkedin_url`) VALUES
-(1, 1, 'Organizadora', 'https://br.linkedin.com/'),
-(2,2, 'Operador de Marketing', 'https://br.linkedin.com/'),
-(3,3, 'Gestor do Projeto', 'https://br.linkedin.com/');
+(2, 2, 3),
+(3, 3, 4),
+(4, 4, 6),
+(5, 5, 6),
+(6, 6, 6),
+(7, 7, 6),
+(8, 8, 6);
 
 INSERT INTO `evento` (`id_evento`, `organizador_id`, `titulo`, `descricao`, `local_evento`, `data_evento`, `horario_inicio`, `horario_fim`, `data_inscricao_inicio`, `data_inscricao_fim`, `modalidade`, `status_evento`, `capa_evento`, `data_criacao`, `data_atualizacao`) VALUES
 (1, 1, '1ª Edição do Encontro Carioca de Alimentação Coletiva', 'O Encontro Carioca de Alimentação Coletiva nasceu com o propósito de valorizar, conectar e fortalecer os profissionais que atuam na alimentação fora do lar, promovendo um espaço de diálogo entre o conhecimento técnico, científico e a prática cotidiana dos serviços de alimentação.', 'Auditório Sylvia Bisaggio - UNISUAM Bonsucesso', '2025-09-27', '08:30:00', '16:30:00', '2025-08-11', '2025-09-15', 'Presencial', 'concluido', '../assets/img/Design Melhorado.png', '2026-02-04 13:44:39', '2026-02-04 13:51:43'),
@@ -47,7 +52,7 @@ INSERT INTO `atividade_evento` (`id_atividade_evento`, `evento_id`, `titulo`, `d
 (15, 1, 'Encerramento e Agradecimento', 'Finalização do evento', 'Pós-Evento', '16:10:00', '16:30:00', 'Auditório Sylvia Bisaggio - UNISUAM Bonsucesso', 200, '2026-02-04 15:41:05', '2026-02-04 15:41:28');
 
 INSERT INTO `palestrante` (`id_palestrante`, `atividade_evento_id`, `nome_palestrante`, `email`, `telefone`, `grau_academico`, `nome_curso`, `cargo`, `linkedin_url`, `instagram`, `mini_bio`, `foto_palestrante`) VALUES
-(1, 3, 'Cíntia Teixeira', 'cintia@email.com', '(21)91111-1111', 'Doutorado', 'Ciências', 'Pesquisadora', '', '', 'Uma mini bio aqui...', 'org1.png'),
+(1, 3, 'Cíntia Teixeira', 'cintia@email.com', '(21) 91111-1111', 'Doutorado', 'Ciências', 'Pesquisadora', '', '', 'Uma mini bio aqui...', 'org1.png'),
 (2, 4, 'Luana Limoeiro', 'luana@email.com', '(21) 92222-2222', 'Doutorado', 'Ciência e Tecnologia dos Alimentos', 'Coordenadora do Curso de Nutrição UCAM' , '', '', 'Nutricionista, mãe de duas adolescentes e de 1 pet canino e 3 pets felinos, professora, pós graduada em Gestão de Restaurantes, Mestra em Ciência dos Alimentos e Doutora em Ciência e Tecnologia dos Alimentos. ', 'org2.png'),
 (3, 6, 'Kátia Mendes', 'katia@email.com', '(21) 93333-3333', 'Mestrado', 'Ciência e Tecnologia de Alimentos', 'Nutricionista', '', '', 'Nutricionista com atuação em Nutrição em Alimentação Coletiva. Mestre em Ciência e Tecnologia de Alimentos. Pesquisadora Culinafro e Coordenadora da Linha Culinária Africana - CM-UFRJ/Macaé. Pesquisadora-Extensionista do Projeto Interinstitucional Painel das manifestações da gastronomia ancestral no Rio de Janeiro (UNIRIO e Solares Ação Social e Cidadania).', 'org1.png'),
 (4, 7, 'Fernanda Bainha', 'fernanda@email.com', '(21) 94444-4444', 'Doutorado', 'Alimentação, Nutrição e Saúde', 'Assessora Técnica em Segurança Alimentar e Nutricional', '', '', 'Nutricionista (UFF), atua há 15 anos em gestão de UANs Offhore, hospitalares e escolares. Docente na especialização em Nutrição Hospitalar do Hospital Sírio Libanês (SP) e consultora. Assessora Técnica em Segurança Alimentar e Nutricional no governo do Estado. Pesquisadora e ativista sobre as condições de trabalho dos trabalhadores das cozinhas, Risco Sanitário, Lean e PNAE. Mestra em Engenharia de Produção (UFF), Doutoranda em Alimentação, Nutrição e Saúde (UERJ) com MBA em Gestão Integrada de Qualidade, Segurança, Meio Ambiente e Saúde.', 'org2.png'),
@@ -57,10 +62,36 @@ INSERT INTO `palestrante` (`id_palestrante`, `atividade_evento_id`, `nome_palest
 (8, 13, 'Katiana Telefora', 'katiana@email.com', '(21) 98888-8888', 'Mestrado', 'Saúde Pública', 'Especialista em Políticas Públicas', '', '', 'Nutricionista (UERJ) e Sanitarista (UFRJ). Mestre em Saúde Pública (ENSP/FIOCRUZ). Servidora Pública da carreira de Especialista em Políticas Públicas e Gestão Governamental da Secretaria de Estado de Planejamento e Gestão-RJ.', 'org2.png'),
 (9, 14, 'Renata Nogueira', 'renata@email.com', '(21) 99999-9999', 'Doutorado', 'Ciências', 'Responsável Técnica do Programa Nacional da Alimentação Escolar', '', '', 'Nutricionista com experiência de mais de 20 anos no ramo da Alimentação Coletiva, atuando em diferentes segmentos. É servidora pública federal desde 2018, atuando como Responsável Técnica do Programa Nacional da Alimentação Escolar no Colégio Pedro II, campus Tijuca 2. Tem especialização em Gestão da Segurança dos Alimentos, é Mestre em Educação Profissional em Saúde, pela Fundação Oswaldo Cruz  e  Doutora em Ciências, pelo Programa de Pós Graduação em Alimentação, Nutrição e Saúde da UERJ.', 'org1.png');
 
-
 INSERT INTO `expositor` (`id_expositor`, `atividade_evento_id`, `nome_expositor`, `email`, `telefone` , `empresa` , `cargo`, `logo`, `link_empresa`, `linkedin_url`, `instagram` , `descricao`, `tipo_espaco`, `necessidades_tecnicas`, `foto_expositor`) VALUES
 (1, 5, 'André Matos', 'andrematos@email.com' , '(21) 99999-9999' , 'Nutri' , 'Vendedor', 'logo nutri.png', 'www.google.com.br', 'https://br.linkedin.com/', '@nutri' , 'Breve descrição aqui...', 'estande', 'Acesso a tomada.', 'org3.png'),
 (2, 5, 'Marcos Lopes', 'andrematos@email.com' , '(21) 98888-8888' , 'Empresa X' , 'Pesquisador', 'logo.png', 'www.google.com', 'https://br.linkedin.com/', '@empresaX' , 'Breve descrição aqui...', 'mesa', 'Acesso a tomada.', 'org3.png');
 
 INSERT INTO `patrocinador` (`id_patrocinador`, `nome_empresa`, `logo`, `site_empresa`, `nivel_patrocinio`, `beneficios`) VALUES
 (1, 'UNISUAM', 'unisuam.png', 'https://www.unisuam.edu.br/', 'bronze', '');
+
+INSERT INTO `submissao` (`evento_id`, `funcao_usuario_id` , `titulo`, `resumo`, `palavras_chave`, `status_arquivo`, `caminho_arquivo`, `data_envio`, `hora_envio`) VALUES
+(2, 4, 'Nutrição de Alimentos', 'Descrição detalhada e minuciosa dos nutrientes de cada alimento...', 'Nutrição, Saúde Alimentar, Alimentos', 'enviado', 'edicao2/trab_69b2cc643c264_1773325412.pdf', '2026-03-12', '11:23:32'),
+(2, 5, 'Alimentação Coletiva', 'Descrição da produção e oferta de refeições para grupo de pessoas em comum voltado para saúde e segurança alimentar de todos.', 'Alimentação Coletiva, Refeição para Grupos, Saúde Alimentar, Segurança Alimentar', 'enviado', 'edicao2/trab_69b2d507f3f86_1773327623.pdf', '2026-03-12', '12:00:24'),
+(2, 6, 'Importância da Nutrição na rotina', 'Descrição de como a nutrição impacta no dia a dia da pessoa.', 'Nutrição, Rotina, Saúde', 'enviado', 'edicao2/trab_69b2d5cdd6df0_1773327821.pdf', '2026-03-12', '12:04:26'),
+(2, 7, 'Teste', 'Descrição sobre o teste', 'Teste', 'enviado', 'edicao2/trab_69b2d5faa22be_1773327866.pdf', '2026-03-12', '12:04:26'),
+(2, 8, 'Tecnologia dos Alimentos', 'Descrição de como os alimentos afetam seu corpo e como usar isso para melhorar seu desempenho...', 'Saúde Alimentar, Desempenho, Segurança Alimentar', 'enviado', 'edicao2/trab_69b2d777cec52_1773328247.pdf', '2026-03-12', '12:10:47');
+
+INSERT INTO `coautores` (`submissao_id`, `nome_coautor`, `email`, `instituicao`) VALUES
+(2, 'João', 'joaoaux@email.com', 'Uni1'),
+(2, 'Maria', 'mariaaux@email.com', 'Uni1'),
+(3, 'Pedro', 'pedroaux@email.com', 'Universidade do Mundo'),
+(3, 'Carlos', 'carlosaux@email.com', 'Universidade Gringa'),
+(3, 'Amanda', 'amandaaux@email.com', 'Universidade do Mundo'),
+(5, 'Renan', 'renanaux@email.com', 'Uni2'),
+(5, 'Lucas', 'lucasaux@email.com', 'Universidade do Campo'),
+(5, 'Marcos', 'marcosaux@email.com', 'Univer'),
+(5, 'Carla', 'carlaaux@email.com', 'Universidade do Campo'),
+(5, 'Patricia', 'patriciaaux@email.com', 'Uni2');
+
+INSERT INTO `comissao_org` (`id_comissao_org`, `funcao_usuario_id`, `funcao_org`, `linkedin_url`) VALUES
+(1, 1, 'Organizadora', 'https://br.linkedin.com/'),
+(2,2, 'Operador de Marketing', 'https://br.linkedin.com/'),
+(3,3, 'Gestor do Projeto', 'https://br.linkedin.com/');
+
+-- INSERT INTO `comissao_cient` (`id_comissao_cient`, `funcao_usuario_id`, `funcao_cient`, `lindekin_url`) VALUES
+-- ();

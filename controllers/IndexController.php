@@ -1,4 +1,9 @@
 <?php
+// Verificando se já está em um sessão
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 require_once __DIR__ . '/../config/config.php';
 require_once __DIR__ . '/../models/IndexModel.php';
 

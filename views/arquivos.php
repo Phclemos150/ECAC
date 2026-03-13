@@ -1,17 +1,16 @@
 <?php
-session_start();
+require_once __DIR__ . '/../controllers/ArquivosController.php';
 
 $user = $_SESSION["user_logado"] ?? null;
-
 $id_usuario = $user["id"] ?? null;
 $nome_usuario = $user["nome"] ?? null;
 $email = $user["email"] ?? null;
 $foto = $user["foto"] ?? null;
-
 $logado = (bool) $user;
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -20,17 +19,18 @@ $logado = (bool) $user;
   <link rel="website icon" type="png" href="../assets/img/logo.png">
   <link rel="stylesheet" href="../assets/css/arquivos.css">
 </head>
+
 <body>
   <header>
     <div class="header-content">
       <button class="menu-toggle" onclick="toggleMenu()">
-  <i class="fa fa-bars"></i>
-</button>
+        <i class="fa fa-bars"></i>
+      </button>
       <div class="header-title">
-  <a href="./index.php">
-    <h1>Encontro Carioca de Alimentação Coletiva</h1>
-  </a>
-</div>
+        <a href="./index.php">
+          <h1>Encontro Carioca de Alimentação Coletiva</h1>
+        </a>
+      </div>
       <div class="header-buttons">
         <?php if (!$logado): ?>
           <a href="./login.php"><button class="btn-login">Login</button></a>
@@ -64,6 +64,7 @@ $logado = (bool) $user;
       </div>
     </div>
   </header>
+
   <div class="layout">
     <div class="sidebar">
       <div style="background:#f1eada;padding:25px;text-align:center;border-bottom:1px solid #ccc;">
@@ -95,14 +96,24 @@ $logado = (bool) $user;
         <div class="sidebar-item"><i class="fa fa-upload"></i> Submissão </div>
       </a>
     </div>
-    <br><br><br>
+
     <div class="page-content">
       <div class="content-wrapper">
         <h2>Arquivos e Publicações do Encontro</h2>
         <p class="subtitle">
           Aqui você encontra os anais, guias e publicações oficiais do congresso.
-          Use os filtros abaixo para encontrar arquivos.
         </p>
+
+        <?php if (isset($_SESSION['info_mensagem'])): ?>
+          <div class="alert-info">
+            <i class="fa fa-info-circle"></i>
+            <?php
+            echo $_SESSION['info_mensagem'];
+            unset($_SESSION['info_mensagem']);
+            ?>
+          </div>
+        <?php endif; ?>
+
         <div class="filter-box">
           <div class="filters">
             <div class="filter-group">
@@ -122,74 +133,87 @@ $logado = (bool) $user;
             </div>
           </div>
         </div>
+
         <div class="file-list">
-          <div class="file-item">
-            <div class="file-info">
-              <h4>Anais Completos do Congresso 2024</h4>
-              <p>18/08/2024 | Anais | Artigo</p>
-            </div>
-            <button class="btn-download"><i class="fa fa-download"></i> Baixar</button>
+          <div class="file-header">
+            <div class="col-titulo">Título do Arquivo</div>
+            <div class="col-evento">Evento</div>
+            <div class="col-autor">Autor</div>
+            <div class="col-resumo">Resumo</div>
+            <div class="col-data">Data</div>
+            <div class="col-arquivo">Arquivo</div>
           </div>
-          <div class="file-item">
-            <div class="file-info">
-              <h4>Resumo das Palestras de Junho</h4>
-              <p>10/06/2024 | Anais | Palestra</p>
-            </div>
-            <button class="btn-download"><i class="fa fa-download"></i> Baixar</button>
-          </div>
-          <div class="file-item">
-            <div class="file-info">
-              <h4>Palestra: Gestão de Estoque</h4>
-              <p>01/08/2024 | Palestra</p>
-            </div>
-            <button class="btn-download"><i class="fa fa-download"></i> Baixar</button>
-          </div>
-          <div class="file-item">
-            <div class="file-info">
-              <h4>Poster: Cardápios Sustentáveis</h4>
-              <p>26/05/2024 | Poster</p>
-            </div>
-            <button class="btn-download"><i class="fa fa-download"></i> Baixar</button>
-          </div>
-          <div class="file-item">
-            <div class="file-info">
-              <h4>E-Book: Tendências Nutricionais</h4>
-              <p>01/05/2024 | E-Book | Palestra</p>
-            </div>
-            <button class="btn-download"><i class="fa fa-download"></i> Baixar</button>
-          </div>
-          <div class="file-item">
-            <div class="file-info">
-              <h4>Guia de Boas Práticas em Nutrição Clínica</h4>
-              <p>18/04/2024 | Guia | Poster</p>
-            </div>
-            <button class="btn-download"><i class="fa fa-download"></i> Baixar</button>
-          </div>
-          <div class="file-item">
-            <div class="file-info">
-              <h4>Estudo de Caso: Alimentação Escolar</h4>
-              <p>22/03/2024 | Estudo | Artigo</p>
-            </div>
-            <button class="btn-download"><i class="fa fa-download"></i> Baixar</button>
-          </div>
-          <div class="file-item">
-            <div class="file-info">
-              <h4>Poster Científico: Nutrição Infantil</h4>
-              <p>18/02/2024 | Poster | Poster</p>
-            </div>
-            <button class="btn-download"><i class="fa fa-download"></i> Baixar</button>
-          </div>
-          <div class="file-item">
-            <div class="file-info">
-              <h4>Artigo: Segurança Alimentar e Coletiva</h4>
-              <p>12/01/2024 | Artigo</p>
-            </div>
-            <button class="btn-download"><i class="fa fa-download"></i> Baixar</button>
-          </div>
+
+          <?php if (!empty($listaArquivos)): ?>
+            <?php foreach ($listaArquivos as $arq): ?>
+              <div class="file-item-row">
+                <div class="col-titulo">
+                  <strong><?php echo htmlspecialchars($arq['titulo']); ?></strong>
+                </div>
+                <div class="col-evento">
+                  <span class="evento-tag"><?php echo htmlspecialchars($arq['evento_titulo']); ?></span>
+                </div>
+                <div class="col-autor">
+                  <span><?php echo htmlspecialchars($arq['autor_nome']); ?></span>
+
+                  <?php if (!empty($arq['coautores'])): ?>
+                    <?php
+                    $jsonCoautores = htmlspecialchars(json_encode($arq['coautores']));
+                    ?>
+                    <button class="btn-coautor" onclick='abrirModalCoautores(<?php echo $jsonCoautores; ?>)'
+                      title="Ver coautores">
+                      +<?php echo count($arq['coautores']); ?>
+                    </button>
+                    </button>
+                  <?php endif; ?>
+                </div>
+
+                <div class="col-resumo">
+                  <p class="resumo-texto" title="<?php echo htmlspecialchars($arq['resumo']); ?>">
+                    <?php echo htmlspecialchars($arq['resumo']); ?>
+                  </p>
+                </div>
+
+                <div class="col-data">
+                  <?php echo date('d/m/Y', strtotime($arq['data_evento'])); ?>
+                </div>
+
+                <div class="col-arquivo">
+                  <a href="../assets/uploads/arquivos/<?php echo $arq['caminho_arquivo']; ?>" download
+                    class="btn-download-table">
+                    <i class="fa fa-download"></i> Baixar
+                  </a>
+                </div>
+              </div>
+            <?php endforeach; ?>
+          <?php endif; ?>
         </div>
       </div>
     </div>
   </div>
+
+  <!-- Modal Coautores -->
+  <div id="modalCoautores" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Coautores do Arquivo</h3>
+        <button class="close-btn" onclick="fecharModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <table class="table-modal">
+          <thead>
+            <tr>
+              <th>Nome</th>
+              <th>Instituição</th>
+            </tr>
+          </thead>
+          <tbody id="conteudo-modal">
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
   <footer class="footer">
     <div class="footer-container">
       <div class="footer-col footer-left">
@@ -232,4 +256,5 @@ $logado = (bool) $user;
   </footer>
   <script src="../assets/js/arquivos.js"></script>
 </body>
+
 </html>

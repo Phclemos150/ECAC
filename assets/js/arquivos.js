@@ -6,7 +6,7 @@ function ativarDropdown() {
   document.getElementById("dropdownMenu").classList.toggle("ativo");
 }
 
-window.onclick = function(event) {
+window.onclick = function (event) {
   if (!event.target.closest('.user-profile')) {
     const dropdowns = document.getElementsByClassName("dropdown-content");
     for (let i = 0; i < dropdowns.length; i++) {
@@ -18,12 +18,12 @@ window.onclick = function(event) {
   }
 }
 
-userPerfil.addEventListener('mouseover', () =>{
+userPerfil.addEventListener('mouseover', () => {
   userPerfil.classList.add("user-profile-hover");
   arrowPerfil.classList.add("arrow-icon-hover");
 });
 
-userPerfil.addEventListener('mouseleave', () =>{
+userPerfil.addEventListener('mouseleave', () => {
   userPerfil.classList.remove("user-profile-hover");
   arrowPerfil.classList.remove("arrow-icon-hover");
 });
@@ -33,7 +33,7 @@ userPerfil.addEventListener('mouseleave', () =>{
 function abrirEmail(e) {
   e.preventDefault();
 
- 
+
   const gmailUrl = "https://mail.google.com/mail/?view=cm&fs=1&to=missaodesenvolver@gmail.com";
 
   const mailtoUrl = "mailto:missaodesenvolver@gmail.com";
@@ -52,7 +52,7 @@ function abrirWhatsApp(e) {
   e.preventDefault();
 
   const numero = "5521992141882"; // DDI + DDD + número
-  const mensagem = ""; 
+  const mensagem = "";
 
   const texto = encodeURIComponent(mensagem);
 
@@ -64,4 +64,35 @@ function abrirWhatsApp(e) {
 
 function toggleMenu() {
   document.querySelector('.sidebar').classList.toggle('open');
+}
+
+function abrirModalCoautores(dados) {
+  const modal = document.getElementById('modalCoautores');
+  const tbody = document.getElementById('conteudo-modal');
+
+  tbody.innerHTML = "";
+
+  dados.forEach(item => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+            <td>${item.nome_coautor}</td>
+            <td>${item.instituicao}</td>
+        `;
+    tbody.appendChild(tr);
+  });
+
+
+  modal.style.display = 'flex';
+}
+
+function fecharModal() {
+  document.getElementById('modalCoautores').style.display = 'none';
+}
+
+// Fechar se clicar fora do card branco
+window.onclick = function (event) {
+  const modal = document.getElementById('modalCoautores');
+  if (event.target === modal) {
+    fecharModal();
+  }
 }

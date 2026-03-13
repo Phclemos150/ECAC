@@ -1,5 +1,11 @@
 <?php
-session_start();
+// Verificando se já está em um sessão
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+/* Horário de Brasília */ 
+date_default_timezone_set('America/Sao_Paulo');
 
 require_once __DIR__ . '/../config/config.php';
 require_once __DIR__ . '/../models/SubmissaoModel.php';

@@ -21,6 +21,7 @@ unset($_SESSION['redirecionar_login']);
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -29,59 +30,18 @@ unset($_SESSION['redirecionar_login']);
   <link rel="website icon" type="png" href="../assets/img/logo.png">
   <link rel="stylesheet" href="../assets/css/submissao.css">
 </head>
+
 <body>
   <header>
     <div class="header-content">
       <button class="menu-toggle" onclick="toggleMenu()">
-  <i class="fa fa-bars"></i>
-</button>
+        <i class="fa fa-bars"></i>
+      </button>
       <div class="header-title">
-  <a href="./index.php">
-    <h1>Encontro Carioca de Alimentação Coletiva</h1>
-  </a>
-</div>
-      <div class="header-buttons">
-        <?php if (!$logado): ?>
-          <a href="./login.php"><button class="btn-login">Login</button></a>
-          <a href="./cadastro.php"><button class="btn-cadastro">Cadastro</button></a>
-        <?php else: ?>
-          <?php
-          $caminho_perfil = (!empty($foto))
-            ? "../assets/uploads/fotos_perfil/" . $foto
-            : "../assets/img/default-user.png";
-          ?>
-          <div class="user-dropdown">
-            <div class="user-profile" onclick="ativarDropdown()">
-              <div class="img-wrapper">
-                <img src="<?php echo $caminho_perfil; ?>" alt="Perfil" class="img-perfil-nav">
-              </div>
-              <i class="fa fa-chevron-down arrow-icon"></i>
-            </div>
-            <div id="dropdownMenu" class="dropdown-content">
-              <div class="dropdown-header">
-                <strong>Olá, <?php echo htmlspecialchars($nome_usuario); ?>!</strong>
-              </div>
-              <a href="./perfil.php"><i class="fa fa-user"></i> Meu Perfil</a>
-              <a href="./minhas-inscricoes.php"><i class="fa fa-ticket"></i> Inscrições</a>
-              <hr>
-              <a href="../controllers/AutentController.php?acao=logout" class="logout-item">
-                <i class="fa fa-sign-out-alt"></i> Sair
-              </a>
-            </div>
-          </div>
-        <?php endif; ?>
+        <a href="./index.php">
+          <h1>Encontro Carioca de Alimentação Coletiva</h1>
+        </a>
       </div>
-    </div>
-  </header><header>
-    <div class="header-content">
-      <button class="menu-toggle" onclick="toggleMenu()">
-  <i class="fa fa-bars"></i>
-</button>
-      <div class="header-title">
-  <a href="./index.php">
-    <h1>Encontro Carioca de Alimentação Coletiva</h1>
-  </a>
-</div>
       <div class="header-buttons">
         <?php if (!$logado): ?>
           <a href="./login.php"><button class="btn-login">Login</button></a>
@@ -154,7 +114,8 @@ unset($_SESSION['redirecionar_login']);
           Utilize o formulário abaixo para enviar seu resumo ou trabalho completo.
           A submissão é simples e rápida, focada apenas nas informações essenciais.
         </p>
-        <form method="post" action="../controllers/SubmissaoController.php" novalidate enctype="multipart/form-data" class="card">
+        <form method="post" action="../controllers/SubmissaoController.php" novalidate enctype="multipart/form-data"
+          class="card">
           <div class="form-group">
             <label>Título do Trabalho</label>
             <input type="text" name="titulo" placeholder="Ex: Análise de Dados em Ambientes Distribuídos">
@@ -263,4 +224,5 @@ unset($_SESSION['redirecionar_login']);
   </script>
   <script src="../assets/js/submissao.js"></script>
 </body>
+
 </html>
