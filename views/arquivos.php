@@ -67,34 +67,38 @@ $logado = (bool) $user;
 
   <div class="layout">
     <div class="sidebar">
-      <div style="background:#f1eada;padding:25px;text-align:center;border-bottom:1px solid #ccc;">
-        <div class="logo"><img src="../assets/img/icon planta.png" alt=""></div>
-        <strong>E.C.A.C</strong><br>
+      <div class="sidebar-sticky-wrapper">
+        <div class="sidebar-logo">
+          <div class="logo"><img src="../assets/img/icon planta.png" alt=""></div>
+          <strong>E.C.A.C</strong><br>
+        </div>
+        <div class="sidebar-nav-container">
+          <a href="./index.php">
+            <div class="sidebar-item"><i class="fa fa-home"></i> Início </div>
+          </a>
+          <a href="./eventos.php">
+            <div class="sidebar-item"><i class="fa fa-calendar-check"></i> Eventos </div>
+          </a>
+          <a href="./local.php">
+            <div class="sidebar-item"><i class="fa fa-map-marker-alt"></i> Local do Evento </div>
+          </a>
+          <a href="./contato.php">
+            <div class="sidebar-item"><i class="fa fa-phone"></i> Contato </div>
+          </a>
+          <a href="./normas.php">
+            <div class="sidebar-item"><i class="fa fa-shield"></i> Normas </div>
+          </a>
+          <a href="./arquivos.php">
+            <div class="sidebar-item active"><i class="fa fa-download"></i> Arquivos </div>
+          </a>
+          <a href="./inscricao.php">
+            <div class="sidebar-item"><i class="fa fa-id-card"></i> Inscrição </div>
+          </a>
+          <a href="./submissao.php">
+            <div class="sidebar-item"><i class="fa fa-upload"></i> Submissão </div>
+          </a>
+        </div>
       </div>
-      <a href="./index.php">
-        <div class="sidebar-item"><i class="fa fa-home"></i> Início </div>
-      </a>
-      <a href="./eventos.php">
-        <div class="sidebar-item"><i class="fa fa-calendar-check"></i> Eventos </div>
-      </a>
-      <a href="./local.php">
-        <div class="sidebar-item"><i class="fa fa-map-marker-alt"></i> Local do Evento </div>
-      </a>
-      <a href="./contato.php">
-        <div class="sidebar-item"><i class="fa fa-phone"></i> Contato </div>
-      </a>
-      <a href="./normas.php">
-        <div class="sidebar-item"><i class="fa fa-shield"></i> Normas </div>
-      </a>
-      <a href="./arquivos.php">
-        <div class="sidebar-item active"><i class="fa fa-download"></i> Arquivos </div>
-      </a>
-      <a href="./inscricao.php">
-        <div class="sidebar-item"><i class="fa fa-id-card"></i> Inscrição </div>
-      </a>
-      <a href="./submissao.php">
-        <div class="sidebar-item"><i class="fa fa-upload"></i> Submissão </div>
-      </a>
     </div>
 
     <div class="page-content">
@@ -104,34 +108,47 @@ $logado = (bool) $user;
           Aqui você encontra os anais, guias e publicações oficiais do congresso.
         </p>
 
-        <?php if (isset($_SESSION['info_mensagem'])): ?>
-          <div class="alert-info">
-            <i class="fa fa-info-circle"></i>
-            <?php
-            echo $_SESSION['info_mensagem'];
-            unset($_SESSION['info_mensagem']);
-            ?>
-          </div>
-        <?php endif; ?>
-
         <div class="filter-box">
-          <div class="filters">
-            <div class="filter-group">
-              <label>Filtrar por data (a partir de):</label>
-              <input type="date">
+          <form class="filter-form-inline" method="GET" action="arquivos.php">
+            <div class="filter-field search-field">
+              <label for="busca">Pesquisa Geral</label>
+              <input type="text" id="busca" name="termo"
+                placeholder="Procure por Título, autor, coautor ou palavras-chave">
             </div>
-            <div class="filter-group">
-              <label>Filtrar por tipo:</label>
-              <select>
-                <option>Todos</option>
-                <option>Anais</option>
-                <option>Palestra</option>
-                <option>Poster</option>
-                <option>E-Book</option>
-                <option>Guia</option>
+
+            <div class="filter-field select-field">
+              <label for="evento">Evento</label>
+              <select id="evento" name="evento">
+                <option value="">Selecione o Evento</option>
+                <?php foreach ($filtros['eventos'] as $ev): ?>
+                  <option value="<?php echo $ev['id_evento']; ?>" <?php echo (isset($_GET['evento']) && $_GET['evento'] == $ev['id_evento']) ? 'selected' : ''; ?>>
+                    <?php echo htmlspecialchars($ev['titulo']); ?>
+                  </option>
+                <?php endforeach; ?>
               </select>
             </div>
-          </div>
+
+            <div class="filter-field select-field">
+              <label for="ano">Ano</label>
+              <select id="ano" name="ano">
+                <option value="">Selecione o ano</option>
+                <?php foreach ($filtros['anos'] as $a): ?>
+                  <option value="<?php echo $a['ano']; ?>" <?php echo (isset($_GET['ano']) && $_GET['ano'] == $a['ano']) ? 'selected' : ''; ?>>
+                    <?php echo $a['ano']; ?>
+                  </option>
+                <?php endforeach; ?>
+              </select>
+            </div>
+
+            <div class="filter-actions-inline">
+              <button type="submit" class="btn-filtrar-icon">
+                Filtrar
+              </button>
+              <a href="../views/arquivos.php" type="reset" class="btn-limpar-text">
+                Limpar
+              </a>
+            </div>
+          </form>
         </div>
 
         <div class="file-list">
@@ -186,10 +203,44 @@ $logado = (bool) $user;
                 </div>
               </div>
             <?php endforeach; ?>
+          <?php else: ?>
+            <div class="file-item-row no-results">
+              <div class="file-item-error">
+                <i class="fa fa-search-minus file-icon"></i>
+                <p>Nenhum arquivo encontrado para os filtros selecionados.</p>
+                <a href="arquivos.php" class="file-a">Limpar todos os filtros</a>
+              </div>
+            </div>
           <?php endif; ?>
         </div>
+        <?php if ($totalPaginas > 1): ?>
+          <div class="pagination">
+            <?php if ($paginaAtual > 1): ?>
+              <a href="?pagina=<?php echo $paginaAtual - 1; ?>&termo=<?php echo $termo; ?>&evento=<?php echo $eventoId; ?>&ano=<?php echo $ano; ?>"
+                class="page-link">
+                <i class="fa fa-chevron-left"></i>
+              </a>
+            <?php endif; ?>
+
+            <?php for ($i = 1; $i <= $totalPaginas; $i++): ?>
+              <a href="?pagina=<?php echo $i; ?>&termo=<?php echo $termo; ?>&evento=<?php echo $eventoId; ?>&ano=<?php echo $ano; ?>"
+                class="page-link <?php echo ($i == $paginaAtual) ? 'active' : ''; ?>">
+                <?php echo $i; ?>
+              </a>
+            <?php endfor; ?>
+
+            <?php if ($paginaAtual < $totalPaginas): ?>
+              <a href="?pagina=<?php echo $paginaAtual + 1; ?>&termo=<?php echo $termo; ?>&evento=<?php echo $eventoId; ?>&ano=<?php echo $ano; ?>"
+                class="page-link">
+                <i class="fa fa-chevron-right"></i>
+              </a>
+            <?php endif; ?>
+          </div>
+        <?php endif; ?>
       </div>
     </div>
+  </div>
+  </div>
   </div>
 
   <!-- Modal Coautores -->
