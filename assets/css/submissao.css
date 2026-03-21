@@ -15,9 +15,20 @@ header {
   top: 0;
   left: 0;
   width: 100%;
-  background: #243814;
+  background: #006633;
   padding: 18px 0;
-  z-index: 1000;
+  z-index: 9999;
+}
+
+.header-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-header img{
+  display: flex;
+  width: 50px;
 }
 
 .header-content {
@@ -51,7 +62,7 @@ header h1 {
 }
 
 .btn-cadastro {
-  background: #6d7f41;
+  background: #8BBE33;
   color: #fff;
   border: none;
   padding: 8px 22px;
@@ -160,10 +171,11 @@ header h1 {
 }
 
 .sidebar {
-  position: fixed;
+  position: sticky;
+  height: fit-content;
+  max-height: calc(100vh - 68px);
   top: 68px;
   bottom: 0;
-  left: 0;
   width: 220px;
   background: #fff;
   border-right: 1px solid #ddd;
@@ -177,7 +189,7 @@ header h1 {
   padding: 12px 20px;
   cursor: pointer;
   font-size: 15px;
-  color: #2f3d21;
+  color: #006633;
   margin: 10px 15px;
 }
 
@@ -191,14 +203,14 @@ header h1 {
 }
 
 .sidebar-item.active {
-  background: #6d7f41;
+  background: #006633;
   color: #fff;
   border-radius: 6px;
 }
 
 
 .content-area {
-  margin-left: 220px;         
+  margin-left: 0px;         
   width: calc(100% - 220px);
   background-size: cover;
   background-position: center;
@@ -350,7 +362,7 @@ header h1 {
   margin-top: 25px;
   width: 100%;
   padding: 14px;
-  background: #243814;
+  background: #8BBE33;
   color: #fff;
   font-size: 16px;
   border: none;
@@ -418,127 +430,6 @@ header h1 {
 }
 
 /* RESPOSIIDADE */
-
-.menu-toggle {
-  display: none;
-  background: none;
-  border: none;
-  color: white;
-  font-size: 26px;
-  cursor: pointer;
-}
-
-
-@media (max-width: 768px) {
-
-  .header-content {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .menu-toggle {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-  }
-
-  header h1 {
-    font-size: 0;
-  }
-
-  header {
-    height: 40px;
-  }
-
-header h1::after {
-  content: "E.C.A.C";
-  position: absolute;
-  left: 41%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 20px;
-  font-weight: 700;
-  color: #fff;
-  white-space: nowrap;
-}
-
- header h1::after {
-  content: "E.C.A.C";
-  font-size: 20px;
-  font-weight: 700;
-  color: #fff;
-  margin-left: -120px; 
-}
-
- .sidebar {
-  position: fixed;
-  top: 76px;                 
-  left: -100%;
-  width: 220px;
-  height: calc(120vh - 82px);
-  background: #ffffff;
-  transition: left 0.3s ease;
-  z-index: 999;
-}
-
-  .sidebar.open {
-    left: 0;
-  }
-
-  .layout {
-    flex-direction: column;
-  }
-
-  .content-area {
-    width: 100%;
-  margin-left: 0;
-  }
-
-  .banner {
-    flex-direction: column;
-    height: auto;
-    padding: 30px 20px;
-  }
-
-  .banner-text {
-    text-align: center;
-    margin-bottom: 20px;
-  }
-
-  .banner-logo {
-    position: static;
-    width: 100%;
-    text-align: center;
-  }
-
-  .banner-logo img {
-    width: 280px;
-  }
-}
-
-@media (max-width: 768px) {
-  .slider {
-    height: 320px;
-  }
-
-  .slide {
-    background-size: contain; /* mostra a foto inteira */
-    background-color: #888;   /* fundo cinza */
-  }
-}
-
-@media (max-width: 768px) {
-  .nav {
-    display: none;
-  }
-
-  .dots {
-    bottom: 10px;
-  }
-}/* RESPOSIIDADE */
 
 .menu-toggle {
   display: none;
@@ -666,7 +557,7 @@ header h1::after {
 
 /* RODAPÉ */
 .footer {
-  background-color: #2f4a2f;
+  background-color: #006633;
   color: #dbe6d1;
   width: 100%;
   padding: 50px 0 20px;
@@ -736,7 +627,7 @@ header h1::after {
 
 /* LOGO */
 .logo-rodape {
-  width: 150px;
+  width: 300px;
   border-radius: 100px;
 }
 

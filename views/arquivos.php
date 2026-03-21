@@ -27,6 +27,7 @@ $logado = (bool) $user;
         <i class="fa fa-bars"></i>
       </button>
       <div class="header-title">
+        <div class="logo-header"><img src="../assets/img/Só a Logo ECAC 2026.png" alt=""></div>
         <a href="./index.php">
           <h1>Encontro Carioca de Alimentação Coletiva</h1>
         </a>
@@ -67,38 +68,34 @@ $logado = (bool) $user;
 
   <div class="layout">
     <div class="sidebar">
-      <div class="sidebar-sticky-wrapper">
-        <div class="sidebar-logo">
-          <div class="logo"><img src="../assets/img/icon planta.png" alt=""></div>
-          <strong>E.C.A.C</strong><br>
-        </div>
-        <div class="sidebar-nav-container">
-          <a href="./index.php">
-            <div class="sidebar-item"><i class="fa fa-home"></i> Início </div>
-          </a>
-          <a href="./eventos.php">
-            <div class="sidebar-item"><i class="fa fa-calendar-check"></i> Eventos </div>
-          </a>
-          <a href="./local.php">
-            <div class="sidebar-item"><i class="fa fa-map-marker-alt"></i> Local do Evento </div>
-          </a>
-          <a href="./contato.php">
-            <div class="sidebar-item"><i class="fa fa-phone"></i> Contato </div>
-          </a>
-          <a href="./normas.php">
-            <div class="sidebar-item"><i class="fa fa-shield"></i> Normas </div>
-          </a>
-          <a href="./arquivos.php">
-            <div class="sidebar-item active"><i class="fa fa-download"></i> Arquivos </div>
-          </a>
-          <a href="./inscricao.php">
-            <div class="sidebar-item"><i class="fa fa-id-card"></i> Inscrição </div>
-          </a>
-          <a href="./submissao.php">
-            <div class="sidebar-item"><i class="fa fa-upload"></i> Submissão </div>
-          </a>
-        </div>
+      <div style="background:#f1eada;padding:25px;text-align:center;border-bottom:1px solid #ccc;">
+        <div class="logo"><img src="../assets/img/icon planta.png" alt=""></div>
+        <strong>E.C.A.C</strong><br>
       </div>
+      <a href="./index.php">
+        <div class="sidebar-item"><i class="fa fa-home"></i> Início </div>
+      </a>
+      <a href="./eventos.php">
+        <div class="sidebar-item"><i class="fa fa-calendar-check"></i> Eventos </div>
+      </a>
+      <a href="./local.php">
+        <div class="sidebar-item"><i class="fa fa-map-marker-alt"></i> Local do Evento </div>
+      </a>
+      <a href="./contato.php">
+        <div class="sidebar-item"><i class="fa fa-phone"></i> Contato </div>
+      </a>
+      <a href="./normas.php">
+        <div class="sidebar-item"><i class="fa fa-shield"></i> Normas </div>
+      </a>
+      <a href="./arquivos.php">
+        <div class="sidebar-item active"><i class="fa fa-download"></i> Arquivos </div>
+      </a>
+      <a href="./inscricao.php">
+        <div class="sidebar-item"><i class="fa fa-id-card"></i> Inscrição </div>
+      </a>
+      <a href="./submissao.php">
+        <div class="sidebar-item"><i class="fa fa-upload"></i> Submissão </div>
+      </a>
     </div>
 
     <div class="page-content">
@@ -282,7 +279,7 @@ $logado = (bool) $user;
         </ul>
       </div>
       <div class="footer-col footer-center">
-        <img src="../assets/img/logo com fundo.png" alt="Logo ECAC" class="logo-rodape">
+        <img src="../assets/img/Logo ECAC 2026 vertical.png" alt="Logo ECAC" class="logo-rodape">
       </div>
       <div class="footer-col footer-right">
         <h3>Fale Conosco</h3>

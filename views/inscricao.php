@@ -27,10 +27,11 @@ $logado = (bool) $user;
   <i class="fa fa-bars"></i>
 </button>
       <div class="header-title">
-  <a href="./index.php">
-    <h1>Encontro Carioca de Alimentação Coletiva</h1>
-  </a>
-</div>
+        <div class="logo-header"><img src="../assets/img/Só a Logo ECAC 2026.png" alt=""></div>
+        <a href="./index.php">
+          <h1>Encontro Carioca de Alimentação Coletiva</h1>
+        </a>
+      </div>
       <div class="header-buttons">
         <?php if (!$logado): ?>
           <a href="./login.php"><button class="btn-login">Login</button></a>
@@ -163,7 +164,7 @@ $logado = (bool) $user;
 
           <!-- CTA para Even3 -->
           <div class="cta-area">
-            <a class="cta-button" href="https://www.even3.com.br" target="_blank" rel="noopener noreferrer">INSCREVA-SE NO EVENT3</a>
+            <a class="cta-button" href="https://www.even3.com.br" target="_blank" rel="noopener noreferrer">INSCREVA-SE NO EVENTO</a>
           </div>
         </section>
       </div>
@@ -186,7 +187,7 @@ $logado = (bool) $user;
         </ul>
       </div>
       <div class="footer-col footer-center">
-        <img src="../assets/img/logo com fundo.png" alt="Logo ECAC" class="logo-rodape">
+        <img src="../assets/img/Logo ECAC 2026 vertical.png" alt="Logo ECAC" class="logo-rodape">
       </div>
       <div class="footer-col footer-right">
         <h3>Fale Conosco</h3>
@@ -195,7 +196,7 @@ $logado = (bool) $user;
           <img src="../assets/img/instagram.png" alt="Instagram" class="img-rodape">
         </a>
         <a href="#" onclick="abrirEmail(event)">
-          <img src="../assets/img/x.png" alt="Enviar e-mail" class="img-rodape">
+          <img src="../assets/img/email.png" alt="Enviar e-mail" class="img-rodape">
         </a>
         </a>
         <a href="#" onclick="abrirWhatsApp(event)">

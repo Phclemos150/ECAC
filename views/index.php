@@ -43,6 +43,7 @@ $bronze = array_filter($patrocinadores, fn($p) => $p['nivel_patrocinio'] === 'br
         <i class="fa fa-bars"></i>
       </button>
       <div class="header-title">
+        <div class="logo-header"><img src="../assets/img/Só a Logo ECAC 2026.png" alt="a"></div>
         <a href="./index.php">
           <h1>Encontro Carioca de Alimentação Coletiva</h1>
         </a>
@@ -115,7 +116,7 @@ $bronze = array_filter($patrocinadores, fn($p) => $p['nivel_patrocinio'] === 'br
       <div class="banner">
 
         <div class="banner-logo">
-          <img src="../assets/img/Logo Comunidade Carioca Melhorada.png" alt="Logo ECAC">
+          <img src="../assets/img/Logo ECAC 2026 horizontal.png" alt="Logo ECAC">
         </div>
 
         <div class="banner-text">
@@ -125,8 +126,8 @@ $bronze = array_filter($patrocinadores, fn($p) => $p['nivel_patrocinio'] === 'br
           </h2>
           <p style="font-size:21px;">
             Uma experiência única para profissionais de
-            <span style="color:#3f5d2a; font-weight:600;">nutrição</span> e
-            <span style="color:#f39c12; font-weight:600;">gastronomia</span>
+            <span style="color:#Cc6633; font-weight:600;">nutrição</span> e
+            <span style="color:#CC3300; font-weight:600;">gastronomia</span>
           </p>
           <a href="./inscricao.php" class="btn-inscricao">GARANTA SUA VAGA</a>
         </div>
@@ -392,7 +393,7 @@ $bronze = array_filter($patrocinadores, fn($p) => $p['nivel_patrocinio'] === 'br
         </ul>
       </div>
       <div class="footer-col footer-center">
-        <img src="../assets/img/logo com fundo.png" class="logo-rodape">
+        <img src="../assets/img/Logo ECAC 2026 vertical.png" class="logo-rodape">
       </div>
       <div class="footer-col footer-right">
         <h3>Fale Conosco</h3>

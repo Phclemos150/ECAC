@@ -15,9 +15,20 @@ header {
   top: 0;
   left: 0;
   width: 100%;
-  background: #243814;
+  background: #006633;
   padding: 18px 0;
-  z-index: 1000;
+  z-index: 9999;
+}
+
+.header-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-header img{
+  display: flex;
+  width: 50px;
 }
 
 .header-content {
@@ -51,7 +62,7 @@ header h1 {
 }
 
 .btn-cadastro {
-  background: #6d7f41;
+  background: #8BBE33;
   color: #fff;
   border: none;
   padding: 8px 22px;
@@ -160,10 +171,11 @@ header h1 {
 }
 
 .sidebar {
-  position: fixed;
+  position: sticky;
+  height: fit-content;
+  max-height: calc(100vh - 68px);
   top: 68px;
   bottom: 0;
-  left: 0;
   width: 220px;
   background: #fff;
   border-right: 1px solid #ddd;
@@ -177,7 +189,7 @@ header h1 {
   padding: 12px 20px;
   cursor: pointer;
   font-size: 15px;
-  color: #2f3d21;
+  color: #006633;
   margin: 10px 15px;
 }
 
@@ -191,14 +203,14 @@ header h1 {
 }
 
 .sidebar-item.active {
-  background: #6d7f41;
+  background: #006633;
   color: #fff;
   border-radius: 6px;
 }
 
 
 .content-area {
-  margin-left: 220px;         
+  margin-left: 0px;         
   width: calc(100% - 220px);
   background-size: cover;
   background-position: center;
@@ -345,7 +357,7 @@ header h1 {
 
 .cta-button {
   display: inline-block;
-  background: #2d3e1e;
+  background: #8BBE33;
   color: #fff;
   padding: 14px 24px;
   border-radius: 10px;
@@ -415,7 +427,7 @@ header h1 {
 .btn-inscrever {
   width: 100%;
   padding: 12px;
-  background: #2d3e1e;
+  background: #006633;
   color: #fff;
   border: none;
   border-radius: 8px;
@@ -573,7 +585,7 @@ header h1::after {
 
 /* RODAPÉ */
 .footer {
-  background-color: #2f4a2f;
+  background-color: #006633;
   color: #dbe6d1;
   width: 100%;
   padding: 50px 0 20px;
@@ -643,7 +655,7 @@ header h1::after {
 
 /* LOGO */
 .logo-rodape {
-  width: 150px;
+  width: 300px;
   border-radius: 100px;
 }
 

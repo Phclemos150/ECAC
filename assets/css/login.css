@@ -11,8 +11,20 @@ a {
 /* HEADER */
 
 header {
-  background: #243814;
+  background: #006633;
   padding: 18px 0;
+}
+
+.header-title {
+  margin-left: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-header img{
+  display: flex;
+  width: 50px;
 }
 
 .header-content {
@@ -113,7 +125,7 @@ main {
   padding: 12px;
   border: none;
   border-radius: 8px;
-  background: #243814;
+  background: #8BBE33;
   color: #fff;
   font-size: 16px;
   cursor: pointer;
@@ -131,7 +143,7 @@ main {
 }
 
 .login-links a {
-  color: #243814;
+  color: #006633;
   font-weight: bold;
 }
 
@@ -237,7 +249,7 @@ main {
 }
 
 .btn-confirmar-erro {
-  background: #243814;
+  background: #8BBE33;
   color: #fff;
   border: none;
   padding: 10px 16px;
@@ -324,7 +336,7 @@ main {
 
 /* RODAPÉ */
 .footer {
-  background-color: #2f4a2f;
+  background-color: #006633;
   color: #dbe6d1;
   width: 100%;
   padding: 50px 0 20px;
@@ -392,7 +404,7 @@ main {
 
 /* LOGO */
 .logo-rodape {
-  width: 150px;
+  width: 300px;
   border-radius: 100px;
 }
 

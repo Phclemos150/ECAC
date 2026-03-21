@@ -27,6 +27,7 @@ $logado = (bool) $user;
   <i class="fa fa-bars"></i>
 </button>
       <div class="header-title">
+        <div class="logo-header"><img src="../assets/img/Só a Logo ECAC 2026.png" alt=""></div>
   <a href="./index.php">
     <h1>Encontro Carioca de Alimentação Coletiva</h1>
   </a>
@@ -162,7 +163,7 @@ $logado = (bool) $user;
         </ul>
       </div>
       <div class="footer-col footer-center">
-        <img src="../assets/img/logo com fundo.png" alt="Logo ECAC" class="logo-rodape">
+        <img src="../assets/img/Logo ECAC 2026 vertical.png" alt="Logo ECAC" class="logo-rodape">
       </div>
       <div class="footer-col footer-right">
         <h3>Fale Conosco</h3>

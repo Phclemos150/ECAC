@@ -15,9 +15,20 @@ header {
   top: 0;
   left: 0;
   width: 100%;
-  background: #243814;
+  background: #006633;
   padding: 18px 0;
-  z-index: 1000;
+  z-index: 9999;
+}
+
+.header-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-header img{
+  display: flex;
+  width: 50px;
 }
 
 .header-content {
@@ -51,7 +62,7 @@ header h1 {
 }
 
 .btn-cadastro {
-  background: #6d7f41;
+  background: #8BBE33;
   color: #fff;
   border: none;
   padding: 8px 22px;
@@ -77,46 +88,17 @@ header h1 {
 }
 
 .sidebar {
+  position: sticky;
+  height: fit-content;
+  max-height: calc(100vh - 68px);
+  top: 68px;
+  bottom: 0;
   width: 220px;
-  min-width: 220px;
   background: #fff;
   border-right: 1px solid #ddd;
-  flex-shrink: 0;
-  height: auto;
-  align-self: stretch;
-  position: relative;
-}
-
-.sidebar-sticky-wrapper {
-  position: -webkit-sticky;
-  position: sticky;
-  top: 68px;
-  display: flex;
-  flex-direction: column;
-  max-height: calc(100vh - 120px);
   overflow-y: auto;
-  scrollbar-width: none;
-  z-index: 10;
+  z-index: 10; /* menor que o footer */
 }
-
-.sidebar-sticky-wrapper::-webkit-scrollbar {
-  display: none;
-}
-
-.sidebar-logo {
-  background: #f1eada;
-  padding: 20px;
-  text-align: center;
-  border-bottom: 1px solid #ccc;
-  position: static;
-}
-
-.sidebar-nav-container {
-  position: static;
-  display: flex;
-  flex-direction: column;
-}
-
 
 .sidebar-item {
   display: flex;
@@ -124,7 +106,7 @@ header h1 {
   padding: 12px 20px;
   cursor: pointer;
   font-size: 15px;
-  color: #2f3d21;
+  color: #006633;
   margin: 10px 15px;
 }
 
@@ -138,15 +120,11 @@ header h1 {
 }
 
 .sidebar-item.active {
-  background: #6d7f41;
+  background: #006633;
   color: #fff;
   border-radius: 6px;
 }
 
-.sidebar-item,
-.sidebar .logo-area {
-  position: relative;
-}
 
 .content-area {
   margin-left: 220px;
@@ -636,9 +614,149 @@ header h1 {
   font-size: 14px;
 }
 
+@media (max-width: 768px) {
+  .filters {
+    grid-template-columns: 1fr;
+  }
+
+  .file-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+}
+
+/* RESPOSIIDADE */
+
+.menu-toggle {
+  display: none;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 26px;
+  cursor: pointer;
+}
+
+
+@media (max-width: 768px) {
+
+  .header-content {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .menu-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+  }
+
+  header h1 {
+    font-size: 0;
+  }
+
+  header {
+    height: 40px;
+  }
+
+  header h1::after {
+    content: "E.C.A.C";
+    position: absolute;
+    left: 41%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 20px;
+    font-weight: 700;
+    color: #fff;
+    white-space: nowrap;
+  }
+
+  header h1::after {
+    content: "E.C.A.C";
+    font-size: 20px;
+    font-weight: 700;
+    color: #fff;
+    margin-left: -120px;
+  }
+
+ @media (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    top: 75px;
+    left: -100%; 
+    width: 250px;
+    height: 100vh;
+    background: #ffffff;
+    transition: left 0.3s ease;
+    z-index: 9999; 
+    display: block !important; 
+  }
+
+  .sidebar.open {
+    left: 0;
+  }
+}
+
+  .layout {
+    flex-direction: column;
+  }
+
+  .content-area {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .banner {
+    flex-direction: column;
+    height: auto;
+    padding: 30px 20px;
+  }
+
+  .banner-text {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  .banner-logo {
+    position: static;
+    width: 100%;
+    text-align: center;
+  }
+
+  .banner-logo img {
+    width: 280px;
+  }
+}
+
+@media (max-width: 768px) {
+  .slider {
+    height: 320px;
+  }
+
+  .slide {
+    background-size: contain;
+    /* mostra a foto inteira */
+    background-color: #888;
+    /* fundo cinza */
+  }
+}
+
+@media (max-width: 768px) {
+  .nav {
+    display: none;
+  }
+
+  .dots {
+    bottom: 10px;
+  }
+}
+
 /* RODAPÉ */
 .footer {
-  background-color: #2f4a2f;
+  background-color: #006633;
   color: #dbe6d1;
   width: 100%;
   padding: 50px 0 20px;
@@ -707,7 +825,7 @@ header h1 {
 
 /* LOGO */
 .logo-rodape {
-  width: 150px;
+  width: 300px;
   border-radius: 100px;
 }
 
@@ -741,143 +859,8 @@ header h1 {
   font-size: 13px;
 }
 
-/* RESPONSIVIDADE (850px) */
-@media (max-width: 850px) {
-  .filter-form-inline {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .select-field,
-  .select-field:last-of-type {
-    width: 100%;
-  }
-
-  .filter-actions-inline {
-    justify-content: space-between;
-    margin-top: 10px;
-  }
-
-  .btn-filtrar-icon {
-    flex-grow: 1;
-  }
-}
-
-/* RESPONSIVIDADE (768px) */
+/* RESPONSIVO */
 @media (max-width: 768px) {
-  .filters {
-    grid-template-columns: 1fr;
-  }
-
-  .file-item {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
-  }
-
-  .menu-toggle {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-  }
-
-  .header-content {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  header h1 {
-    font-size: 0;
-  }
-
-  header {
-    height: 40px;
-  }
-
-  header h1::after {
-    content: "E.C.A.C";
-    position: absolute;
-    left: 41%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 20px;
-    font-weight: 700;
-    color: #fff;
-    white-space: nowrap;
-    margin-left: -120px;
-  }
-
-  .sidebar {
-    position: fixed;
-    top: 40px;
-    left: -100%;
-    height: 100vh;
-    width: 220px;
-    background: #ffffff;
-    border-right: 1px solid #ddd;
-    overflow-y: auto;
-    z-index: 3000;
-    transition: left 0.3s ease;
-  }
-
-  .sidebar.open {
-    left: 0;
-  }
-
-  .layout {
-    display: flex;
-    align-items: flex-start;
-    flex-direction: column;
-    position: relative;
-    min-height: 100vh;
-  }
-
-  .content-area {
-    width: 100%;
-    margin-left: 0;
-  }
-
-  .banner {
-    flex-direction: column;
-    height: auto;
-    padding: 30px 20px;
-  }
-
-  .banner-text {
-    text-align: center;
-    margin-bottom: 20px;
-  }
-
-  .banner-logo {
-    position: static;
-    width: 100%;
-    text-align: center;
-  }
-
-  .banner-logo img {
-    width: 280px;
-  }
-
-  .slider {
-    height: 320px;
-  }
-
-  .slide {
-    background-size: contain;
-    background-color: #888;
-  }
-
-  .nav {
-    display: none;
-  }
-
-  .dots {
-    bottom: 10px;
-  }
-
   .footer-container {
     grid-template-columns: 1fr;
     text-align: center;
@@ -892,13 +875,4 @@ header h1 {
   .social {
     justify-content: center;
   }
-}
-
-.menu-toggle {
-  display: none;
-  background: none;
-  border: none;
-  color: white;
-  font-size: 26px;
-  cursor: pointer;
 }

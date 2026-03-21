@@ -30,6 +30,8 @@ unset($_SESSION['redirecionar_login']);
         <a href="index.php" class="back-arrow" title="Voltar para a página inicial">
           <i class="fa fa-arrow-left"></i>
         </a>
+        <div class="logo-header"><img src="../assets/img/Só a Logo ECAC 2026.png" alt="a"></div>
+        <a href="./index.php">
         <h1>Encontro Carioca de Alimentação Coletiva</h1>
       </div>
     </div>
@@ -142,22 +144,22 @@ unset($_SESSION['redirecionar_login']);
         </ul>
       </div>
       <div class="footer-col footer-center">
-        <img src="../assets/img/logo com fundo.png" alt="Logo ECAC" class="logo-rodape">
+        <img src="../assets/img/Logo ECAC 2026 vertical.png" alt="Logo ECAC" class="logo-rodape">
       </div>
       <div class="footer-col footer-right">
         <h3>Fale Conosco</h3>
         <div class="social">
           <a href="https://www.instagram.com/ecac.alimentacaocoletiva/" target="_blank">
-            <img src="../assets/img/instagram.png" alt="Instagram" class="img-rodape">
+            <img src="../assets/img/instagram.png" alt="Link do Instagram" class="img-rodape">
           </a>
-          <a href="#">
-            <img src="../assets/img/x.png" alt="X" class="img-rodape">
+          <a href="#" onclick="abrirEmail(event)">
+            <img src="../assets/img/email.png" alt="Link do E-mail" class="img-rodape">
           </a>
-          <a href="#">
-            <img src="../assets/img/telefone.png" alt="Telefone" class="img-rodape">
+          <a href="#" onclick="abrirWhatsApp(event)">
+            <img src="../assets/img/telefone.png" alt="Link do WhatsApp" class="img-rodape">
           </a>
         </div>
-        <p>(21) 99999-9999</p>
+        <p>(21) 99214-1882</p>
       </div>
     </div>
     <div class="footer-bottom">
