@@ -31,7 +31,6 @@ unset($_SESSION['redirecionar_login']);
           <i class="fa fa-arrow-left"></i>
         </a>
         <div class="logo-header"><img src="../assets/img/Só a Logo ECAC 2026.png" alt="a"></div>
-        <a href="./index.php">
         <h1>Encontro Carioca de Alimentação Coletiva</h1>
       </div>
     </div>
