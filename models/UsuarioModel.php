@@ -12,13 +12,26 @@ class UsuarioModel
     // Consulta do usuário pelo email
     public function buscarUsuarioPorEmail(string $email): ?array
     {
-        $sql = "SELECT id_usuario, nome_usuario, email, senha_hash, foto_perfil, status_conta FROM usuario WHERE email = ? LIMIT 1";
+        $sql = "SELECT 
+                    u.id_usuario, 
+                    u.nome_usuario, 
+                    u.email, 
+                    u.senha_hash, 
+                    u.foto_perfil, 
+                    u.status_conta,
+                    f.id_funcao,
+                    f.nome_funcao
+                FROM usuario u
+                LEFT JOIN funcao_usuario fu ON u.id_usuario = fu.usuario_id
+                LEFT JOIN funcao f ON fu.funcao_id = f.id_funcao
+                WHERE u.email = ? 
+                LIMIT 1";
 
-        $stmt = $this->con->prepare($sql); // Compila a consulta da váriavel sql
-        $stmt->bind_param("s", $email); // Define como texto(string) o email, impedindo um comando que altere o sql
-        $stmt->execute(); // Executa a consulta
+        $stmt = $this->con->prepare($sql);
+        $stmt->bind_param("s", $email);
+        $stmt->execute();   
 
-        $result = $stmt->get_result(); // Recebe o resultado da consulta
+        $result = $stmt->get_result();
         $usuario = $result->fetch_assoc() ?: null;
         $stmt->close();
 

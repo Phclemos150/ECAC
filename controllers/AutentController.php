@@ -19,7 +19,7 @@ class AutentController
         $senha = trim($_POST['senha'] ?? '');
 
         /* Verifica se os campos estão vazios */
-        if (empty($email) || empty($senha)){
+        if (empty($email) || empty($senha)) {
             $this->erroLogin("Erro de Validação", "Todos os campos devem ser preenchidos!");
         }
 
@@ -47,14 +47,22 @@ class AutentController
             $this->erroLogin("Erro de Login", "Email ou senha incorretos!");
         }
 
-        /* Se o Usuário estiver cadastrado, inicia a sessão de logado */
+        // BLINDAGEM 1: Gera um novo ID de sessão limpo para evitar roubo (Session Hijacking)
+        session_regenerate_id(true);
+
+        /* * NOVIDADE 1: Guardando as funções na sessão!
+         * Agora adicionamos o id_funcao e o nome_funcao que vieram do banco
+         */
         $_SESSION['user_logado'] = [
             'id' => $usuario['id_usuario'],
             'nome' => $usuario['nome_usuario'],
             'email' => $usuario['email'],
-            'foto' => $usuario['foto_perfil'] ?? null
+            'foto' => $usuario['foto_perfil'] ?? null,
+            'id_funcao' => $usuario['id_funcao'],
+            'nome_funcao' => $usuario['nome_funcao']
         ];
 
+        /* REDIRECIONAMENTO ÚNICO: Todos vão para a tela inicial ao logar */
         header('Location: ../views/index.php');
         exit;
     }
@@ -82,10 +90,12 @@ class AutentController
         ];
 
         /* Verifica se os campos estão vazios */
-        if (trim(empty($dados['nome'])) || trim(empty($dados['email'])) || trim(empty($dados['senha_hash'])) ||
+        if (
+            trim(empty($dados['nome'])) || trim(empty($dados['email'])) || trim(empty($dados['senha_hash'])) ||
             trim(empty($dados['documento'])) || trim(empty($dados['data_nascimento'])) ||
             trim(empty($dados['grau_academico'])) || trim(empty($dados['nome_curso'])) ||
-            trim(empty($dados['cidade'])) || trim(empty($dados['estado'])) || trim(empty($dados['pais']))) {
+            trim(empty($dados['cidade'])) || trim(empty($dados['estado'])) || trim(empty($dados['pais']))
+        ) {
             $this->erroCadastro("Erro de Validação", "Todos os campos devem ser preenchidos!");
         }
 
@@ -98,11 +108,19 @@ class AutentController
             $this->erroCadastro("Erro de Cadastro", "Os dados informados já possuem uma conta vinculada. Verifique suas informações!");
         }
 
-        /* Valida o upload da foto de perfil */
+        /* Valida o upload da foto de perfil (AGORA COM BLINDAGEM) */
         if (isset($_FILES['foto_perfil']) && $_FILES['foto_perfil']['error'] === UPLOAD_ERR_OK) {
+
+            // BLINDAGEM 2: Verifica se o arquivo realmente é uma imagem segura
+            $extensao = strtolower(pathinfo($_FILES['foto_perfil']['name'], PATHINFO_EXTENSION));
+            $extensoes_permitidas = ['jpg', 'jpeg', 'png', 'webp'];
+
+            if (!in_array($extensao, $extensoes_permitidas)) {
+                $this->erroCadastro("Erro de Arquivo", "Apenas imagens (JPG, PNG ou WEBP) são permitidas para a foto de perfil!");
+            }
+
             $diretorioUploads = __DIR__ . '/../assets/uploads/fotos_perfil/'; // Armazena o caminho do diretório uploads/fotos_perfil
 
-            $extensao = pathinfo($_FILES['foto_perfil']['name'], PATHINFO_EXTENSION); // Organiza o nome do arquivo, mantendo a extensão
             $nomeArquivo = uniqid('user_') . '.' . $extensao; // uniqid() gera um id único caso haja fotos com o mesmo nome, nesse caso adiciona o user_ + um codigo aleatório
 
             /* Caminho completo do arquivo */
@@ -163,23 +181,51 @@ class AutentController
         header('Location: ../views/cadastro.php');
         exit;
     }
+
+    /* ==========================================
+     * BARREIRA DE SEGURANÇA (O Guarda-Costas)
+     * Verifica se a pessoa logou antes de deixar ver a página
+     * ========================================== */
+    public static function verificarAcesso(): array
+    {
+        // 1. Verifica se a sessão do PHP já começou. Se não começou, ele inicia.
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        // 2. Olha para a "mochila" (Sessão). Se NÃO existir o 'user_logado' lá dentro...
+        if (!isset($_SESSION['user_logado'])) {
+            // Chuta a pessoa de volta para a tela de login
+            header("Location: ../views/login.php");
+            exit;
+        }
+
+        // 3. Se a pessoa estiver logada certinho, devolve os dados dela para a página usar (nome, função, foto)
+        return $_SESSION['user_logado'];
+    }
 }
 
-/* Determinar a Ação da Autenticação */
-$acao = $_GET['acao'] ?? 'login'; // Se a variável ação não receber parametros, vai assumir que está sendo realizado o login
+/* ==========================================
+ * ROTEAMENTO INTELIGENTE
+ * Só tenta executar rotas se a página pedir explicitamente (?acao=...)
+ * Isso impede que o Controller tente logar as pessoas acidentalmente   
+ * ========================================== */
+if (isset($_GET['acao'])) {
 
-$controller = new AutentController($con);
+    $acao = $_GET['acao'];
+    $controller = new AutentController($con);
 
-if ($acao === 'login') {
-    $controller->login(); // Se tiver o parametro login, então chama a função de logar
-} else if ($acao === 'cadastro') {
-    $controller->cadastro(); // Se tiver o parametro cadastro, então chama a função de cadastrar
-} else if ($acao === 'logout') {
-    $controller->logout(); // Se tiver o parametro logouy, então chama a função de deslogar
-} else {
-    $_SESSION['login_error'] = 'Ação Inválida!'; // Caso houver outro parametro sendo enviado, retorna para o login com uma mensagem de erro
-    header('Location: ../views/login.php');
-    exit;
+    if ($acao === 'login') {
+        $controller->login();
+    } else if ($acao === 'cadastro') {
+        $controller->cadastro();
+    } else if ($acao === 'logout') {
+        $controller->logout();
+    } else {
+        $_SESSION['login_error'] = 'Ação Inválida!';
+        header('Location: ../views/login.php');
+        exit;
+    }
 }
 
 ?>
