@@ -60,7 +60,7 @@ unset($_SESSION['redirecionar_login']);
         </div>
         <div class="grupo">
           <label>Data de nascimento</label>
-          <input type="date" name="data_nascimento">
+          <input type="text" name="data_nascimento" placeholder="DD/MM/AAAA" maxlength="10"></input>
         </div>
         <div class="grupo">
           <label>Telefone</label>
