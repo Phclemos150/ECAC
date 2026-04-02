@@ -78,7 +78,7 @@ class AutentController
             'email' => trim($_POST['email'] ?? ''),
             'senha_hash' => !empty($senha) ? password_hash($senha, PASSWORD_DEFAULT) : '',
             'documento' => trim($_POST['documento'] ?? ''),
-            'data_nascimento' => trim($_POST['data_nascimento'] ?? ''),
+            'data_nascimento' => implode('-', array_reverse(explode('/', $_POST['data_nascimento'] ?? ''))),
             'telefone' => trim($_POST['telefone'] ?? ''),
             'instagram' => trim($_POST['instagram'] ?? ''),
             'grau_academico' => trim($_POST['grau_academico'] ?? ''),
