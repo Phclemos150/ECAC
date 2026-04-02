@@ -106,12 +106,12 @@ $logado = (bool) $user;
           <div class="contact-info">
             <h2>Contate-nos</h2>
             <p>Entre em contato conosco para mais informações sobre o evento ou para esclarecer dúvidas.</p>
-            <p><strong>Telefone:</strong> (21) 99999-9999</p>
-            <p><strong>Email:</strong> contato@ecac.com</p>
+            <p><strong>Telefone:</strong> (21) 99214-1882 </p>
+            <p><strong>Email:</strong> missaodesenvolver@gmail.com</p>
             <p><strong>Endereço:</strong> Rio de Janeiro, RJ</p>
           </div>
           <div class="contact-form-container">
-            <form class="contact-form" action="mailto:contato@ecac.com" method="post" enctype="text/plain">
+            <form class="contact-form" action="mailto:missaodesenvolver@gmail.com" method="post" enctype="text/plain">
               <label for="nome">Nome:</label>
               <input type="text" id="nome" name="nome">
 
