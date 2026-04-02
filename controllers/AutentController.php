@@ -146,6 +146,53 @@ class AutentController
         }
     }
 
+    /* Classe de Recuperação de Senha */
+    public function validarRecuperacao(): void
+    {
+        // Limpa qualquer saída anterior para não quebrar o JSON
+        ob_clean();
+        header('Content-Type: application/json');
+
+        $email = trim($_POST['email'] ?? '');
+        $cpf = trim($_POST['cpf'] ?? '');
+
+        // Usando o método que valida os dois campos direto no Banco (mais seguro)
+        $usuario = $this->usuarioModel->validarUsuarioRecuperacao($email, $cpf);
+
+        if ($usuario) {
+            echo json_encode(['sucesso' => true]);
+        } else {
+            echo json_encode(['sucesso' => false, 'mensagem' => 'E-mail ou CPF não conferem.']);
+        }
+        exit;
+    }
+
+    /* Classe Atualizar Senha */
+    public function atualizarSenha(): void
+    {
+        header('Content-Type: application/json');
+
+        $email = trim($_POST['email'] ?? '');
+        $novaSenha = trim($_POST['novaSenha'] ?? '');
+
+        if (empty($novaSenha) || strlen($novaSenha) < 6) {
+            echo json_encode(['sucesso' => false, 'mensagem' => 'Senha inválida.']);
+            exit;
+        }
+
+        $senhaHash = password_hash($novaSenha, PASSWORD_DEFAULT);
+
+        // Você precisará criar o método atualizarSenha no seu UsuarioModel
+        $resultado = $this->usuarioModel->atualizarSenha($email, $senhaHash);
+
+        if ($resultado) {
+            echo json_encode(['sucesso' => true]);
+        } else {
+            echo json_encode(['sucesso' => false, 'mensagem' => 'Erro ao atualizar banco.']);
+        }
+        exit;
+    }
+
     /* Classe de Logout(finalizar sessão) */
     public function logout(): void
     {
@@ -221,6 +268,10 @@ if (isset($_GET['acao'])) {
         $controller->cadastro();
     } else if ($acao === 'logout') {
         $controller->logout();
+    } else if ($acao === 'validarRecuperacao') {
+        $controller->validarRecuperacao();
+    } else if ($acao === 'atualizarSenha') {
+        $controller->atualizarSenha();
     } else {
         $_SESSION['login_error'] = 'Ação Inválida!';
         header('Location: ../views/login.php');

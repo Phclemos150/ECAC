@@ -9,6 +9,7 @@ unset($_SESSION['modal_erro_titulo'], $_SESSION['modal_erro_mensagem']);
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,6 +18,7 @@ unset($_SESSION['modal_erro_titulo'], $_SESSION['modal_erro_mensagem']);
   <link rel="website icon" type="png" href="../assets/img/logo.png">
   <link rel="stylesheet" href="../assets/css/login.css">
 </head>
+
 <body>
   <header>
     <div class="header-content">
@@ -55,23 +57,40 @@ unset($_SESSION['modal_erro_titulo'], $_SESSION['modal_erro_mensagem']);
       </div>
     </div>
   </main>
+  <!-- Modal Esqueci a Senha -->
   <div class="modal" id="modalSenha">
     <div class="modal-box">
-      <h3>Trocar senha</h3>
-      <div class="password-wrapper-cs">
-        <input type="email" id="emailConfirmacao" placeholder="Confirmar Email">
+      <h3>Recuperar Senha</h3>
+
+      <div id="etapaIdentificacao">
+        <p style="font-size: 13px; color: #666; margin-bottom: 15px; text-align: center;">
+          Informe seus dados para validar sua identidade.
+        </p>
+        <div class="input-group">
+          <label>E-mail</label>
+          <input type="email" id="emailRecuperacao" placeholder="Digite seu e-mail">
+        </div>
+        <div class="input-group">
+          <label>CPF</label>
+          <input type="text" id="cpfRecuperacao" placeholder="000.000.000-00" maxlength="14">
+        </div>
       </div>
-      <div class="password-wrapper-cs">
-        <input type="password" id="novaSenha" placeholder="Nova senha">
-        <i class="fa-solid fa-eye" id="toggleNovaSenha"></i>
+
+      <div id="etapaNovaSenha" style="display: none;">
+        <p style="font-size: 13px; color: #22c55e; margin-bottom: 15px; text-align: center;">
+          Dados confirmados! Digite sua nova senha abaixo.
+        </p>
+        <div class="password-wrapper-cs">
+          <input type="password" id="novaSenhaRecuperar" placeholder="Nova senha">
+        </div>
+        <div class="password-wrapper-cs">
+          <input type="password" id="confirmarNovaSenhaRecuperar" placeholder="Confirmar nova senha">
+        </div>
       </div>
-      <div class="password-wrapper-cs">
-        <input type="password" id="confirmarNovaSenha" placeholder="Confirmar senha">
-        <i class="fa-solid fa-eye" id="toggleConfirmarSenha"></i>
-      </div>
+
       <div class="modal-buttons">
         <button class="btn-cancelar" id="fecharModalSenha">Cancelar</button>
-        <button class="btn-confirmar">Salvar</button>
+        <button class="btn-confirmar" id="btnAcaoRecuperar">Validar Dados</button>
       </div>
     </div>
   </div>
@@ -84,6 +103,15 @@ unset($_SESSION['modal_erro_titulo'], $_SESSION['modal_erro_mensagem']);
       </div>
     </div>
   <?php endif; ?>
+  <div class="modal modal-alerta-js" id="modalAlertaJS">
+    <div class="modal-box">
+      <h3 id="alertaTituloJS"> Atenção </h3>
+      <p id="alertaMensagemJS"></p>
+      <div class="modal-buttons-alerta">
+        <button class="btn-confirmar" id="fecharAlertaJS"> OK </button>
+      </div>
+    </div>
+  </div>
   <br><br><br>
   <footer class="footer">
     <div class="footer-container">
@@ -127,4 +155,5 @@ unset($_SESSION['modal_erro_titulo'], $_SESSION['modal_erro_mensagem']);
   </footer>
   <script src="../assets/js/login.js"></script>
 </body>
+
 </html>

@@ -22,7 +22,7 @@ header {
   gap: 10px;
 }
 
-.logo-header img{
+.logo-header img {
   display: flex;
   width: 50px;
 }
@@ -289,7 +289,55 @@ main {
   color: #243814;
 }
 
-/* RESPOSIIDADE */
+/* FEEDBACK VISUAL DE VALIDAÇÃO */
+
+.campo-valido {
+  border: 2px solid #22c55e !important;
+  background-color: #f0fdf4;
+}
+
+.campo-invalido {
+  border: 2px solid #ef4444 !important;
+  background-color: #fef2f2;
+}
+
+.campo-valido:focus {
+  border-color: #16a34a !important;
+  box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.2);
+}
+
+.campo-invalido:focus {
+  border-color: #dc2626 !important;
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
+}
+
+#senha-checklist-login {
+  background: #f9f9f9;
+  padding: 10px !important;
+  border-radius: 8px;
+  margin-top: 5px;
+  border: 1px solid #eee;
+}
+
+/* Modal Alerta JS */
+.modal-alerta-js .modal-buttons-alerta {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+  width: 100%;
+}
+
+.modal-alerta-js .btn-confirmar {
+  min-width: 100px;
+  cursor: pointer;
+}
+
+.modal-alerta-js p {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+/* RESPOSIVIDADE */
 
 @media (max-width: 768px) {
 
@@ -307,7 +355,7 @@ main {
     justify-content: center;
     padding: 0;
     font-size: 22px;
-    
+
   }
 
   /* Esconde o texto grande */
