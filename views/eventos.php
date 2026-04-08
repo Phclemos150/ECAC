@@ -132,7 +132,7 @@ function formatarLinkExterno($url)
               ?>
               <div class="evento-card <?= $classeCard ?>">
                 <div class="card-banner">
-                  <img src="<?= !empty($ev['capa_evento']) ? $ev['capa_evento'] : '../assets/img/logo com fundo.png' ?>">
+                  <img src="<?= !empty($ev['capa_evento']) ? $ev['capa_evento'] : '../assets/img/ECAC Banner.png' ?>">
                 </div>
                 <div class="evento-info">
                   <span class="badge <?= $classeCard ?>">
@@ -170,7 +170,7 @@ function formatarLinkExterno($url)
                   <span class="fechar-modal" onclick="fecharModalEvento('<?= $idModalUnico ?>')">&times;</span>
                   <section class="modal-header">
                     <div class="capa-container">
-                      <img src="<?= !empty($ev['capa_evento']) ? $ev['capa_evento'] : '../assets/img/logo com fundo.png' ?>"
+                      <img src="<?= !empty($ev['capa_evento']) ? $ev['capa_evento'] : '../assets/img/ECAC Banner.png' ?>"
                         class="modal-capa">
                     </div>
                     <div class="header-info">
