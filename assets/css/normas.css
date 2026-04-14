@@ -269,6 +269,7 @@ header h1 {
 .card h3 {
   color: #2d3e1e;
   margin-bottom: 10px;
+  font-size: 22px;
 }
 
 .divider {
@@ -281,6 +282,7 @@ header h1 {
 .card ul {
   padding-left: 18px;
   color: #374151;
+  font-size: 18px;
 }
 
 .card ul li {
