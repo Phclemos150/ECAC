@@ -284,14 +284,15 @@ $logado = (bool) $user;
         <h3>Fale Conosco</h3>
         <div class="social">
           <a href="https://www.instagram.com/ecac.alimentacaocoletiva/" target="_blank">
-            <img src="../assets/img/instagram.png" alt="Link do Instagram" class="img-rodape">
+            <img src="../assets/img/icone_instagram_padrao.png" alt="Instagram" class="img-rodape icon-insta">
           </a>
+
           <a href="#" onclick="abrirEmail(event)">
-            <img src="../assets/img/email.png" alt="Link do E-mail" class="img-rodape">
+            <img src="../assets/img/icone_email_padrao.png" alt="E-mail" class="img-rodape icon-email">
           </a>
-          </a>
+
           <a href="#" onclick="abrirWhatsApp(event)">
-            <img src="../assets/img/telefone.png" alt="Link do WhatsApp" class="img-rodape">
+            <img src="../assets/img/icone_whatsapp_padrao.png" alt="WhatsApp" class="img-rodape icon-zap">
           </a>
         </div>
         <p>(21) 99214-1882</p>

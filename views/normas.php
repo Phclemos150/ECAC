@@ -96,36 +96,114 @@ $logado = (bool) $user;
         <div class="sidebar-item"><i class="fa fa-upload"></i> Submissão </div>
       </a>
     </div>
-    <hr>
     <div class="page-content">
-      <div class="content-wrapper">
-        <br><br><br>
-        <h2>Normas e Regulamentos</h2>
-        <p class="subtitle">
-          Consulte as diretrizes e regras para participação e submissão de trabalhos no E.C.A.C.
-        </p>
-        <div class="card">
-          <h3>Regras de Submissão de Trabalhos</h3>
-          <div class="divider"></div>
-          <ul>
-            <li><strong>Limite de Autores:</strong> Máximo de 5 autores por trabalho.</li>
-            <li><strong>Formatação:</strong> O arquivo deve seguir estritamente o template ABNT fornecido na seção
-              Arquivos.</li>
-            <li><strong>Prazo Final:</strong> Submissão até 30 de Setembro, às 23:59h (Horário de Brasília).</li>
-            <li><strong>Revisão:</strong> Trabalhos fora das normas serão automaticamente rejeitados.</li>
-          </ul>
-          <h3 style="margin-top: 25px;">Código de Conduta do Evento</h3>
-          <div class="divider"></div>
-          <p>
-            O Encontro Carioca de Alimentação Coletiva é dedicado a proporcionar uma experiência
-            de evento livre de assédio para todos. Respeito, cordialidade e inclusão são obrigatórios
-            em todas as interações e ambientes (presenciais ou virtuais). Qualquer violação do Código
-            de Conduta deve ser reportada e resultará em medidas cabíveis, incluindo o banimento do evento.
-          </p>
-        </div>
+  <div class="content-wrapper">
+    <br><br><br>
+
+    <h2>Normas e Regulamentos</h2>
+    <p class="subtitle">
+      Consulte as diretrizes e regras para participação e submissão de trabalhos no E.C.A.C.
+    </p>
+
+    <div class="card">
+
+      <h3>Regras de Submissão de Trabalhos</h3>
+      <div class="divider"></div>
+
+      <ul>
+        <li><strong>Tipos:</strong> Investigativos, descritivos, revisões e relatos de experiência.</li>
+        <li><strong>Envio:</strong> Exclusivamente online pelo site oficial.</li>
+        <li><strong>Período:</strong> 10 de abril a 10 de junho de 2026.</li>
+        <li><strong>Eixo temático:</strong> Submissão em apenas um eixo.</li>
+        <li><strong>Importante:</strong> Trabalhos fora das normas serão rejeitados.</li>
+      </ul>
+
+      <h3 style="margin-top: 25px;">Eixos Temáticos</h3>
+      <div class="divider"></div>
+
+      <ul>
+        <li>Inovação e gestão</li>
+        <li>Tecnologia aplicada</li>
+        <li>Sustentabilidade e ESG</li>
+        <li>Qualidade e segurança dos alimentos</li>
+        <li>Educação e desenvolvimento profissional</li>
+        <li>Alimentação, cultura e identidade</li>
+      </ul>
+
+      <h3 style="margin-top: 25px;">Regras do Resumo</h3>
+      <div class="divider"></div>
+
+      <ul>
+        <li><strong>Tamanho:</strong> 350 a 500 palavras.</li>
+        <li><strong>Formato:</strong> Parágrafo único.</li>
+        <li><strong>Conteúdo:</strong> Introdução, objetivo, metodologia, resultados e conclusão.</li>
+        <li><strong>Proibido:</strong> Imagens, gráficos ou tabelas.</li>
+        <li><strong>Palavras-chave:</strong> 3 a 5 termos em ordem alfabética.</li>
+      </ul>
+
+      <h3 style="margin-top: 25px;">Autores e Inscrição</h3>
+      <div class="divider"></div>
+
+      <ul>
+        <li><strong>Limite:</strong> Até 6 autores.</li>
+        <li><strong>Autor responsável:</strong> Deve ser indicado.</li>
+        <li><strong>Apresentação:</strong> 1 autor inscrito no evento.</li>
+        <li><strong>Participação:</strong> 1 trabalho como principal e até 3 no total.</li>
+      </ul>
+
+      <h3 style="margin-top: 25px;">Processo de Avaliação</h3>
+      <div class="divider"></div>
+
+      <ul>
+        <li><strong>Modelo:</strong> Duplo-cego.</li>
+        <li><strong>Critérios:</strong> Relevância, originalidade, clareza e metodologia.</li>
+        <li><strong>Regra:</strong> Não há correção após envio.</li>
+      </ul>
+
+      <h3 style="margin-top: 25px;">Apresentação</h3>
+      <div class="divider"></div>
+
+      <ul>
+        <li>Formato banner (90x120 cm) ou apresentação oral.</li>
+        <li>Melhores trabalhos recebem destaque e menção honrosa.</li>
+      </ul>
+
+      <h3 style="margin-top: 25px;">Cronograma</h3>
+      <div class="divider"></div>
+
+      <ul>
+        <li><strong>Submissão:</strong> 10/04 a 10/06/2026</li>
+        <li><strong>Avaliação:</strong> junho a agosto</li>
+        <li><strong>Resultado:</strong> setembro</li>
+        <li><strong>Evento:</strong> 31/10/2026</li>
+      </ul>
+
+      <div style="margin-top: 20px;">
+        <a href="../assets/uploads/documentos/REGULAMENTO PARA SUBMISSÃO, AVALIAÇÃO E APRESENTAÇÃO DE TRABALHOS CIENTÍFICOS - EM CONSTRUÇÃO.pdf" target="_blank" class="btn-download">
+          📥 Ver regulamento completo
+        </a>
       </div>
+
+      <h3 style="margin-top: 25px;">Código de Conduta</h3>
+      <div class="divider"></div>
+
+      <p style="font-size: 18px;">
+        O evento estabelece diretrizes para garantir respeito, organização e boa convivência.
+      </p>
+
+      <ul>
+        <li><strong>Participação:</strong> Exclusiva para inscritos.</li>
+        <li><strong>Organização:</strong> Respeitar horários.</li>
+        <li><strong>Segurança:</strong> Seguir normas em atividades com alimentos.</li>
+        <li><strong>Respeito:</strong> Proibidas atitudes ofensivas.</li>
+        <li><strong>Imagens:</strong> Uso para divulgação.</li>
+        <li><strong>Dados:</strong> Proteção conforme LGPD.</li>
+        <li><strong>Sustentabilidade:</strong> Uso consciente de recursos.</li>
+      </ul>
+
     </div>
   </div>
+</div>
   </div>
   <footer class="footer">
     <div class="footer-container">
@@ -150,14 +228,14 @@ $logado = (bool) $user;
         <h3>Fale Conosco</h3>
         <div class="social">
           <a href="https://www.instagram.com/ecac.alimentacaocoletiva/" target="_blank">
-            <img src="../assets/img/instagram.png" alt="Link do Instagram" class="img-rodape">
+            <img src="../assets/img/icone_instagram_padrao.png" alt="Link do Instagram" id="icone-instagram" class="img-rodape">
           </a>
           <a href="#" onclick="abrirEmail(event)">
-            <img src="../assets/img/email.png" alt="Link do E-mail" class="img-rodape">
+            <img src="../assets/img/icone_email_padrao.png" alt="Link do E-mail" id="icone-email" class="img-rodape">
           </a>
           </a>
           <a href="#" onclick="abrirWhatsApp(event)">
-            <img src="../assets/img/telefone.png" alt="Link do WhatsApp" class="img-rodape">
+            <img src="../assets/img/icone_whatsapp_padrao.png" alt="Link do WhatsApp" id="icone-whatsapp" class="img-rodape">
           </a>
         </div>
         <p>(21) 99214-1882</p>

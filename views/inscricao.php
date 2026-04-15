@@ -12,6 +12,7 @@ $logado = (bool) $user;
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -20,12 +21,13 @@ $logado = (bool) $user;
   <link rel="website icon" type="png" href="../assets/img/logo.png">
   <link rel="stylesheet" href="../assets/css/incrição.css">
 </head>
+
 <body>
- <header>
+  <header>
     <div class="header-content">
       <button class="menu-toggle" onclick="toggleMenu()">
-  <i class="fa fa-bars"></i>
-</button>
+        <i class="fa fa-bars"></i>
+      </button>
       <div class="header-title">
         <div class="logo-header"><img src="../assets/img/Só a Logo ECAC 2026.png" alt=""></div>
         <a href="./index.php">
@@ -102,7 +104,8 @@ $logado = (bool) $user;
       <div class="content-wrapper">
         <h2>Inscrição</h2>
         <p class="subtitle">Garanta sua participação e conecte-se com profissionais da alimentação coletiva.</p>
-        <p class="small-print"><strong>Leia:</strong> Leia atentamente as normas e orientações antes de prosseguir com a inscrição.</p>
+        <p class="small-print"><strong>Leia:</strong> Leia atentamente as normas e orientações antes de prosseguir com a
+          inscrição.</p>
 
         <!-- Seção de Normas (colapsável) -->
         <section class="normas" aria-labelledby="normasTitle">
@@ -119,26 +122,43 @@ $logado = (bool) $user;
               <li>
                 <strong>Processo de Inscrição e Pagamento</strong>
                 <ul>
-                  <li><em>Fluxo de Cadastro:</em> A inscrição inicia-se em nosso site oficial e é processada através da plataforma Even3. O participante deve completar todas as etapas de redirecionamento para garantir a reserva da vaga.</li>
-                  <li><em>Confirmação:</em> A vaga só será garantida após a confirmação do pagamento. Você receberá um e-mail automático da Even3 assim que o sistema identificar a transação.</li>
-                  <li><em>Meios de Pagamento:</em> Serão aceitos os métodos disponíveis na plataforma (Cartão de Crédito, Boleto ou PIX). Atente-se aos prazos de vencimento de boletos para não perder o lote.</li>
+                  <li><em>Fluxo de Cadastro:</em> A inscrição inicia-se em nosso site oficial e é processada através da
+                    plataforma Even3. O participante deve completar todas as etapas de redirecionamento para garantir a
+                    reserva da vaga.</li>
+                  <li><em>Confirmação:</em> A vaga só será garantida após a confirmação do pagamento. Você receberá um
+                    e-mail automático da Even3 assim que o sistema identificar a transação.</li>
+                  <li><em>Meios de Pagamento:</em> Serão aceitos os métodos disponíveis na plataforma (Cartão de
+                    Crédito, Boleto ou PIX). Atente-se aos prazos de vencimento de boletos para não perder o lote.</li>
                 </ul>
               </li>
               <li>
                 <strong>Categorias e Comprovações</strong>
-                <p>Estudantes/Profissionais: Certifique-se de selecionar a categoria correta. Inscrições que exigem comprovação (ex: meia-entrada ou estudante) deverão anexar o documento solicitado no painel do inscrito ou apresentá-lo no credenciamento. A ausência de comprovação válida implicará no pagamento da diferença do valor de "Inteira".</p>
+                <p>Estudantes/Profissionais: Certifique-se de selecionar a categoria correta. Inscrições que exigem
+                  comprovação (ex: meia-entrada ou estudante) deverão anexar o documento solicitado no painel do
+                  inscrito ou apresentá-lo no credenciamento. A ausência de comprovação válida implicará no pagamento da
+                  diferença do valor de "Inteira".</p>
               </li>
               <li>
                 <strong>Política de Cancelamento e Reembolso</strong>
-                <p>Desistência: O cancelamento com reembolso integral pode ser solicitado em até 7 dias corridos após a compra, conforme o Código de Defesa do Consumidor. Após o prazo de 7 dias, não haverá devolução de valores, salvo em casos específicos previstos na legislação ou por cancelamento do evento. Transferência: A transferência da inscrição para outra pessoa pode ser feita através da área do participante na Even3 até [Inserir Prazo, ex: 48 horas] antes do evento.</p>
+                <p>Desistência: O cancelamento com reembolso integral pode ser solicitado em até 7 dias corridos após a
+                  compra, conforme o Código de Defesa do Consumidor. Após o prazo de 7 dias, não haverá devolução de
+                  valores, salvo em casos específicos previstos na legislação ou por cancelamento do evento.
+                  Transferência: A transferência da inscrição para outra pessoa pode ser feita através da área do
+                  participante na Even3 até [Inserir Prazo, ex: 48 horas] antes do evento.</p>
               </li>
               <li>
                 <strong>Certificados e Credenciamento</strong>
-                <p>Dados Pessoais: O nome preenchido no formulário será o mesmo utilizado na emissão do certificado. Revise a digitação antes de finalizar. Frequência: Para eventos com certificação, será exigida a presença mínima de [Inserir %, ex: 75%] aferida através do credenciamento ou listas de presença. Disponibilidade: Os certificados ficarão disponíveis para download na plataforma Even3 em até [Inserir dias] após o término do evento.</p>
+                <p>Dados Pessoais: O nome preenchido no formulário será o mesmo utilizado na emissão do certificado.
+                  Revise a digitação antes de finalizar. Frequência: Para eventos com certificação, será exigida a
+                  presença mínima de [Inserir %, ex: 75%] aferida através do credenciamento ou listas de presença.
+                  Disponibilidade: Os certificados ficarão disponíveis para download na plataforma Even3 em até [Inserir
+                  dias] após o término do evento.</p>
               </li>
               <li>
                 <strong>Disposições Finais</strong>
-                <p>Ao realizar a inscrição, o participante autoriza o uso de sua imagem em fotos e vídeos capturados durante o evento para fins de divulgação institucional. A organização reserva-se o direito de alterar a programação por motivos de força maior, comunicando os inscritos via e-mail.</p>
+                <p>Ao realizar a inscrição, o participante autoriza o uso de sua imagem em fotos e vídeos capturados
+                  durante o evento para fins de divulgação institucional. A organização reserva-se o direito de alterar
+                  a programação por motivos de força maior, comunicando os inscritos via e-mail.</p>
               </li>
             </ol>
           </div>
@@ -154,18 +174,34 @@ $logado = (bool) $user;
                 </tr>
               </thead>
               <tbody>
-                <tr><td>Estudantes de Graduação</td><td>Isento</td></tr>
-                <tr><td>Pós-Graduação</td><td>R$ 100,00</td></tr>
-                <tr><td>Profissionais de Educação Básica</td><td>R$ 50,00</td></tr>
-                <tr><td>Professores de Ensino Superior</td><td>R$ 150,00</td></tr>
-                <tr><td>Outros Profissionais</td><td>R$ 150,00</td></tr>
+                <tr>
+                  <td>Estudantes de Graduação</td>
+                  <td>Isento</td>
+                </tr>
+                <tr>
+                  <td>Pós-Graduação</td>
+                  <td>R$ 100,00</td>
+                </tr>
+                <tr>
+                  <td>Profissionais de Educação Básica</td>
+                  <td>R$ 50,00</td>
+                </tr>
+                <tr>
+                  <td>Professores de Ensino Superior</td>
+                  <td>R$ 150,00</td>
+                </tr>
+                <tr>
+                  <td>Outros Profissionais</td>
+                  <td>R$ 150,00</td>
+                </tr>
               </tbody>
             </table>
           </div>
 
           <!-- CTA para Even3 -->
           <div class="cta-area">
-            <a class="cta-button" href="https://www.even3.com.br" target="_blank" rel="noopener noreferrer">INSCREVA-SE NO EVENTO</a>
+            <a class="cta-button" href="https://www.even3.com.br" target="_blank" rel="noopener noreferrer">INSCREVA-SE
+              NO EVENTO</a>
           </div>
         </section>
       </div>
@@ -192,20 +228,20 @@ $logado = (bool) $user;
       </div>
       <div class="footer-col footer-right">
         <h3>Fale Conosco</h3>
-       <div class="social">
-        <a href="https://www.instagram.com/ecac.alimentacaocoletiva/" target="_blank">
-          <img src="../assets/img/instagram.png" alt="Instagram" class="img-rodape">
-        </a>
-        <a href="#" onclick="abrirEmail(event)">
-          <img src="../assets/img/email.png" alt="Enviar e-mail" class="img-rodape">
-        </a>
-        </a>
-        <a href="#" onclick="abrirWhatsApp(event)">
-          <img src="../assets/img/telefone.png" alt="Falar no WhatsApp" class="img-rodape">
-        </a>
+        <div class="social">
+          <a href="https://www.instagram.com/ecac.alimentacaocoletiva/" target="_blank">
+            <img src="../assets/img/icone_instagram_padrao.png" alt="Link do Instagram" id="icone-instagram" class="img-rodape">
+          </a>
+          <a href="#" onclick="abrirEmail(event)">
+            <img src="../assets/img/icone_email_padrao.png" alt="Link do E-mail" id="icone-email" class="img-rodape">
+          </a>
+          </a>
+          <a href="#" onclick="abrirWhatsApp(event)">
+            <img src="../assets/img/icone_whatsapp_padrao.png" alt="Link do WhatsApp" id="icone-whatsapp" class="img-rodape">
+          </a>
+        </div>
+        <p>(21) 99214-1882</p>
       </div>
-      <p>(21) 99214-1882</p>
-    </div>
     </div>
     <div class="footer-bottom">
       © 2025 Encontro Carioca de Alimentação Coletiva | Política de Privacidade
@@ -213,4 +249,5 @@ $logado = (bool) $user;
   </footer>
   <script src="../assets/js/inscricao.js"></script>
 </body>
+
 </html>

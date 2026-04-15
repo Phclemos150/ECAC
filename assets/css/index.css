@@ -52,16 +52,23 @@ header h1 {
 }
 
 .btn-login {
-  background: #fff;
+  background: #8bbe33;
   border: none;
   padding: 8px 20px;
   border-radius: 20px;
-  font-weight: bold;
+  font-weight: bolder;
   cursor: pointer;
+  color: white;
+}
+
+.btn-login:hover{
+  background: #d2491c;
+  color: white;
+  transform: scale(1.1);
 }
 
 .btn-cadastro {
-  background: #8BBE33;
+  background: #8bbe33;
   color: #fff;
   border: none;
   padding: 8px 22px;
@@ -70,8 +77,9 @@ header h1 {
   cursor: pointer;
 }
 
-.btn-cadastro-hover{
-  background: #Cc6633
+.btn-cadastro:hover{
+  background: #d2491c;
+  transform: scale(1.1);
 }
 
 /* Botão de Perfil */
@@ -248,7 +256,7 @@ header h1 {
 .banner-text h2 {
   font-size: 36px;
   font-weight: 800;
-  color: #8BBE33;
+  color: #24381d;
   margin: 0;
   line-height: 1.2;
 }
@@ -256,13 +264,17 @@ header h1 {
 .banner-text .btn-inscricao {
   display: inline-block;
   margin-top: 25px;
-  background: #Cc3300;
+  background: #006633;
   color: white;
   padding: 12px 28px;
   border-radius: 30px;
   border: none;
   font-weight: bold;
   text-decoration: none;
+}
+
+.banner-text .btn-inscricao:hover{
+  background: #Cc3300;
 }
 
 /* LOGO DO BANNER */
@@ -525,7 +537,7 @@ header h1 {
 .imagem img {
   width: 100%;
   max-width: 420px;
-  border: 6px solid #7fc46b;
+  border: 6px solid #8bbe33;
 }
 
 /* Responsivo */
@@ -921,7 +933,13 @@ header h1::after {
 
 .img-rodape {
   width: 35px;
+  transition: all 0.3s ease;
+  transition: transform 0.2s ease, content 0.1s ease;
+  cursor: pointer;
+}
 
+.img-rodape:hover {
+  transform: scale(1.1);
 }
 
 /* BOTTOM */

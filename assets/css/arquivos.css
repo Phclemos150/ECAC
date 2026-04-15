@@ -26,7 +26,7 @@ header {
   gap: 10px;
 }
 
-.logo-header img{
+.logo-header img {
   display: flex;
   width: 50px;
 }
@@ -53,22 +53,35 @@ header h1 {
 }
 
 .btn-login {
-  background: #fff;
+  background: #8bbe33;
   border: none;
   padding: 8px 20px;
   border-radius: 20px;
-  font-weight: bold;
+  font-weight: bolder;
   cursor: pointer;
+  color: white;
+}
+
+.btn-login:hover{
+  background: #d2491c;
+  color: white;
+  transform: scale(1.1);
 }
 
 .btn-cadastro {
-  background: #8BBE33;
+  background: #8bbe33;
   color: #fff;
   border: none;
   padding: 8px 22px;
   border-radius: 20px;
   font-weight: bold;
   cursor: pointer;
+}
+
+.btn-cadastro:hover{
+  background: #d2491c;
+  color: white;
+  transform: scale(1.1);
 }
 
 .layout {
@@ -94,7 +107,8 @@ header h1 {
   background: #fff;
   border-right: 1px solid #ddd;
   overflow-y: auto;
-  z-index: 10; /* menor que o footer */
+  z-index: 10;
+  /* menor que o footer */
 }
 
 .sidebar-item {
@@ -321,7 +335,7 @@ header h1 {
 }
 
 .btn-filtrar-icon {
-  background-color: #8BBE33;
+  background-color: #006633;
   color: white;
   border: none;
   height: 40px;
@@ -333,7 +347,7 @@ header h1 {
 }
 
 .btn-filtrar-icon:hover {
-  background-color: #006633;
+  background-color: #8BBE33;
 }
 
 .btn-limpar-text {
@@ -377,7 +391,7 @@ header h1 {
 }
 
 .file-item-row:hover {
-  background: rgba(109, 127, 65, 0.2);
+  background: rgba(148, 148, 147, 0.2);
 }
 
 .file-item-error {
@@ -476,7 +490,7 @@ header h1 {
 }
 
 .btn-download-table:hover {
-  background: #006633;
+  background: #cc3300;
 }
 
 .btn-coautor {
@@ -679,23 +693,23 @@ header h1 {
     margin-left: -120px;
   }
 
- @media (max-width: 768px) {
-  .sidebar {
-    position: fixed;
-    top: 75px;
-    left: -100%; 
-    width: 250px;
-    height: 100vh;
-    background: #ffffff;
-    transition: left 0.3s ease;
-    z-index: 9999; 
-    display: block !important; 
-  }
+  @media (max-width: 768px) {
+    .sidebar {
+      position: fixed;
+      top: 75px;
+      left: -100%;
+      width: 250px;
+      height: 100vh;
+      background: #ffffff;
+      transition: left 0.3s ease;
+      z-index: 9999;
+      display: block !important;
+    }
 
-  .sidebar.open {
-    left: 0;
+    .sidebar.open {
+      left: 0;
+    }
   }
-}
 
   .layout {
     flex-direction: column;
@@ -845,6 +859,13 @@ header h1 {
 
 .img-rodape {
   width: 35px;
+  transition: all 0.3s ease;
+  transition: transform 0.2s ease, content 0.1s ease;
+  cursor: pointer;
+}
+
+.img-rodape:hover {
+  transform: scale(1.1);
 }
 
 /* BOTTOM */

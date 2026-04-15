@@ -37,22 +37,35 @@ header h1 {
 }
 
 .btn-login {
-  background: #fff;
+  background: #8bbe33;
   border: none;
   padding: 8px 20px;
   border-radius: 20px;
-  font-weight: bold;
+  font-weight: bolder;
   cursor: pointer;
+  color: white;
+}
+
+.btn-login:hover{
+  background: #d2491c;
+  color: white;
+  transform: scale(1.1);
 }
 
 .btn-cadastro {
-  background: #6d7f41;
+  background: #8bbe33;
   color: #fff;
   border: none;
   padding: 8px 22px;
   border-radius: 20px;
   font-weight: bold;
   cursor: pointer;
+}
+
+.btn-cadastro:hover{
+  background: #d2491c;
+  color: white;
+  transform: scale(1.1);
 }
 
 /* Botão de Perfil */
@@ -337,7 +350,13 @@ header h1 {
 
 .img-rodape {
   width: 35px;
+  transition: all 0.3s ease;
+  transition: transform 0.2s ease, content 0.1s ease;
+  cursor: pointer;
+}
 
+.img-rodape:hover {
+  transform: scale(1.1);
 }
 
 /* BOTTOM */

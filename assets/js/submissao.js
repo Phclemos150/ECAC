@@ -105,12 +105,12 @@ function atualizarEstadoBotao() {
   const botaoAdd = document.querySelector('.btn-coautor');
   const totalCoautores = container.getElementsByClassName('coautor-item').length;
 
-  if (totalCoautores >= 5) {
+  if (totalCoautores >= 7) {
     botaoAdd.style.backgroundColor = "#ccc";
     botaoAdd.style.color = "black";
     botaoAdd.style.cursor = "not-allowed";
-    botaoAdd.innerHTML = '<i class="fa fa-ban"></i> Limite de 5 coautores atingido';
-    botaoAdd.disabled = true; // Impede cliques indesejados
+    botaoAdd.innerHTML = '<i class="fa fa-ban"></i> Limite de 6 coautores atingido';
+    botaoAdd.disabled = true;
   } else {
     // Restaura as propriedades originais
     botaoAdd.style.backgroundColor = "";
@@ -125,7 +125,7 @@ function atualizarEstadoBotao() {
 function addCoautor() {
   const container = document.getElementById('container-coautores');
 
-  if (container.getElementsByClassName('coautor-item').length >= 5) {
+  if (container.getElementsByClassName('coautor-item').length >= 7) {
     return;
   }
 

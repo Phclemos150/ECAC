@@ -369,6 +369,13 @@ button:hover {
 
 .img-rodape {
   width: 35px;
+  transition: all 0.3s ease;
+  transition: transform 0.2s ease, content 0.1s ease;
+  cursor: pointer;
+}
+
+.img-rodape:hover {
+  transform: scale(1.1);
 }
 
 .footer-bottom {
