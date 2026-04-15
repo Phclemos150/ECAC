@@ -70,6 +70,10 @@ header h1 {
   cursor: pointer;
 }
 
+.btn-cadastro-hover{
+  background: #Cc6633
+}
+
 /* Botão de Perfil */
 .user-dropdown {
   position: relative;
@@ -82,14 +86,13 @@ header h1 {
   gap: 4px;
   cursor: pointer;
   padding: 4px 10px 4px 4px;
-  background-color: #2f4a2f;
+  background-color: #8BBE33;
   border-radius: 50px;
   border: 2px solid rgba(255, 255, 255, 0.5);
 }
 
 .user-profile-hover{
-  border: 2px solid rgba(0, 0, 0, 0.2);
-  background-color: #6d7f41;
+  background-color: #Cc6633;
 }
 
 .arrow-icon{
@@ -164,7 +167,7 @@ header h1 {
 /* SIDEBAR */
 
 .logo img {
-  width: 48px;
+  width: 80px;
   height: auto;
 }
 
@@ -253,7 +256,7 @@ header h1 {
 .banner-text .btn-inscricao {
   display: inline-block;
   margin-top: 25px;
-  background: #006633;
+  background: #Cc3300;
   color: white;
   padding: 12px 28px;
   border-radius: 30px;

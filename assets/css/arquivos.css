@@ -73,17 +73,14 @@ header h1 {
 
 .layout {
   display: flex;
-  align-items: flex-start;
+  width: 100%;
   margin-top: 68px;
-  background: #f9f9f9;
-  min-height: calc(100vh - 68px);
-  position: relative;
 }
 
 /* SIDEBAR */
 
 .logo img {
-  width: 48px;
+  width: 80px;
   height: auto;
 }
 
@@ -146,14 +143,14 @@ header h1 {
   gap: 4px;
   cursor: pointer;
   padding: 4px 10px 4px 4px;
-  background-color: #2f4a2f;
+  background-color: #8BBE33;
   border-radius: 50px;
   border: 2px solid rgba(255, 255, 255, 0.5);
 }
 
 .user-profile-hover {
   border: 2px solid rgba(0, 0, 0, 0.2);
-  background-color: #6d7f41;
+  background-color: #Cc6633;
 }
 
 .arrow-icon {
@@ -324,7 +321,7 @@ header h1 {
 }
 
 .btn-filtrar-icon {
-  background-color: #243814;
+  background-color: #8BBE33;
   color: white;
   border: none;
   height: 40px;
@@ -336,7 +333,7 @@ header h1 {
 }
 
 .btn-filtrar-icon:hover {
-  background-color: #47662e;
+  background-color: #006633;
 }
 
 .btn-limpar-text {
@@ -468,7 +465,7 @@ header h1 {
 }
 
 .btn-download-table {
-  background: #243814;
+  background: #Cc6633;
   color: white;
   border: none;
   padding: 8px 15px;
@@ -479,7 +476,7 @@ header h1 {
 }
 
 .btn-download-table:hover {
-  background: #47662e;
+  background: #006633;
 }
 
 .btn-coautor {

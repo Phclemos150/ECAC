@@ -84,14 +84,14 @@ header h1 {
   gap: 4px;
   cursor: pointer;
   padding: 4px 10px 4px 4px;
-  background-color: #2f4a2f;
+  background-color: #8BBE33;
   border-radius: 50px;
   border: 2px solid rgba(255, 255, 255, 0.5);
 }
 
 .user-profile:hover {
   border: 2px solid rgba(0, 0, 0, 0.2);
-  background-color: #6d7f41;
+  background-color: #Cc6633;
 }
 
 .arrow-icon {
@@ -159,14 +159,13 @@ header h1 {
 .layout {
   display: flex;
   width: 100%;
-  min-height: calc(100vh - 60px);
-  align-items: stretch;
+  margin-top: 68px;
 }
 
 /* SIDEBAR */
 
 .logo img {
-  width: 48px;
+  width: 80px;
   height: auto;
 }
 
@@ -337,7 +336,7 @@ header h1 {
 }
 
 .btn-primary {
-  background: #2d3e1e;
+  background: #8BBE33;
   color: #fff;
   border: none;
   padding: 8px 16px;
@@ -348,11 +347,11 @@ header h1 {
 }
 
 .btn-primary:hover {
-  background: #5c6d37;
+  background: #006633;
 }
 
 .btn-inscrever {
-  background: #f27311;
+  background: #Cc3300;
   color: #fff;
   border: none;
   padding: 8px 16px;

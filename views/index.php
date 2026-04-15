@@ -84,7 +84,9 @@ $bronze = array_filter($patrocinadores, fn($p) => $p['nivel_patrocinio'] === 'br
   <div class="layout">
     <div class="sidebar">
       <div style="background:#f1eada;padding:25px;text-align:center;border-bottom:1px solid #ccc;">
-        <div class="logo"><img src="../assets/img/icon planta.png" alt=""></div>
+        <div class="logo">
+          <img src="../assets/img/Apenas Logo Circulo.png" alt="logo">
+        </div>
         <strong>E.C.A.C</strong><br>
       </div>
       <a href="./index.php">
@@ -112,6 +114,7 @@ $bronze = array_filter($patrocinadores, fn($p) => $p['nivel_patrocinio'] === 'br
         <div class="sidebar-item"><i class="fa fa-upload"></i> Submissão </div>
       </a>
     </div>
+    <hr>
     <div class="content-area">
       <div class="banner">
 

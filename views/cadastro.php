@@ -45,7 +45,7 @@ unset($_SESSION['redirecionar_login']);
         </div>
         <div class="grupo">
           <label>E-mail</label>
-          <input type="email" name="email">
+          <input type="email" name="email" placeholder="Digite seu email">  
         </div>
         <div class="grupo senha-grupo">
           <label>Senha</label>

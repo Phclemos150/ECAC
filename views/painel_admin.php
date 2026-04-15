@@ -29,79 +29,71 @@ $caminho_foto = !empty($user['foto'])
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Painel Administrativo - ECAC</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="../assets/css/index.css"> 
-    
-    <style>
-        .admin-container {
-            background-color: #ffffff;
-            max-width: 800px;
-            margin: 50px auto;
-            padding: 40px;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            text-align: center;
-            border-top: 6px solid #d9534f;
-        }
-        .foto-perfil-admin {
-            width: 130px;
-            height: 130px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 4px solid #d9534f;
-            margin-bottom: 15px;
-        }
-        .badge-admin {
-            display: inline-block;
-            background-color: #d9534f;
-            color: white;
-            padding: 6px 20px;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: bold;
-            text-transform: uppercase;
-            margin-bottom: 25px;
-        }
-        .admin-mensagem {
-            font-size: 16px;
-            color: #555;
-            margin-top: 20px;
-            padding: 20px;
-            background-color: #f9f9f9;
-            border-radius: 8px;
-            border-left: 4px solid #d9534f;
-        }
-        .btn-voltar {
-            display: inline-block;
-            margin-top: 30px;
-            padding: 10px 20px;
-            background-color: #3f5d2a;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            transition: 0.3s;
-        }
-        .btn-voltar:hover {
-            background-color: #2c421d;
-        }
-    </style>
+    <link rel="stylesheet" href="../assets/css/painel_admin.css">
+    <script src="../assets/js/painel_admin.js"></script>
 </head>
 <body style="background-color: #f4f4f4;">
-
-    <div class="admin-container">
-        <h2>Painel de Gerenciamento</h2>
-        
-        <img src="<?php echo htmlspecialchars($caminho_foto); ?>" alt="Foto do Administrador" class="foto-perfil-admin">
-        
-        <h3><?php echo htmlspecialchars($nome_usuario); ?></h3>
-        <span class="badge-admin"><i class="fa fa-shield-alt"></i> <?php echo htmlspecialchars($user['nome_funcao']); ?></span>
-
-        <div class="admin-mensagem">
-            <p><strong>Acesso Restrito:</strong> Bem-vindo à área de administração do sistema.</p>
-            <p>A partir daqui, você poderá gerenciar as contas de usuários, alterar funções, monitorar inscrições e configurar o site do Encontro Carioca de Alimentação Coletiva.</p>
+    <header>
+    <div class="header-content">
+      <button class="menu-toggle" onclick="toggleMenu()">
+        <i class="fa fa-bars"></i>
+      </button>
+        <div class="header-title">
+        <div class="logo-header"><img src="../assets/img/Só a Logo ECAC 2026.png" alt="a"></div>
+        <a href="./index.php">
+          <h1>Encontro Carioca de Alimentação Coletiva</h1>
+        </a>
         </div>
-
-        <a href="index.php" class="btn-voltar"><i class="fa fa-arrow-left"></i> Voltar ao Início</a>
+        <div class="perfil">
+            <h3>ADMIN</h3>
+            <img src="<?php echo htmlspecialchars($caminho_foto); ?>" alt="Foto do Administrador" class="foto-perfil-admin">
+        </div>
     </div>
-
+  </header>
+    <div class="layout">
+        <div class="sidebar">
+        <div style="background:#f1eada;padding:25px;text-align:center;border-bottom:1px solid #ccc;">
+            <div class="logo"><img src="../assets/img/Apenas Logo Circulo.png" alt=""></div>
+            <strong>E.C.A.C</strong><br>
+        </div>
+        <a href="./Painel_admin.php">
+            <div class="sidebar-item active"><i class="fa fa-home"></i> Painel </div>
+        </a>
+        <a href="./Pessoas.php">
+            <div class="sidebar-item"><i class="fa fa-calendar-check"></i> Pessoas </div>
+        </a>
+        </div>
+        <div class="admin-container">
+            <div id="Painel de Gerenciamento">
+                <h2>Painel de Gerenciamento</h2>
+                <img src="<?php echo htmlspecialchars($caminho_foto); ?>" alt="Foto do Administrador" class="foto-perfil-admin">
+                <h4><?php echo htmlspecialchars($nome_usuario); ?></h4>
+                <span class="badge-admin"><i class="fa fa-shield-alt"></i> <?php echo htmlspecialchars($user['nome_funcao']); ?></span>
+                <div class="admin-mensagem">
+                    <p><strong>Acesso Restrito:</strong> Bem-vindo à área de administração do sistema.</p>
+                    <p>A partir daqui, você poderá gerenciar as contas de usuários, alterar funções, monitorar inscrições e configurar o site do Encontro Carioca de Alimentação Coletiva.</p>
+                </div>
+            </div>
+            <div id="dashboard" style="display: none;">
+                <h2>Dashboard</h2>
+                <div class="cards">
+                    <div class="card">
+                        <h3>Usuários</h3>
+                        <p>120 cadastrados</p>
+                    </div>
+                    <div class="card">
+                        <h3>Pedidos</h3>
+                        <p>45 em andamento</p>
+                    </div>
+                    <div class="card">
+                        <h3>Receita</h3>
+                        <p>R$ 12.300</p>
+                    </div>
+                </div>
+            </div>
+            <button id="btn-dashboard">Ver Dashboard</button>
+            <a href="index.php" class="btn-voltar"><i class="fa fa-arrow-left"></i> Voltar a página principal</a>
+        </div>
+    </div>
 </body>
 </html>

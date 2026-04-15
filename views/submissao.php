@@ -79,7 +79,7 @@ unset($_SESSION['redirecionar_login']);
   <div class="layout">
     <div class="sidebar">
       <div style="background:#f1eada;padding:25px;text-align:center;border-bottom:1px solid #ccc;">
-        <div class="logo"><img src="../assets/img/icon planta.png" alt=""></div>
+        <div class="logo"><img src="../assets/img/Apenas Logo Circulo.png" alt=""></div>
         <strong>E.C.A.C</strong><br>
       </div>
       <a href="./index.php">
@@ -107,6 +107,7 @@ unset($_SESSION['redirecionar_login']);
         <div class="sidebar-item active"><i class="fa fa-upload"></i> Submissão </div>
       </a>
     </div>
+    <hr>
     <div class="page-content">
       <div class="content-wrapper">
         <br><br><br>

@@ -2,6 +2,7 @@ const slides = document.querySelectorAll('.slide');
 const dots = document.querySelectorAll('.dot');
 const nextBtn = document.querySelector('.next');
 const prevBtn = document.querySelector('.prev');
+const btncadastro = document.querySelector('.btn-cadastro');
 const userPerfil = document.querySelector('.user-profile');
 const arrowPerfil = document.querySelector('.arrow-icon');
 
@@ -83,6 +84,14 @@ window.onclick = function(event) {
     }
   }
 }
+
+btncadastro.addEventListener('mouseover', () =>{
+  btncadastro.classList.add("btn-cadastro-hover");
+});
+
+btncadastro.addEventListener('mouseleave', () =>{
+  btncadastro.classList.remove("btn-cadastro-hover");
+});
 
 userPerfil.addEventListener('mouseover', () =>{
   userPerfil.classList.add("user-profile-hover");
