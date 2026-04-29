@@ -23,10 +23,10 @@ $logado = (bool) $user;
 <body>
   <header>
     <div class="header-content">
-      <button class="menu-toggle" onclick="toggleMenu()">
-        <i class="fa fa-bars"></i>
-      </button>
       <div class="header-title">
+        <button class="menu-toggle" onclick="toggleMenu()">
+          <i class="fa fa-bars"></i>
+        </button>
         <div class="logo-header"><img src="../assets/img/Só a Logo ECAC 2026.png" alt=""></div>
         <a href="./index.php">
           <h1>Encontro Carioca de Alimentação Coletiva</h1>
@@ -96,7 +96,6 @@ $logado = (bool) $user;
         <div class="sidebar-item"><i class="fa fa-upload"></i> Submissão </div>
       </a>
     </div>
-    <hr>
     <div class="page-content">
       <div class="content-wrapper">
         <h2>Arquivos e Publicações do Encontro</h2>
@@ -123,7 +122,7 @@ $logado = (bool) $user;
                 <?php endforeach; ?>
               </select>
             </div>
-
+            
             <div class="filter-field select-field">
               <label for="ano">Ano</label>
               <select id="ano" name="ano">
@@ -146,7 +145,6 @@ $logado = (bool) $user;
             </div>
           </form>
         </div>
-
         <div class="file-list">
           <div class="file-header">
             <div class="col-titulo">Título do Arquivo</div>
@@ -154,7 +152,7 @@ $logado = (bool) $user;
             <div class="col-autor">Autor</div>
             <div class="col-resumo">Resumo</div>
             <div class="col-data">Data</div>
-            <div class="col-arquivo">Arquivo</div>
+            <div class="col-arquivo">Arquivo (baixar)</div>
           </div>
 
           <?php if (!empty($listaArquivos)): ?>
@@ -180,20 +178,34 @@ $logado = (bool) $user;
                     </button>
                   <?php endif; ?>
                 </div>
-
                 <div class="col-resumo">
                   <p class="resumo-texto" title="<?php echo htmlspecialchars($arq['resumo']); ?>">
                     <?php echo htmlspecialchars($arq['resumo']); ?>
                   </p>
                 </div>
-
                 <div class="col-data">
                   <?php echo date('d/m/Y', strtotime($arq['data_evento'])); ?>
                 </div>
-
                 <div class="col-arquivo">
                   <a href="../assets/uploads/arquivos/<?php echo $arq['caminho_arquivo']; ?>" download
                     class="btn-download-table">
+                    <i class="fa fa-download"></i> 
+                  </a>
+                </div>
+              </div>
+              <div class="file-card">
+                <div class="card-header">
+                  <strong><?php echo htmlspecialchars($arq['titulo']); ?></strong>
+                </div>
+                <div class="card-body">
+                  <p><strong>Evento:</strong> <?php echo htmlspecialchars($arq['evento_titulo']); ?></p>
+                  <p><strong>Autor:</strong> <?php echo htmlspecialchars($arq['autor_nome']); ?></p>
+                  <p><strong>Resumo:</strong></p>
+                  <p class="resumo-texto"><?php echo htmlspecialchars($arq['resumo']); ?></p>
+                  <p><strong>Data:</strong> <?php echo date('d/m/Y', strtotime($arq['data_evento'])); ?></p>
+                </div>
+                <div class="card-footer">
+                  <a href="../assets/uploads/arquivos/<?php echo $arq['caminho_arquivo']; ?>" download class="btn-download-table">
                     <i class="fa fa-download"></i> Baixar
                   </a>
                 </div>
@@ -260,46 +272,52 @@ $logado = (bool) $user;
       </div>
     </div>
   </div>
-
   <footer class="footer">
     <div class="footer-container">
       <div class="footer-col footer-left">
         <strong>E.C.A.C</strong>
-        <ul>
-          <li><a href="./index.php">Início</a></li>
-          <li><a href="./eventos.php">Eventos</a></li>
-          <li><a href="./local.php">Local do Evento</a></li>
-          <li><a href="./contato.php">Contato</a></li>
-          <li><a href="./normas.php">Normas e Regulamentos</a></li>
-          <li><a href="./arquivos.php">Arquivos</a></li>
-          <li><a href="./inscricao.php">Inscrição</a></li>
-          <li><a href="./submissao.php">Submissao</a></li>
-          <li><a href="#">Politicas de Privacidade</a></li>
-        </ul>
+        <div class="ul-links-separador">
+          <div class="ul-links">
+            <ul>
+              <li><a href="./index.php">Início</a></li>
+              <li><a href="./eventos.php">Eventos</a></li>
+              <li><a href="./local.php">Local do Evento</a></li>
+              <li><a href="./contato.php">Contato</a></li>
+              <li><a href="./normas.php">Normas e Regulamentos</a></li>
+            </ul>
+          </div>
+          <div class="ul-links">
+            <ul>
+              <li><a href="./arquivos.php">Arquivos</a></li>
+              <li><a href="./inscricao.php">Inscrição</a></li>
+              <li><a href="./submissao.php">Submissao</a></li>
+              <li><a href="#">Politicas de Privacidade</a></li>
+            </ul>
+          </div>
+        </div>
       </div>
       <div class="footer-col footer-center">
-        <img src="../assets/img/Logo ECAC 2026 vertical.png" alt="Logo ECAC" class="logo-rodape">
+        <img src="../assets/img/Logo ECAC 2026 horizontal reduzido.png" class="logo-rodape">
       </div>
       <div class="footer-col footer-right">
         <h3>Fale Conosco</h3>
         <div class="social">
           <a href="https://www.instagram.com/ecac.alimentacaocoletiva/" target="_blank">
-            <img src="../assets/img/icone_instagram_padrao.png" alt="Instagram" class="img-rodape icon-insta">
+            <img src="../assets/img/icone_instagram_padrao.png" alt="Link do Instagram" id="icone-instagram" class="img-rodape">
           </a>
-
           <a href="#" onclick="abrirEmail(event)">
-            <img src="../assets/img/icone_email_padrao.png" alt="E-mail" class="img-rodape icon-email">
+            <img src="../assets/img/icone_email_padrao.png" alt="Link do E-mail" id="icone-email" class="img-rodape">
           </a>
-
+          </a>
           <a href="#" onclick="abrirWhatsApp(event)">
-            <img src="../assets/img/icone_whatsapp_padrao.png" alt="WhatsApp" class="img-rodape icon-zap">
+            <img src="../assets/img/icone_whatsapp_padrao.png" alt="Link do WhatsApp" id="icone-whatsapp" class="img-rodape">
           </a>
         </div>
         <p>(21) 99214-1882</p>
       </div>
     </div>
     <div class="footer-bottom">
-      © 2025 Encontro Carioca de Alimentação Coletiva | Política de Privacidade
+      © 2025 Encontro Carioca de Alimentação Coletiva
     </div>
   </footer>
   <script src="../assets/js/arquivos.js"></script>

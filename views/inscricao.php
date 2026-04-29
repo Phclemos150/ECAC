@@ -25,11 +25,11 @@ $logado = (bool) $user;
 <body>
   <header>
     <div class="header-content">
-      <button class="menu-toggle" onclick="toggleMenu()">
-        <i class="fa fa-bars"></i>
-      </button>
       <div class="header-title">
-        <div class="logo-header"><img src="../assets/img/Só a Logo ECAC 2026.png" alt=""></div>
+        <button class="menu-toggle" onclick="toggleMenu()">
+          <i class="fa fa-bars"></i>
+        </button>
+        <div class="logo-header"><img src="../assets/img/Só a Logo ECAC 2026.png" alt="a"></div>
         <a href="./index.php">
           <h1>Encontro Carioca de Alimentação Coletiva</h1>
         </a>
@@ -98,7 +98,6 @@ $logado = (bool) $user;
         <div class="sidebar-item"><i class="fa fa-upload"></i> Submissão </div>
       </a>
     </div>
-    <hr>
     <div class="page-content">
       <br><br><br>
       <div class="content-wrapper">
@@ -200,7 +199,7 @@ $logado = (bool) $user;
 
           <!-- CTA para Even3 -->
           <div class="cta-area">
-            <a class="cta-button" href="https://www.even3.com.br" target="_blank" rel="noopener noreferrer">INSCREVA-SE
+            <a class="cta-button" href="https://www.even3.com.br/evento/login?evento=encontro-carioca-de-alimentacao-coletiva-2026-721287&lang=pt" target="_blank" rel="noopener noreferrer">INSCREVA-SE
               NO EVENTO</a>
           </div>
         </section>
@@ -211,20 +210,28 @@ $logado = (bool) $user;
     <div class="footer-container">
       <div class="footer-col footer-left">
         <strong>E.C.A.C</strong>
-        <ul>
-          <li><a href="./index.php">Início</a></li>
-          <li><a href="./eventos.php">Eventos</a></li>
-          <li><a href="./local.php">Local do Evento</a></li>
-          <li><a href="./contato.php">Contato</a></li>
-          <li><a href="./normas.php">Normas e Regulamentos</a></li>
-          <li><a href="./arquivos.php">Arquivos</a></li>
-          <li><a href="./inscricao.php">Inscrição</a></li>
-          <li><a href="./submissao.php">Submissao</a></li>
-          <li><a href="#">Politicas de Privacidade</a></li>
-        </ul>
+        <div class="ul-links-separador">
+          <div class="ul-links">
+            <ul>
+              <li><a href="./index.php">Início</a></li>
+              <li><a href="./eventos.php">Eventos</a></li>
+              <li><a href="./local.php">Local do Evento</a></li>
+              <li><a href="./contato.php">Contato</a></li>
+              <li><a href="./normas.php">Normas e Regulamentos</a></li>
+            </ul>
+          </div>
+          <div class="ul-links">
+            <ul>
+              <li><a href="./arquivos.php">Arquivos</a></li>
+              <li><a href="./inscricao.php">Inscrição</a></li>
+              <li><a href="./submissao.php">Submissao</a></li>
+              <li><a href="#">Politicas de Privacidade</a></li>
+            </ul>
+          </div>
+        </div>
       </div>
       <div class="footer-col footer-center">
-        <img src="../assets/img/Logo ECAC 2026 vertical.png" alt="Logo ECAC" class="logo-rodape">
+        <img src="../assets/img/Logo ECAC 2026 horizontal reduzido.png" class="logo-rodape">
       </div>
       <div class="footer-col footer-right">
         <h3>Fale Conosco</h3>
@@ -244,7 +251,7 @@ $logado = (bool) $user;
       </div>
     </div>
     <div class="footer-bottom">
-      © 2025 Encontro Carioca de Alimentação Coletiva | Política de Privacidade
+      © 2025 Encontro Carioca de Alimentação Coletiva
     </div>
   </footer>
   <script src="../assets/js/inscricao.js"></script>

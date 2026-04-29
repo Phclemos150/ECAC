@@ -43,11 +43,11 @@ function formatarLinkExterno($url)
 <body>
   <header>
     <div class="header-content">
-      <button class="menu-toggle" onclick="toggleMenu()">
-        <i class="fa fa-bars"></i>
-      </button>
       <div class="header-title">
-        <div class="logo-header"><img src="../assets/img/Só a Logo ECAC 2026.png" alt=""></div>
+        <button class="menu-toggle" onclick="toggleMenu()">
+          <i class="fa fa-bars"></i>
+        </button>
+        <div class="logo-header"><img src="../assets/img/Só a Logo ECAC 2026.png" alt="a"></div>
         <a href="./index.php">
           <h1>Encontro Carioca de Alimentação Coletiva</h1>
         </a>
@@ -118,9 +118,8 @@ function formatarLinkExterno($url)
         <div class="sidebar-item"><i class="fa fa-upload"></i> Submissão </div>
       </a>
     </div>
-    <hr>
     <div class="page-content">
-      <br><br><br>
+      <br>
       <div class="content-wrapper">
         <h1>Eventos</h1>
         <p>Confira os eventos do Encontro Carioca de Alimentação Coletiva.</p>
@@ -334,20 +333,28 @@ function formatarLinkExterno($url)
     <div class="footer-container">
       <div class="footer-col footer-left">
         <strong>E.C.A.C</strong>
-        <ul>
-          <li><a href="./index.php">Início</a></li>
-          <li><a href="./eventos.php">Eventos</a></li>
-          <li><a href="./local.php">Local do Evento</a></li>
-          <li><a href="./contato.php">Contato</a></li>
-          <li><a href="./normas.php">Normas e Regulamentos</a></li>
-          <li><a href="./arquivos.php">Arquivos</a></li>
-          <li><a href="./inscricao.php">Inscrição</a></li>
-          <li><a href="./submissao.php">Submissao</a></li>
-          <li><a href="#">Politicas de Privacidade</a></li>
-        </ul>
+        <div class="ul-links-separador">
+          <div class="ul-links">
+            <ul>
+              <li><a href="./index.php">Início</a></li>
+              <li><a href="./eventos.php">Eventos</a></li>
+              <li><a href="./local.php">Local do Evento</a></li>
+              <li><a href="./contato.php">Contato</a></li>
+              <li><a href="./normas.php">Normas e Regulamentos</a></li>
+            </ul>
+          </div>
+          <div class="ul-links">
+            <ul>
+              <li><a href="./arquivos.php">Arquivos</a></li>
+              <li><a href="./inscricao.php">Inscrição</a></li>
+              <li><a href="./submissao.php">Submissao</a></li>
+              <li><a href="#">Politicas de Privacidade</a></li>
+            </ul>
+          </div>
+        </div>
       </div>
       <div class="footer-col footer-center">
-        <img src="../assets/img/Logo ECAC 2026 vertical.png" class="logo-rodape">
+        <img src="../assets/img/Logo ECAC 2026 horizontal reduzido.png" class="logo-rodape">
       </div>
       <div class="footer-col footer-right">
         <h3>Fale Conosco</h3>

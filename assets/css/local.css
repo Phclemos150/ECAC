@@ -11,7 +11,7 @@ a {
 /* HEADER */
 
 header {
-  position: fixed;
+  position: sticky;
   top: 0;
   left: 0;
   width: 100%;
@@ -172,7 +172,6 @@ header h1 {
 .layout {
   display: flex;
   width: 100%;
-  margin-top: 68px;
 }
 
 /* SIDEBAR */
@@ -190,9 +189,8 @@ header h1 {
   bottom: 0;
   width: 220px;
   background: #fff;
-  border-right: 1px solid #ddd;
   overflow-y: auto;
-  z-index: 10; /* menor que o footer */
+  z-index: 10;
 }
 
 .sidebar-item {
@@ -222,11 +220,7 @@ header h1 {
 
 
 .content-area {
-  margin-left: 220px;         
-  width: calc(100% - 220px);
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+  width: 100%;
 }
 
 /* CONTEÚDO */
@@ -259,113 +253,6 @@ header h1 {
   font-size: 21px;
 }
 
-/* FORMULÁRIO DE CONTATO */
-
-.contact-form {
-  max-width: 600px;
-  margin: 0 auto;
-}
-
-.contact-form label {
-  display: block;
-  margin-top: 15px;
-  font-weight: bold;
-  color: #24381d;
-}
-
-.contact-form input,
-.contact-form textarea {
-  width: 100%;
-  padding: 10px;
-  margin-top: 5px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  font-size: 16px;
-}
-
-.contact-form input[type="submit"] {
-  background: #6d7f41;
-  color: #fff;
-  border: none;
-  padding: 12px 20px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 16px;
-  margin-top: 20px;
-}
-
-.contact-form input[type="submit"]:hover {
-  background: #5a6b36;
-}
-
-/* LAYOUT DE CONTATO */
-
-.contact-layout {
-  display: flex;
-  gap: 40px;
-  align-items: flex-start;
-}
-
-.contact-info {
-  flex: 1;
-  padding: 20px;
-  border-radius: 10px;
-  text-align: left;
-}
-
-.contact-info h2 {
-  color: #24381d;
-  margin-bottom: 15px;
-  font-size: 28px;
-}
-
-.contact-info p {
-  margin-bottom: 10px;
-  line-height: 1.6;
-}
-
-.contact-form-container {
-  flex: 1;
-}
-
-
-/* CARD */
-
-.card {
-  background: #fff;
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-  padding: 25px;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
-}
-
-.card h3 {
-  color: #2d3e1e;
-  margin-bottom: 10px;
-}
-
-.divider {
-  width: 100%;
-  height: 1px;
-  background: #e5e7eb;
-  margin: 15px 0;
-}
-
-.card ul {
-  padding-left: 18px;
-  color: #374151;
-}
-
-.card ul li {
-  margin-bottom: 8px;
-}
-
-.card p {
-  color: #374151;
-  line-height: 1.6;
-  
-}
-
 .contato-container {
   display: flex;
   gap: 30px;
@@ -394,6 +281,10 @@ header h1 {
   color: #2d3e1e;
   margin-top: 3px;
   min-width: 24px;
+}
+
+.contato-info p {
+  word-break: break-word;
 }
 
 .contato-item strong {
@@ -451,20 +342,6 @@ header h1 {
   border-radius: 2px;
 }
 
-@media (max-width: 900px) {
-  .section-divider,
-  .divider {
-    width: 100%;
-  }
-  .contato-item {
-    max-width: 100%;
-    justify-content: center;
-    text-align: center;
-  }
-  .contato-item div {
-    text-align: center;
-  }
-}
 
 /* MAPA */
 .contato-mapa {
@@ -514,23 +391,6 @@ header h1 {
   background: #006633;
 }
 
-@media (max-width: 900px) {
-  .contato-mapa .map-frame {
-    min-height: 300px;
-  }
-}
-
-/* RESPONSIVO CONTATO */
-@media (max-width: 900px) {
-  .contato-container {
-    flex-direction: column;
-  }
-
-  .contato-mapa iframe {
-    min-height: 300px;
-  }
-}
-
 /* RESPOSIIDADE */
 
 .menu-toggle {
@@ -542,138 +402,24 @@ header h1 {
   cursor: pointer;
 }
 
-
-@media (max-width: 768px) {
-
-  .header-content {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .menu-toggle {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-  }
-
-  header h1 {
-    font-size: 0;
-  }
-
-  header {
-    height: 40px;
-  }
-
-header h1::after {
-  content: "E.C.A.C";
-  position: absolute;
-  left: 41%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 20px;
-  font-weight: 700;
-  color: #fff;
-  white-space: nowrap;
-}
-
- header h1::after {
-  content: "E.C.A.C";
-  font-size: 20px;
-  font-weight: 700;
-  color: #fff;
-  margin-left: -120px; 
-}
-
- @media (max-width: 768px) {
-  .sidebar {
-    position: fixed;
-    top: 75px;
-    left: -100%; 
-    width: 250px;
-    height: 100vh;
-    background: #ffffff;
-    transition: left 0.3s ease;
-    z-index: 9999; 
-    display: block !important; 
-  }
-
-  .sidebar.open {
-    left: 0;
-  }
-}
-
-  .layout {
-    flex-direction: column;
-  }
-
-  .content-area {
-    width: 100%;
-  margin-left: 0;
-  }
-
-  .banner {
-    flex-direction: column;
-    height: auto;
-    padding: 30px 20px;
-  }
-
-  .banner-text {
-    text-align: center;
-    margin-bottom: 20px;
-  }
-
-  .banner-logo {
-    position: static;
-    width: 100%;
-    text-align: center;
-  }
-
-  .banner-logo img {
-    width: 280px;
-  }
-}
-
-@media (max-width: 768px) {
-  .slider {
-    height: 320px;
-  }
-
-  .slide {
-    background-size: contain; /* mostra a foto inteira */
-    background-color: #888;   /* fundo cinza */
-  }
-}
-
-@media (max-width: 768px) {
-  .nav {
-    display: none;
-  }
-
-  .dots {
-    bottom: 10px;
-  }
-}
-
 /* RODAPÉ */
+
 .footer {
   background-color: #006633;
   color: #dbe6d1;
   width: 100%;
-  padding: 50px 0 20px;
+  padding: 10px 0;
   font-family: Arial, sans-serif;
   position: relative;
   z-index: 2000;
 }
 
 /* CONTAINER */
+
 .footer-container {
   max-width: 1200px;
   margin: auto;
-  padding: 0 40px;
-
+  padding: 30px 40px;
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
@@ -681,6 +427,12 @@ header h1::after {
 }
 
 /* COLUNAS */
+
+.ul-links-separador{
+  display: flex;
+  gap: 20px;
+}
+
 .footer-col {
   display: flex;
   flex-direction: column;
@@ -702,6 +454,7 @@ header h1::after {
 }
 
 /* TEXTOS */
+
 .footer-col h3,
 .footer-col strong {
   margin-bottom: 15px;
@@ -728,12 +481,14 @@ header h1::after {
 }
 
 /* LOGO */
+
 .logo-rodape {
   width: 300px;
   border-radius: 100px;
 }
 
 /* SOCIAL */
+
 .social {
   display: flex;
   gap: 10px;
@@ -764,26 +519,169 @@ header h1::after {
 /* BOTTOM */
 .footer-bottom {
   border-top: 1px solid rgba(255, 255, 255, 0.2);
-  margin-top: 30px;
   padding-top: 15px;
   text-align: center;
   font-size: 13px;
 }
 
-/* RESPONSIVO */
+/* RESPONSIVIDADE 900px */
+
+@media (max-width: 900px) {
+  .contato-mapa .map-frame {
+    min-height: 300px;
+  }
+}
+
+/* RESPONSIVO CONTATO */
+@media (max-width: 900px) {
+  .contato-container {
+    flex-direction: column;
+  }
+
+  .contato-mapa iframe {
+    min-height: 300px;
+  }
+}
+
+/* RESPONSIVIDADE PARA 768px */
+
 @media (max-width: 768px) {
-  .footer-container {
-    grid-template-columns: 1fr;
-    text-align: center;
+
+  .logos {
+    gap: 25px;
   }
 
-  .footer-left,
-  .footer-right {
+  .logos img {
+    max-height: 70px;
+  }
+
+  .header-content {
+    position: relative;
+    display: flex;
     align-items: center;
-    text-align: center;
+    justify-content: space-between;
+    z-index: 9999;
   }
 
-  .social {
+  .menu-toggle {
+    display: flex;
+    align-items: center;
     justify-content: center;
+    padding: 0;
+  }
+
+  header h1 {
+    font-size: 0;
+  }
+
+  header {
+    height: 40px;
+  }
+
+  header h1::after {
+    content: "E.C.A.C";
+    position: relative;
+    left: 41%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 20px;
+    font-weight: 700;
+    color: #fff;
+    white-space: nowrap;
+  }
+
+  .sidebar {
+    position: fixed;
+    top: 75px;
+    left: -100%; 
+    width: 250px;
+    height: 100vh;
+    background: #ffffff;
+    transition: left 0.3s ease;
+    z-index: 9999; 
+    display: block !important; 
+  }
+
+  .sidebar.open {
+    left: 0;
+  }
+  .layout {
+    flex-direction: column;
+  }
+
+  .content-area {
+    width: 100%;
+  margin-left: 0;
+  }
+
+  .nav {
+    display: none;
+  }
+
+  .footer{
+      padding-top: 20px;
+    }
+
+    .footer-container {
+      grid-template-columns: 1fr;
+      text-align: center;
+      gap: 10px;
+    }
+
+    .footer-left,
+    .footer-right {
+      align-items: center;
+      text-align: left;
+      gap: 10px;
+    }
+
+    .footer-center img {
+      display: none;
+    }
+
+    .social {
+      justify-content: center;
+    }
+  }
+
+/* RESPONSIVIDADE PARA 460px */
+
+@media (max-width: 460px) {
+
+  header h1 {
+  display: none;
+  }
+
+  /* Usurarios de iPhone */
+  header {
+    padding-top: 50px;
+  }
+
+  .sidebar {
+    top: 108px;
+  }
+}
+
+/* RESPONSIVIDADE PARA 360px */
+
+@media (max-width: 360px){
+  header {
+    padding-top: 18px;
+  }
+
+  .btn-login {
+    width: 10px;
+    font-size: 10px;
+    padding-right: 45px;
+  }
+
+  .sidebar {
+    top: 75px;
+  }
+
+  .btn-cadastro {
+    width: 10px;
+    font-size: 10px;
+    padding-right: 65px;
   }
 }
