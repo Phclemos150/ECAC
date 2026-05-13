@@ -4,6 +4,34 @@ document.addEventListener("DOMContentLoaded", () => {
   const modalSucesso    = document.getElementById("modalSucesso");
   const btnSucessoOk    = document.getElementById("btnSucessoOk");
 
+  // ── Função para exibir Modal de Erro via JavaScript ───────────────────────
+  const exibirErroJS = (titulo, mensagem) => {
+    let modalJS = document.getElementById("modalErroJS");
+    if (!modalJS) {
+      // Cria o modal dinamicamente se ele não existir
+      modalJS = document.createElement("div");
+      modalJS.id = "modalErroJS";
+      modalJS.className = "modal"; 
+      modalJS.innerHTML = `
+        <div class="modal-box">
+          <h3 class="modal-titulo" id="tituloErroJS"></h3>
+          <p class="modal-mensagem" id="mensagemErroJS"></p>
+          <button class="btn-confirmar-erro" id="fecharModalErroJS">Ok</button>
+        </div>
+      `;
+      document.body.appendChild(modalJS);
+
+      document.getElementById("fecharModalErroJS").addEventListener("click", (e) => {
+        e.preventDefault();
+        modalJS.classList.remove("ativo");
+      });
+    }
+
+    document.getElementById("tituloErroJS").innerText = titulo;
+    document.getElementById("mensagemErroJS").innerText = mensagem;
+    modalJS.classList.add("ativo");
+  };
+
   // ── Redirecionar para o login ─────────────────────────────────────────────
   const irParaLogin = () => {
     window.location.href = "../views/login.php";
@@ -44,13 +72,12 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // ── Limite de 100 caracteres na senha ────────────────────────────────────
   if (senhaInput) {
     senhaInput.setAttribute("maxlength", "100");
   }
 
   // ═══════════════════════════════════════════════════════════════════════════
-  // CHECKLIST VISUAL DA SENHA (Os textos de aviso da senha)
+  // CHECKLIST VISUAL DA SENHA
   // ═══════════════════════════════════════════════════════════════════════════
 
   const requisitosSenha = [
@@ -198,25 +225,21 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   // ═══════════════════════════════════════════════════════════════════════════
-  // VALIDAÇÃO VISUAL (Bordas Verdes e Vermelhas)
+  // VALIDAÇÃO VISUAL (Verde e Vermelho)
   // ═══════════════════════════════════════════════════════════════════════════
 
   const marcarCampo = (campo, valido) => {
     if (!campo) return;
 
-    // Se o campo estiver completamente vazio, remove qualquer cor (fica neutro)
     if (campo.value.trim() === "") {
         campo.classList.remove("campo-invalido", "campo-valido");
         return;
     }
 
-    // Se estiver preenchido corretamente, adiciona o VERDE e tira o vermelho
     if (valido) {
         campo.classList.add("campo-valido");
         campo.classList.remove("campo-invalido");
-    } 
-    // Se estiver errado, adiciona o VERMELHO e tira o verde
-    else {
+    } else {
         campo.classList.add("campo-invalido");
         campo.classList.remove("campo-valido");
     }
@@ -237,22 +260,30 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (form) {
     form.querySelectorAll("input, select").forEach((campo) => {
-      // Valida enquanto digita
       campo.addEventListener("input", () => validarCampo(campo));
-      // Valida ao sair do campo
       campo.addEventListener("blur", () => validarCampo(campo));
     });
 
     form.addEventListener("submit", (e) => {
-      // Valida todos os campos antes de enviar para garantir as cores
+      let formValido = true;
+
+      // Percorre todos os campos e checa se tem lixo ou se está vazio
       form.querySelectorAll("input, select").forEach((campo) => {
         const nome = campo.getAttribute("name");
         if (nome && regras[nome]) {
             const valido = regras[nome](campo.value);
             marcarCampo(campo, valido);
+            if (!valido) {
+                formValido = false;
+            }
         }
       });
-      // Deixamos o formulário livre para o PHP validar e mostrar o Modal!
+
+      // SE TIVER ALGO ERRADO: Bloqueia o envio e exibe a mensagem!
+      if (!formValido) {
+          e.preventDefault(); 
+          exibirErroJS("Erro de Validação", "Por favor, preencha corretamente os campos destacados em vermelho antes de realizar o cadastro.");
+      }
     });
   }
 });
