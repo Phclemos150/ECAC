@@ -50,15 +50,14 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // ═══════════════════════════════════════════════════════════════════════════
-  // CHECKLIST VISUAL DA SENHA
+  // CHECKLIST VISUAL DA SENHA (Os textos de aviso da senha)
   // ═══════════════════════════════════════════════════════════════════════════
 
-  const requisitos = [
+  const requisitosSenha = [
     { id: "req-min",       texto: "Mínimo 6 caracteres",             teste: (v) => v.length >= 6            },
-    { id: "req-maiuscula", texto: "Uma letra maiúscula",              teste: (v) => /[A-Z]/.test(v)          },
-    { id: "req-minuscula", texto: "Uma letra minúscula",              teste: (v) => /[a-z]/.test(v)          },
-    { id: "req-numero",    texto: "Um número",                        teste: (v) => /[0-9]/.test(v)          },
-    { id: "req-especial",  texto: "Um caractere especial (!@#$%...)", teste: (v) => /[^A-Za-z0-9]/.test(v)  },
+    { id: "req-maiuscula", texto: "Uma letra maiúscula",             teste: (v) => /[A-Z]/.test(v)          },
+    { id: "req-numero",    texto: "Um número",                       teste: (v) => /[0-9]/.test(v)          },
+    { id: "req-especial",  texto: "Um caractere especial (!@#$%...)",teste: (v) => /[^A-Za-z0-9]/.test(v)   },
   ];
 
   const senhaGrupo = document.querySelector(".senha-grupo");
@@ -73,7 +72,7 @@ document.addEventListener("DOMContentLoaded", () => {
       display: none;
     `;
 
-    requisitos.forEach((req) => {
+    requisitosSenha.forEach((req) => {
       const li = document.createElement("li");
       li.id = req.id;
       li.style.cssText = `
@@ -98,7 +97,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     checklist.style.display = valor.length > 0 ? "block" : "none";
 
-    requisitos.forEach((req) => {
+    requisitosSenha.forEach((req) => {
       const li = document.getElementById(req.id);
       if (!li) return;
       const ok    = req.teste(valor);
@@ -128,7 +127,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // ═══════════════════════════════════════════════════════════════════════════
-  // MÁSCARAS
+  // MÁSCARAS (CPF, Telefone, Data)
   // ═══════════════════════════════════════════════════════════════════════════
 
   const aplicarMascara = (input, fn, maxDigits) => {
@@ -181,87 +180,84 @@ document.addEventListener("DOMContentLoaded", () => {
   if (campoData)     aplicarMascara(campoData,     formatarData,      8);
 
   // ═══════════════════════════════════════════════════════════════════════════
-  // VALIDAÇÃO VISUAL DOS CAMPOS (SEM IMPEDIR O ENVIO DO FORMULÁRIO)
+  // REGRAS DE VALIDAÇÃO
   // ═══════════════════════════════════════════════════════════════════════════
-
-  const marcarCampo = (campo, valido) => {
-    campo.classList.remove("campo-valido"); // Nunca pinta de verde
-    campo.classList.toggle("campo-invalido", !valido && campo.value.trim() !== ""); // Só fica vermelho se falhar e não estiver vazio
-  };
-
-  const senhaValida = (v) =>
-    v.length >= 6         &&
-    v.length <= 100       &&
-    /[A-Z]/.test(v)       &&
-    /[a-z]/.test(v)       &&
-    /[0-9]/.test(v)       &&
-    /[^A-Za-z0-9]/.test(v);
 
   const regras = {
     nome_usuario:    (v) => v.trim().length >= 3,
     email:           (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()),
-    senha:           senhaValida,
+    senha:           (v) => v.length >= 6 && /[A-Z]/.test(v) && /[0-9]/.test(v) && /[^A-Za-z0-9]/.test(v),
     documento:       (v) => v.replace(/\D/g, "").length === 11,
-    data_nascimento: (v) => {
-      if (!/^\d{2}\/\d{2}\/\d{4}$/.test(v)) return false;
-      const [dia, mes, ano] = v.split("/").map(Number);
-      const nasc = new Date(ano, mes - 1, dia);
-      const hoje = new Date();
-      if (
-        nasc.getFullYear() !== ano ||
-        nasc.getMonth()    !== mes - 1 ||
-        nasc.getDate()     !== dia
-      ) return false;
-      const idade = hoje.getFullYear() - nasc.getFullYear();
-      return nasc < hoje && idade >= 1 && idade <= 120;
-    },
-    telefone:       (v) => { const d = v.replace(/\D/g, ""); return d.length >= 10 && d.length <= 11; },
-    instagram:      (v) => v.trim() === "" || v.trim() === "@" || v.trim().length >= 2,
-    grau_academico: (v) => v !== "",
-    nome_curso:     (v) => v.trim().length >= 2,
-    cidade:         (v) => v.trim().length >= 2,
-    estado:         (v) => /^[A-Za-z]{2}$/.test(v.trim()),
-    pais:           (v) => v.trim().length >= 2,
+    data_nascimento: (v) => /^\d{2}\/\d{2}\/\d{4}$/.test(v),
+    telefone:        (v) => v.replace(/\D/g, "").length >= 10,
+    grau_academico:  (v) => v !== "",
+    nome_curso:      (v) => v.trim().length >= 2,
+    cidade:          (v) => v.trim().length >= 2,
+    estado:          (v) => /^[A-Za-z]{2}$/.test(v.trim()),
+    pais:            (v) => v.trim().length >= 2
+  };
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // VALIDAÇÃO VISUAL (Bordas Verdes e Vermelhas)
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  const marcarCampo = (campo, valido) => {
+    if (!campo) return;
+
+    // Se o campo estiver completamente vazio, remove qualquer cor (fica neutro)
+    if (campo.value.trim() === "") {
+        campo.classList.remove("campo-invalido", "campo-valido");
+        return;
+    }
+
+    // Se estiver preenchido corretamente, adiciona o VERDE e tira o vermelho
+    if (valido) {
+        campo.classList.add("campo-valido");
+        campo.classList.remove("campo-invalido");
+    } 
+    // Se estiver errado, adiciona o VERMELHO e tira o verde
+    else {
+        campo.classList.add("campo-invalido");
+        campo.classList.remove("campo-valido");
+    }
   };
 
   const validarCampo = (campo) => {
     const nome = campo.getAttribute("name");
-    if (!nome || !(nome in regras)) return true;
     
-    // A senha principal não ganha borda vermelha/verde (temos o checklist visual para isso)
-    if (nome === "senha") {
-        campo.classList.remove("campo-invalido", "campo-valido");
-        return true;
+    if (nome && regras[nome]) {
+        const valido = regras[nome](campo.value);
+        marcarCampo(campo, valido);
+        return valido;
     }
-    
-    const valido = regras[nome](campo.value);
-    marcarCampo(campo, valido);
-    return valido;
+    return true;
   };
 
   const form = document.querySelector("form");
 
   if (form) {
-    form.querySelectorAll("input, select, textarea").forEach((campo) => {
-      const nome = campo.getAttribute("name");
-      if (!nome || !(nome in regras)) return;
-      
-      // Valida o campo enquanto digita ou perde o foco
-      campo.addEventListener("input",  () => validarCampo(campo));
-      campo.addEventListener("change", () => validarCampo(campo));
-      campo.addEventListener("blur",   () => validarCampo(campo));
+    form.querySelectorAll("input, select").forEach((campo) => {
+      // Valida enquanto digita
+      campo.addEventListener("input", () => validarCampo(campo));
+      // Valida ao sair do campo
+      campo.addEventListener("blur", () => validarCampo(campo));
     });
 
-    form.addEventListener("submit", () => {
-      // Deixa o formulário submeter sempre. O PHP trata os erros de validação e exibe o modal!
-      form.querySelectorAll("input, select, textarea").forEach((campo) => {
-        validarCampo(campo);
+    form.addEventListener("submit", (e) => {
+      // Valida todos os campos antes de enviar para garantir as cores
+      form.querySelectorAll("input, select").forEach((campo) => {
+        const nome = campo.getAttribute("name");
+        if (nome && regras[nome]) {
+            const valido = regras[nome](campo.value);
+            marcarCampo(campo, valido);
+        }
       });
+      // Deixamos o formulário livre para o PHP validar e mostrar o Modal!
     });
   }
 });
 
-// ── Contato ───────────────────────────────────────────────────────────────────
+// ── Contato (Funções Globais) ─────────────────────────────────────────────────
 
 function abrirEmail(e) {
   e.preventDefault();

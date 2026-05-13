@@ -100,7 +100,7 @@ document.addEventListener("DOMContentLoaded", () => {
   toggleSenha("novaSenha", "toggleNovaSenha");
   toggleSenha("confirmarNovaSenha", "toggleConfirmarSenha");
 
-  /* Requisitos de Login e Recuperação de Senha */
+  /* Requisitos de Recuperação de Senha */
   const requisitos = [
     { id: "req-min", texto: "Mínimo 6 caracteres", teste: (v) => v.length >= 6 },
     { id: "req-maiuscula", texto: "Uma letra maiúscula", teste: (v) => /[A-Z]/.test(v) },
@@ -141,7 +141,7 @@ document.addEventListener("DOMContentLoaded", () => {
   criarChecklist(novaSenhaInput, "login");
   criarChecklist(novaSenhaRecuperar, "recuperar");
 
-  // --- VALIDAÇÃO VISUAL (BORDAS) DEFINITIVA ---
+  // --- VALIDAÇÃO VISUAL (BORDAS) ---
   const marcarCampo = (campo, valido) => {
     if (!campo) return;
     campo.classList.remove("campo-valido"); // NUNCA pinta de verde
@@ -149,7 +149,6 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   const regras = {
-    email: (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()),
     emailRecuperacao: (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()),
     cpfRecuperacao: (v) => v.replace(/\D/g, "").length === 11,
     novaSenhaRecuperar: (v) => v.length >= 6 && /[A-Z]/.test(v) && /[0-9]/.test(v) && /[^A-Za-z0-9]/.test(v),
@@ -159,26 +158,18 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
-  // REMOVIDA A VALIDAÇÃO ENQUANTO DIGITA!
-  // Agora, a única coisa que acontece enquanto você digita é SUMIR com a borda vermelha se você estiver corrigindo um erro.
   document.querySelectorAll("input").forEach(input => {
     input.addEventListener("input", () => {
       input.classList.remove("campo-invalido");
     });
   });
 
+  // 👇 A MÁGICA ACONTECE AQUI 👇
   if (formLogin) {
     formLogin.addEventListener("submit", (e) => {
-      const email = formLogin.querySelector('input[name="email"]');
-      const senha = formLogin.querySelector('input[name="senha"]');
-
-      const emailOk = regras.email(email.value);
-      const senhaOk = senha.value.trim() !== "";
-
-      // Só avalia a cor vermelha quando clica no botão "Entrar"
-      marcarCampo(email, emailOk);
-
-      if (!emailOk || !senhaOk) e.preventDefault();
+      // Deixamos o formulário livre! Não prevenimos o envio (preventDefault) nem pintamos bordas.
+      // Agora o PHP do AutentController vai receber os campos vazios, bater o martelo
+      // e disparar o seu Modal com a mensagem correta!
     });
   }
 
