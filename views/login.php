@@ -1,5 +1,9 @@
 <?php
-session_start();
+
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 
 /* Recebe os dados de erro de login, se houver */
 $erroTitulo = $_SESSION['modal_erro_titulo'] ?? '';

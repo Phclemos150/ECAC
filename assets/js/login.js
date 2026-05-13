@@ -68,8 +68,8 @@ document.addEventListener("DOMContentLoaded", () => {
   /* Máscara de CPF */
   if (cpfRecuperacao) {
     cpfRecuperacao.addEventListener("input", (e) => {
-      let v = e.target.value.replace(/\D/g, ""); // Remove todos os dígitos
-      if (v.length > 11) v = v.slice(0, 11); // Limita para 11 dígitos
+      let v = e.target.value.replace(/\D/g, ""); 
+      if (v.length > 11) v = v.slice(0, 11); 
       if (v.length > 9) {
         v = v.replace(/^(\d{3})(\d{3})(\d{3})(\d{1,2}).*/, "$1.$2.$3-$4");
       } else if (v.length > 6) {
@@ -100,7 +100,7 @@ document.addEventListener("DOMContentLoaded", () => {
   toggleSenha("novaSenha", "toggleNovaSenha");
   toggleSenha("confirmarNovaSenha", "toggleConfirmarSenha");
 
-  /* Requesitos de Login e Recuperação de Senha */
+  /* Requisitos de Login e Recuperação de Senha */
   const requisitos = [
     { id: "req-min", texto: "Mínimo 6 caracteres", teste: (v) => v.length >= 6 },
     { id: "req-maiuscula", texto: "Uma letra maiúscula", teste: (v) => /[A-Z]/.test(v) },
@@ -123,7 +123,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     const container = inputAlvo.closest('.password-wrapper') || inputAlvo.closest('.password-wrapper-cs');
-    container.appendChild(checklist);
+    if(container) container.appendChild(checklist);
 
     inputAlvo.addEventListener("input", () => {
       const valor = inputAlvo.value;
@@ -141,50 +141,42 @@ document.addEventListener("DOMContentLoaded", () => {
   criarChecklist(novaSenhaInput, "login");
   criarChecklist(novaSenhaRecuperar, "recuperar");
 
-  // --- VALIDAÇÃO VISUAL (BORDAS) ---
+  // --- VALIDAÇÃO VISUAL (BORDAS) DEFINITIVA ---
   const marcarCampo = (campo, valido) => {
     if (!campo) return;
-    if (campo.value.trim() === "") {
-      campo.classList.remove("campo-valido", "campo-invalido");
-      return;
-    }
-    campo.classList.toggle("campo-valido", valido);
-    campo.classList.toggle("campo-invalido", !valido);
+    campo.classList.remove("campo-valido"); // NUNCA pinta de verde
+    campo.classList.toggle("campo-invalido", !valido); // Pinta de vermelho SE estiver inválido na hora de salvar
   };
 
   const regras = {
     email: (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()),
-    senha: (v) => v.length >= 6 && /[A-Z]/.test(v) && /[0-9]/.test(v) && /[^A-Za-z0-9]/.test(v),
     emailRecuperacao: (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()),
     cpfRecuperacao: (v) => v.replace(/\D/g, "").length === 11,
     novaSenhaRecuperar: (v) => v.length >= 6 && /[A-Z]/.test(v) && /[0-9]/.test(v) && /[^A-Za-z0-9]/.test(v),
     confirmarNovaSenhaRecuperar: (v) => {
-      const nova = document.getElementById("novaSenhaRecuperar").value;
+      const nova = document.getElementById("novaSenhaRecuperar") ? document.getElementById("novaSenhaRecuperar").value : "";
       return v === nova && v !== "" && regras.novaSenhaRecuperar(v);
     }
   };
 
-  const validarCampo = (campo) => {
-    const nome = campo.id || campo.getAttribute("name");
-    if (regras[nome]) {
-      marcarCampo(campo, regras[nome](campo.value));
-    }
-  };
-
+  // REMOVIDA A VALIDAÇÃO ENQUANTO DIGITA!
+  // Agora, a única coisa que acontece enquanto você digita é SUMIR com a borda vermelha se você estiver corrigindo um erro.
   document.querySelectorAll("input").forEach(input => {
-    input.addEventListener("input", () => validarCampo(input));
-    input.addEventListener("blur", () => validarCampo(input));
+    input.addEventListener("input", () => {
+      input.classList.remove("campo-invalido");
+    });
   });
 
   if (formLogin) {
     formLogin.addEventListener("submit", (e) => {
       const email = formLogin.querySelector('input[name="email"]');
       const senha = formLogin.querySelector('input[name="senha"]');
-      const emailOk = regras.email(email.value);
-      const senhaOk = regras.senha(senha.value);
 
+      const emailOk = regras.email(email.value);
+      const senhaOk = senha.value.trim() !== "";
+
+      // Só avalia a cor vermelha quando clica no botão "Entrar"
       marcarCampo(email, emailOk);
-      marcarCampo(senha, senhaOk);
 
       if (!emailOk || !senhaOk) e.preventDefault();
     });
@@ -204,6 +196,8 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!usuarioValidado) {
         if (!regras.emailRecuperacao(email) || !regras.cpfRecuperacao(cpf)) {
           exibirAlertaJS("Dados Inválidos", "Por favor, preencha o e-mail e o CPF corretamente.");
+          
+          // Só avalia a cor vermelha quando clica no botão
           marcarCampo(emailRecuperacao, regras.emailRecuperacao(email));
           marcarCampo(cpfRecuperacao, regras.cpfRecuperacao(cpf));
           return;
@@ -237,6 +231,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (!regras.novaSenhaRecuperar(senha) || senha !== confirma) {
           exibirAlertaJS("Aviso", "Verifique se a senha atende aos requisitos e se a confirmação é idêntica.");
+          
+          // Só avalia a cor vermelha quando clica no botão "Salvar"
+          marcarCampo(novaSenhaRecuperar, regras.novaSenhaRecuperar(senha));
+          marcarCampo(confirmarNovaSenhaRecuperar, senha === confirma && senha !== "");
           return;
         }
 

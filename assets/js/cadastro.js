@@ -181,12 +181,12 @@ document.addEventListener("DOMContentLoaded", () => {
   if (campoData)     aplicarMascara(campoData,     formatarData,      8);
 
   // ═══════════════════════════════════════════════════════════════════════════
-  // VALIDAÇÃO VISUAL DOS CAMPOS
+  // VALIDAÇÃO VISUAL DOS CAMPOS (SEM IMPEDIR O ENVIO DO FORMULÁRIO)
   // ═══════════════════════════════════════════════════════════════════════════
 
   const marcarCampo = (campo, valido) => {
-    campo.classList.remove("campo-valido", "campo-invalido");
-    campo.classList.add(valido ? "campo-valido" : "campo-invalido");
+    campo.classList.remove("campo-valido"); // Nunca pinta de verde
+    campo.classList.toggle("campo-invalido", !valido && campo.value.trim() !== ""); // Só fica vermelho se falhar e não estiver vazio
   };
 
   const senhaValida = (v) =>
@@ -227,6 +227,13 @@ document.addEventListener("DOMContentLoaded", () => {
   const validarCampo = (campo) => {
     const nome = campo.getAttribute("name");
     if (!nome || !(nome in regras)) return true;
+    
+    // A senha principal não ganha borda vermelha/verde (temos o checklist visual para isso)
+    if (nome === "senha") {
+        campo.classList.remove("campo-invalido", "campo-valido");
+        return true;
+    }
+    
     const valido = regras[nome](campo.value);
     marcarCampo(campo, valido);
     return valido;
@@ -238,28 +245,18 @@ document.addEventListener("DOMContentLoaded", () => {
     form.querySelectorAll("input, select, textarea").forEach((campo) => {
       const nome = campo.getAttribute("name");
       if (!nome || !(nome in regras)) return;
+      
+      // Valida o campo enquanto digita ou perde o foco
       campo.addEventListener("input",  () => validarCampo(campo));
       campo.addEventListener("change", () => validarCampo(campo));
       campo.addEventListener("blur",   () => validarCampo(campo));
     });
 
-    form.addEventListener("submit", (e) => {
-      let tudoValido = true;
-
+    form.addEventListener("submit", () => {
+      // Deixa o formulário submeter sempre. O PHP trata os erros de validação e exibe o modal!
       form.querySelectorAll("input, select, textarea").forEach((campo) => {
-        const nome = campo.getAttribute("name");
-        if (!nome || !(nome in regras)) return;
-        if (!validarCampo(campo)) tudoValido = false;
+        validarCampo(campo);
       });
-
-      if (!tudoValido) {
-        e.preventDefault();
-        const primeiroInvalido = form.querySelector(".campo-invalido");
-        if (primeiroInvalido) {
-          primeiroInvalido.scrollIntoView({ behavior: "smooth", block: "center" });
-          primeiroInvalido.focus();
-        }
-      }
     });
   }
 });

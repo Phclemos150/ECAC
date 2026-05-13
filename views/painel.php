@@ -1,6 +1,18 @@
 <?php
-// Exemplo de variável (pode vir do banco depois)
-$usuario = "Admin";
+// 1. CHAMA O CONTROLLER DE AUTENTICAÇÃO
+require_once __DIR__ . '/../controllers/AutentController.php';
+
+// 2. BARREIRA DE SEGURANÇA: Exige que o usuário esteja logado.
+// Se não estiver, ele é chutado pro login. Se estiver, puxamos os dados.
+$usuario = AutentController::verificarAcesso();
+
+// Facilitador: coloca o array de permissões em uma variável curta para usarmos nos menus
+$permissoes = $usuario['permissoes'] ?? [];
+
+// Define a foto de perfil (usa a padrão se o usuário não tiver feito upload)
+$caminhoFoto = !empty($usuario['foto']) 
+    ? '../assets/uploads/fotos_perfil/' . htmlspecialchars($usuario['foto']) 
+    : '../assets/img/default-user.png';
 ?>
 
 <!DOCTYPE html>
@@ -8,9 +20,9 @@ $usuario = "Admin";
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Painel</title>
+  <title>Painel - ECAC 2026</title>
 
-  <link rel="stylesheet" href="painel.css">
+  <link rel="stylesheet" href="../assets/css/painel.css">
 
   <!-- LUCIDE ICONS -->
   <script src="https://unpkg.com/lucide@latest"></script>
@@ -22,7 +34,7 @@ $usuario = "Admin";
 <header class="header">
 
   <div class="header-left">
-    <img src="img/Só a Logo ECAC 2026.png" class="logo">
+    <img src="../assets/img/Só a Logo ECAC 2026.png" class="logo" alt="Logo">
     
     <div class="title">
       <span class="verde">Encontro</span>
@@ -39,11 +51,12 @@ $usuario = "Admin";
       <input type="text" placeholder="Pesquisar...">
     </div>
 
-    <img src="img/icone_email_padrao.png" class="icon">
+    <img src="../assets/img/icone_email_padrao.png" class="icon" alt="Mensagens">
 
     <div class="user">
-      <img src="img/default-user.png" class="avatar">
-      <span><?php echo $usuario; ?></span>
+      <!-- Exibe a foto e o nome reais do usuário logado -->
+      <img src="<?php echo $caminhoFoto; ?>" class="avatar" alt="Avatar do Usuário">
+      <span><?php echo htmlspecialchars($usuario['nome']); ?></span>
       <span class="arrow">▾</span>
     </div>
 
@@ -55,7 +68,7 @@ $usuario = "Admin";
 
   <div class="menu-title">Menu</div>
 
-  <!-- VISÃO GERAL -->
+  <!-- VISÃO GERAL (Sempre visível para quem está logado) -->
   <div class="menu-group">
     <div class="menu-item active" data-page="visao-geral">
       <i data-lucide="home"></i>
@@ -64,6 +77,7 @@ $usuario = "Admin";
   </div>
 
   <!-- EVENTOS -->
+  <?php if (in_array('consultar_evento', $permissoes) || in_array('criar_evento', $permissoes)): ?>
   <div class="menu-group">
     <div class="menu-item" data-page="eventos">
       <i data-lucide="calendar"></i>
@@ -79,8 +93,10 @@ $usuario = "Admin";
       <a data-page="expositores">Expositores</a>
     </div>
   </div>
+  <?php endif; ?>
 
   <!-- USUÁRIOS -->
+  <?php if (in_array('gerenciar_usuarios', $permissoes)): ?>
   <div class="menu-group">
     <div class="menu-item" data-page="usuarios">
       <i data-lucide="users"></i>
@@ -93,8 +109,10 @@ $usuario = "Admin";
       <a data-page="funcoes">Funções de Usuários</a>
     </div>
   </div>
+  <?php endif; ?>
 
   <!-- ACADÊMICO -->
+  <?php if (in_array('acessar_gestao_academica', $permissoes) || in_array('submeter_trabalho', $permissoes)): ?>
   <div class="menu-group">
     <div class="menu-item" data-page="academico">
       <i data-lucide="book-open"></i>
@@ -104,21 +122,27 @@ $usuario = "Admin";
 
     <div class="submenu">
       <a data-page="submissoes">Submissões</a>
-      <a data-page="avaliacoes">Avaliações</a>
+      <?php if (in_array('validar_trabalho', $permissoes)): ?>
+        <a data-page="avaliacoes">Avaliações</a>
+      <?php endif; ?>
       <a data-page="comissao-cientifica">Comissão Científica</a>
-      <a data-page="comissao-academica">Comissão Acadêmica</a>
+      <a data-page="comissao-academica">Comissão Organizadora</a>
     </div>
   </div>
+  <?php endif; ?>
 
   <!-- PATROCINADORES -->
+  <?php if (in_array('gerenciar_patrocinador', $permissoes)): ?>
   <div class="menu-group">
     <div class="menu-item" data-page="patrocinio">
       <i data-lucide="dollar-sign"></i>
       <p>Patrocinadores</p>
     </div>
   </div>
+  <?php endif; ?>
 
   <!-- SISTEMA -->
+  <?php if (in_array('ver_painel_admin', $permissoes)): ?>
   <div class="menu-group">
     <div class="menu-item" data-page="sistema">
       <i data-lucide="settings"></i>
@@ -132,13 +156,28 @@ $usuario = "Admin";
       <a data-page="backup">Backup do DB</a>
     </div>
   </div>
+  <?php endif; ?>
+
+  <!-- BOTÃO DE SAIR -->
+  <div class="menu-group" style="margin-top: auto; padding-top: 20px;">
+    <a href="../controllers/AutentController.php?acao=logout" class="menu-item" style="text-decoration: none; color: inherit;">
+      <i data-lucide="log-out"></i>
+      <p>Sair</p>
+    </a>
+  </div>
 
 </aside>
 
-<main id="content"></main>
+<main id="content">
+    <!-- O conteúdo de cada página será carregado aqui -->
+</main>
 
 <!-- JS -->
-<script src="painel.js"></script>
+<script>
+  // Inicializa os ícones
+  lucide.createIcons();
+</script>
+<script src="../assets/js/painel.js"></script>
 
 </body>
 </html>
