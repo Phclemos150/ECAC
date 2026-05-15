@@ -273,10 +273,12 @@ class AutentController
 
 
     // ══════════════════════════════════════════════════════════════
-    // BARREIRA DE SEGURANÇA: Exige login e opcionalmente uma permissão específica
+    // BARREIRA DE SEGURANÇA E INICIALIZAÇÃO DE AUDITORIA
     // ══════════════════════════════════════════════════════════════
     public static function verificarAcesso(?string $permissaoExigida = null): array
     {
+        global $con; // Puxa a conexão do banco para avisar os Triggers
+
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
@@ -289,11 +291,22 @@ class AutentController
 
         $usuario = $_SESSION['user_logado'];
 
-        // Verifica permissão específica
+        // Verifica permissão específica (RBAC)
         if ($permissaoExigida !== null && !in_array($permissaoExigida, $usuario['permissoes'] ?? [], true)) {
+            // ITEM 2 DA SUA LISTA: REGISTRO DE ACESSO NEGADO
+            $id = (int) $usuario['id'];
+            $funcao = (int) ($usuario['id_funcao'] ?? 8);
+            $acao = "TENTOU ACESSAR: " . $permissaoExigida;
+            $con->query("INSERT INTO log_sistema (usuario_id, funcao_id, acao, entidade_afetada, id_entidade, data_log, hora_log) VALUES ($id, $funcao, '$acao', 'seguranca', 0, CURDATE(), CURTIME())");
+
             header("Location: ../views/sem-permissao.php");
             exit;
         }
+
+        // ITEM 3 DA SUA LISTA: AVISA OS TRIGGERS DO BANCO QUEM É O USUÁRIO
+        $id_logado = (int) $usuario['id'];
+        $funcao_logada = (int) ($usuario['id_funcao'] ?? 8);
+        $con->query("SET @usuario_ativo = $id_logado, @funcao_ativa = $funcao_logada");
 
         return $usuario;
     }

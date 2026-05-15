@@ -25,11 +25,12 @@ class UsuarioModel
                 LEFT JOIN funcao_usuario fu ON u.id_usuario = fu.usuario_id
                 LEFT JOIN funcao f ON fu.funcao_id = f.id_funcao
                 WHERE u.email = ? 
+                ORDER BY f.id_funcao ASC 
                 LIMIT 1";
 
         $stmt = $this->con->prepare($sql);
         $stmt->bind_param("s", $email);
-        $stmt->execute();   
+        $stmt->execute();
 
         $result = $stmt->get_result();
         $usuario = $result->fetch_assoc() ?: null;
@@ -140,29 +141,29 @@ class UsuarioModel
             return false;
         }
     }
-    /* Função para Validar Recuperação de Senha */ 
+    /* Função para Validar Recuperação de Senha */
     public function validarUsuarioRecuperacao(string $email, string $documento): ?array
     {
         $sql = "SELECT id_usuario FROM usuario WHERE email = ? AND documento = ? LIMIT 1";
-        
+
         $stmt = $this->con->prepare($sql);
         $stmt->bind_param("ss", $email, $documento);
         $stmt->execute();
-        
+
         $result = $stmt->get_result();
         $usuario = $result->fetch_assoc() ?: null;
         $stmt->close();
 
         return $usuario;
     }
-    /* Função para Atualizar a Senha */ 
+    /* Função para Atualizar a Senha */
     public function atualizarSenha(string $email, string $senhaHash): bool
     {
         $sql = "UPDATE usuario SET senha_hash = ? WHERE email = ?";
-        
+
         $stmt = $this->con->prepare($sql);
         $stmt->bind_param("ss", $senhaHash, $email);
-        
+
         $resultado = $stmt->execute();
         $stmt->close();
 

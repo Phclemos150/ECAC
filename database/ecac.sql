@@ -1,400 +1,259 @@
-<?php
-
-require_once __DIR__ . '/../config/config.php';
-require_once __DIR__ . '/../models/UsuarioModel.php';
-
-// ══════════════════════════════════════════════════════════════════
-// EXCEÇÕES CUSTOMIZADAS
-// ══════════════════════════════════════════════════════════════════
-
-class ErroLoginException extends RuntimeException
-{
-    public function __construct(
-        private string $titulo,
-        string $mensagem
-    ) {
-        parent::__construct($mensagem);
-    }
-    public function getTitulo(): string
-    {
-        return $this->titulo;
-    }
-}
-
-class ErroCadastroException extends RuntimeException
-{
-    public function __construct(
-        private string $titulo,
-        string $mensagem,
-        private bool $redirecionarLogin = false
-    ) {
-        parent::__construct($mensagem);
-    }
-    public function getTitulo(): string
-    {
-        return $this->titulo;
-    }
-    public function deveRedirecionarLogin(): bool
-    {
-        return $this->redirecionarLogin;
-    }
-}
-
-
-// ══════════════════════════════════════════════════════════════════
-// CONTROLLER DE AUTENTICAÇÃO
-// ══════════════════════════════════════════════════════════════════
-
-class AutentController
-{
-    private UsuarioModel $usuarioModel;
-
-    public function __construct($con)
-    {
-        $this->usuarioModel = new UsuarioModel($con);
-    }
-
-
-    // ──────────────────────────────────────────────────────────────
-    // LOGIN
-    // ──────────────────────────────────────────────────────────────
-    public function login(): void
-    {
-        $this->iniciarSessao();
-
-        try {
-            $email = trim($_POST['email'] ?? '');
-            $senha = trim($_POST['senha'] ?? '');
-
-            if (empty($email) || empty($senha)) {
-                throw new ErroLoginException("Erro de Validação", "Todos os campos devem ser preenchidos!");
-            }
-
-            if (!preg_match('/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/', $email)) {
-                throw new ErroLoginException("Erro de Login", "Email ou senha inválidos!");
-            }
-
-            $usuario = $this->usuarioModel->buscarUsuarioPorEmail($email);
-
-            if (!$usuario) {
-                $_SESSION['redirecionar_cadastro'] = true;
-                throw new ErroLoginException("Erro de Autenticação", "Usuário não cadastrado!");
-            }
-
-            if ($usuario['status_conta'] !== 'ativo') {
-                throw new ErroLoginException("Conta Inativa", "Entre em contato com o suporte.");
-            }
-
-            if (!password_verify($senha, $usuario['senha_hash'])) {
-                throw new ErroLoginException("Erro de Login", "Email ou senha incorretos!");
-            }
-
-            // Previne Session Hijacking
-            session_regenerate_id(true);
-
-            // Busca permissões RBAC
-            $permissoes = $this->buscarPermissoes((int) $usuario['id_usuario']);
-
-            // Salva dados e permissões na sessão
-            $_SESSION['user_logado'] = [
-                'id' => $usuario['id_usuario'],
-                'nome' => $usuario['nome_usuario'],
-                'email' => $usuario['email'],
-                'foto' => $usuario['foto_perfil'] ?? null,
-                'id_funcao' => $usuario['id_funcao'],
-                'nome_funcao' => $usuario['nome_funcao'],
-                'permissoes' => $permissoes, // Armazena nomes (strings) para legibilidade
-            ];
-
-            // Redireciona para o painel principal
-            header('Location: ../views/painel.php');
-            exit;
-
-        } catch (ErroLoginException $e) {
-            $_SESSION['modal_erro_titulo'] = $e->getTitulo();
-            $_SESSION['modal_erro_mensagem'] = $e->getMessage();
-            header('Location: ../views/login.php');
-            exit;
-        }
-    }
-
-
-    // ──────────────────────────────────────────────────────────────
-    // CADASTRO
-    // ──────────────────────────────────────────────────────────────
-    public function cadastro(): void
-    {
-        $this->iniciarSessao();
-
-        try {
-            $email = trim($_POST['email'] ?? '');
-            $senha = trim($_POST['senha'] ?? '');
-            $doc = trim($_POST['documento'] ?? '');
-
-            $dados = [
-                'nome' => trim($_POST['nome_usuario'] ?? ''),
-                'email' => $email,
-                'senha_hash' => !empty($senha) ? password_hash($senha, PASSWORD_DEFAULT) : '',
-                'documento' => $doc,
-                'data_nascimento' => implode('-', array_reverse(explode('/', $_POST['data_nascimento'] ?? ''))),
-                'telefone' => trim($_POST['telefone'] ?? ''),
-                'instagram' => trim($_POST['instagram'] ?? ''),
-                'grau_academico' => trim($_POST['grau_academico'] ?? ''),
-                'nome_curso' => trim($_POST['nome_curso'] ?? ''),
-                'cidade' => trim($_POST['cidade'] ?? ''),
-                'estado' => trim($_POST['estado'] ?? ''),
-                'pais' => trim($_POST['pais'] ?? ''),
-                'foto_perfil' => null,
-            ];
-
-            // Lista de campos obrigatórios
-            $camposObrigatorios = [
-                'nome',
-                'email',
-                'senha_hash',
-                'documento',
-                'data_nascimento',
-                'grau_academico',
-                'nome_curso',
-                'cidade',
-                'estado',
-                'pais',
-            ];
-
-            foreach ($camposObrigatorios as $campo) {
-                if (empty(trim((string) $dados[$campo]))) {
-                    throw new ErroCadastroException("Erro de Validação", "Todos os campos devem ser preenchidos!");
-                }
-            }
-
-            if ($this->usuarioModel->verificarDados('email', $email)) {
-                throw new ErroCadastroException(
-                    "Erro de Cadastro",
-                    "Os dados informados já possuem uma conta vinculada. Verifique suas informações!",
-                    true
-                );
-            }
-
-            if ($this->usuarioModel->verificarDados('documento', $doc)) {
-                throw new ErroCadastroException(
-                    "Erro de Cadastro",
-                    "Os dados informados já possuem uma conta vinculada. Verifique suas informações!",
-                    true
-                );
-            }
-
-            // Processa upload da foto
-            $dados['foto_perfil'] = $this->processarFotoPerfil();
-
-            if (!$this->usuarioModel->cadastrarUsuario($dados)) {
-                throw new ErroCadastroException("Erro de Cadastro", "Não foi possível concluir o cadastro. Tente novamente!");
-            }
-
-            $_SESSION['modal_sucesso_titulo'] = "Cadastro Realizado";
-            $_SESSION['modal_sucesso_mensagem'] = "Sua conta foi criada com sucesso!";
-            $_SESSION['redirecionar_login'] = true;
-            header('Location: ../views/cadastro.php');
-            exit;
-
-        } catch (ErroCadastroException $e) {
-            if ($e->deveRedirecionarLogin()) {
-                $_SESSION['redirecionar_login'] = true;
-            }
-            $_SESSION['modal_erro_titulo'] = $e->getTitulo();
-            $_SESSION['modal_erro_mensagem'] = $e->getMessage();
-            header('Location: ../views/cadastro.php');
-            exit;
-        }
-    }
-
-
-    // ──────────────────────────────────────────────────────────────
-    // RECUPERAÇÃO DE SENHA
-    // ──────────────────────────────────────────────────────────────
-    public function validarRecuperacao(): void
-    {
-        ob_clean();
-        header('Content-Type: application/json');
-
-        $email = trim($_POST['email'] ?? '');
-        $cpf = trim($_POST['cpf'] ?? '');
-
-        $usuario = $this->usuarioModel->validarUsuarioRecuperacao($email, $cpf);
-
-        echo json_encode(
-            $usuario
-            ? ['sucesso' => true]
-            : ['sucesso' => false, 'mensagem' => 'E-mail ou CPF não conferem.']
-        );
-        exit;
-    }
-
-
-    // ──────────────────────────────────────────────────────────────
-    // ATUALIZAR SENHA
-    // ──────────────────────────────────────────────────────────────
-    public function atualizarSenha(): void
-    {
-        header('Content-Type: application/json');
-
-        $email = trim($_POST['email'] ?? '');
-        $novaSenha = trim($_POST['novaSenha'] ?? '');
-
-        if (empty($novaSenha) || strlen($novaSenha) < 6) {
-            echo json_encode(['sucesso' => false, 'mensagem' => 'Senha inválida.']);
-            exit;
-        }
-
-        $resultado = $this->usuarioModel->atualizarSenha(
-            $email,
-            password_hash($novaSenha, PASSWORD_DEFAULT)
-        );
-
-        echo json_encode(
-            $resultado
-            ? ['sucesso' => true]
-            : ['sucesso' => false, 'mensagem' => 'Erro ao atualizar banco.']
-        );
-        exit;
-    }
-
-
-    // ──────────────────────────────────────────────────────────────
-    // LOGOUT
-    // ──────────────────────────────────────────────────────────────
-    public function logout(): void
-    {
-        $this->iniciarSessao();
-        session_unset();
-        session_destroy();
-        header('Location: ../views/index.php');
-        exit;
-    }
-
-
-    // ══════════════════════════════════════════════════════════════
-    // BARREIRA DE SEGURANÇA: Exige login e opcionalmente uma permissão específica
-    // ══════════════════════════════════════════════════════════════
-    public static function verificarAcesso(?string $permissaoExigida = null): array
-    {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
-
-        // Redireciona se não logado
-        if (!isset($_SESSION['user_logado'])) {
-            header("Location: ../views/login.php");
-            exit;
-        }
-
-        $usuario = $_SESSION['user_logado'];
-
-        // Verifica permissão específica
-        if ($permissaoExigida !== null && !in_array($permissaoExigida, $usuario['permissoes'] ?? [], true)) {
-            header("Location: ../views/sem-permissao.php");
-            exit;
-        }
-
-        return $usuario;
-    }
-
-
-    // ══════════════════════════════════════════════════════════════
-    // MÉTODOS PRIVADOS — auxiliares internos
-    // ══════════════════════════════════════════════════════════════
-
-    // Inicia sessão com segurança
-    private function iniciarSessao(): void
-    {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
-    }
-
-    // Retorna array com os nomes das permissões do usuário via RBAC (MySQLi)
-    private function buscarPermissoes(int $idUsuario): array
-    {
-        global $con;
-
-        $sql = "
-            SELECT DISTINCT p.nome_permissao
-            FROM usuario u
-            JOIN funcao_usuario   fu ON fu.usuario_id   = u.id_usuario
-            JOIN funcao_permissao fp ON fp.funcao_id    = fu.funcao_id
-            JOIN permissao        p  ON p.id_permissao  = fp.permissao_id
-            WHERE u.id_usuario = ? 
-        ";
-
-        // Prepara consulta
-        $stmt = $con->prepare($sql);
-
-        // Passa o ID (inteiro)
-        $stmt->bind_param("i", $idUsuario);
-
-        // Executa
-        $stmt->execute();
-
-        // Pega resultado
-        $resultado = $stmt->get_result();
-
-        // Extrai nomes
-        $permissoes = [];
-        while ($linha = $resultado->fetch_assoc()) {
-            $permissoes[] = $linha['nome_permissao'];
-        }
-
-        return $permissoes;
-    }
-
-    // Processa upload de foto e retorna o nome do arquivo (ou null)
-    private function processarFotoPerfil(): ?string
-    {
-        if (!isset($_FILES['foto_perfil']) || $_FILES['foto_perfil']['error'] !== UPLOAD_ERR_OK) {
-            return null;
-        }
-
-        $extensao = strtolower(pathinfo($_FILES['foto_perfil']['name'], PATHINFO_EXTENSION));
-        $extensoes_permitidas = ['jpg', 'jpeg', 'png', 'webp'];
-
-        if (!in_array($extensao, $extensoes_permitidas)) {
-            throw new ErroCadastroException(
-                "Erro de Arquivo",
-                "Apenas imagens (JPG, PNG ou WEBP) são permitidas para a foto de perfil!"
-            );
-        }
-
-        $diretorio = __DIR__ . '/../assets/uploads/fotos_perfil/';
-        $nomeArquivo = uniqid('user_') . '.' . $extensao;
-        $caminhoDestino = $diretorio . $nomeArquivo;
-
-        if (!move_uploaded_file($_FILES['foto_perfil']['tmp_name'], $caminhoDestino)) {
-            return null; // Falha no upload
-        }
-
-        return $nomeArquivo;
-    }
-}
-
-
-// ══════════════════════════════════════════════════════════════════
-// ROTEAMENTO
-// ══════════════════════════════════════════════════════════════════
-if (isset($_GET['acao'])) {
-
-    $controller = new AutentController($con);
-
-    match ($_GET['acao']) {
-        'login' => $controller->login(),
-        'cadastro' => $controller->cadastro(),
-        'logout' => $controller->logout(),
-        'validarRecuperacao' => $controller->validarRecuperacao(),
-        'atualizarSenha' => $controller->atualizarSenha(),
-        default => (function () {
-                if (session_status() === PHP_SESSION_NONE)
-                    session_start();
-                $_SESSION['login_error'] = 'Ação Inválida!';
-                header('Location: ../views/login.php');
-                exit;
-            })()
-    };
-}
+DROP DATABASE IF EXISTS ecac;
+CREATE DATABASE IF NOT EXISTS ecac;
+
+USE ecac;
+
+CREATE TABLE IF NOT EXISTS usuario (
+    id_usuario INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    nome_usuario VARCHAR(100) NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    senha_hash VARCHAR(128) NOT NULL,
+    documento VARCHAR(18) NOT NULL UNIQUE,
+    data_nascimento DATE NOT NULL,
+    telefone VARCHAR(25),
+    instagram VARCHAR(30),
+    grau_academico ENUM('Ensino Fundamental', 'Ensino Médio', 'Graduação', 'Pós-graduação', 'Mestrado', 'Doutorado') NOT NULL,
+    nome_curso VARCHAR(150) NOT NULL,
+    cidade VARCHAR(100) NOT NULL,
+    estado VARCHAR(2) NOT NULL,
+    pais VARCHAR(50) NOT NULL,
+    foto_perfil VARCHAR(255) NULL,
+    data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    data_atualizacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    status_conta ENUM('ativo', 'inativo') NOT NULL DEFAULT 'ativo'
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS funcao (
+    id_funcao INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    nome_funcao VARCHAR(50) NOT NULL UNIQUE
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS funcao_usuario (
+    id_funcao_usuario INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    usuario_id INT NOT NULL,
+    funcao_id INT NOT NULL,
+    FOREIGN KEY (usuario_id) REFERENCES usuario(id_usuario) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (funcao_id) REFERENCES funcao(id_funcao) ON DELETE CASCADE ON UPDATE CASCADE
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS permissao (
+    id_permissao INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    nome_permissao VARCHAR(100) NOT NULL UNIQUE,
+    descricao VARCHAR(255) NULL
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS funcao_permissao (
+    id_funcao_permissao INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    funcao_id INT NOT NULL,
+    permissao_id INT NOT NULL,
+    UNIQUE KEY uq_funcao_permissao (funcao_id, permissao_id),
+    FOREIGN KEY (funcao_id) REFERENCES funcao(id_funcao) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (permissao_id) REFERENCES permissao(id_permissao) ON DELETE CASCADE ON UPDATE CASCADE
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS evento (
+    id_evento INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    organizador_id INT NOT NULL,
+    titulo VARCHAR(150) NOT NULL,
+    descricao TEXT NOT NULL,
+    local_evento VARCHAR(255) NOT NULL,
+    data_evento DATE NOT NULL,
+    horario_inicio TIME NOT NULL,
+    horario_fim TIME NOT NULL,
+    data_inscricao_inicio DATE NOT NULL,
+    data_inscricao_fim DATE NOT NULL,
+    modalidade ENUM('Presencial', 'Online', 'Hibrido') NOT NULL,
+    status_evento ENUM('ativo', 'cancelado', 'concluido') NOT NULL DEFAULT 'ativo',
+    capa_evento VARCHAR(255) NULL,
+    data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    data_atualizacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (organizador_id) REFERENCES funcao_usuario(id_funcao_usuario) ON DELETE RESTRICT ON UPDATE CASCADE
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS atividade_evento (
+    id_atividade_evento INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    evento_id INT NOT NULL, 
+    titulo VARCHAR(150) NOT NULL,
+    descricao TEXT,
+    tipo_atividade VARCHAR(50) NOT NULL,
+    horario_inicio TIME NOT NULL,
+    horario_fim TIME NOT NULL,
+    local_atividade VARCHAR(100) NOT NULL,
+    capacidade_max INT,
+    data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    data_atualizacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (evento_id) REFERENCES evento(id_evento) ON DELETE CASCADE ON UPDATE CASCADE
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS palestrante (
+    id_palestrante INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    atividade_evento_id INT NOT NULL,
+    nome_palestrante VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    telefone VARCHAR(25),
+    grau_academico ENUM('Ensino Fundamental', 'Ensino Médio', 'Graduação', 'Pós-graduação', 'Mestrado', 'Doutorado') NOT NULL,
+    nome_curso VARCHAR(150),
+    cargo VARCHAR(100),
+    linkedin_url VARCHAR(255),
+    instagram VARCHAR(30),
+    mini_bio TEXT NOT NULL,
+    foto_palestrante VARCHAR(255) NOT NULL,
+    FOREIGN KEY (atividade_evento_id) REFERENCES atividade_evento(id_atividade_evento) ON DELETE CASCADE ON UPDATE CASCADE
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS expositor (
+    id_expositor INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    atividade_evento_id INT NOT NULL,
+    nome_expositor VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    telefone VARCHAR(25),
+    empresa VARCHAR(150) NOT NULL,
+    cargo VARCHAR(100) NOT NULL,
+    logo VARCHAR(255) NOT NULL,
+    link_empresa VARCHAR(255) NOT NULL,
+    linkedin_url VARCHAR(255),
+    instagram VARCHAR(30),
+    descricao TEXT,
+    tipo_espaco ENUM('estande', 'mesa') NOT NULL,
+    necessidades_tecnicas TEXT,
+    foto_expositor VARCHAR(255),
+    FOREIGN KEY (atividade_evento_id) REFERENCES atividade_evento(id_atividade_evento) ON DELETE CASCADE ON UPDATE CASCADE
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS inscricao (
+    id_inscricao INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    funcao_usuario_id INT NOT NULL,
+    evento_id INT NOT NULL,
+    categoria ENUM('estudante', 'profissional', 'convidado', 'inscrito'),
+    status_inscricao ENUM('Pendente', 'Confirmado', 'Cortesia') NOT NULL DEFAULT 'Pendente',
+    data_inscricao DATE NOT NULL,
+    valor_pago DECIMAL(10, 2) NULL,
+    UNIQUE(funcao_usuario_id, evento_id),
+    FOREIGN KEY (funcao_usuario_id) REFERENCES funcao_usuario(id_funcao_usuario) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (evento_id) REFERENCES evento(id_evento) ON DELETE CASCADE ON UPDATE CASCADE 
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS comissao_org (
+	id_comissao_org INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    funcao_usuario_id INT NOT NULL,
+    funcao_org VARCHAR(100),
+    linkedin_url VARCHAR(255),
+    UNIQUE(funcao_usuario_id),
+    FOREIGN KEY (funcao_usuario_id) REFERENCES funcao_usuario(id_funcao_usuario) ON DELETE CASCADE ON UPDATE CASCADE
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS comissao_cient (
+	id_comissao_cient INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    funcao_usuario_id INT NOT NULL,
+    funcao_cient VARCHAR(100),
+    linkedin_url VARCHAR(255),
+    UNIQUE(funcao_usuario_id),
+    FOREIGN KEY (funcao_usuario_id) REFERENCES funcao_usuario(id_funcao_usuario) ON DELETE CASCADE ON UPDATE CASCADE
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS submissao (
+    id_submissao INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    evento_id INT NOT NULL,
+    funcao_usuario_id INT NOT NULL,
+    titulo VARCHAR(250) NOT NULL,
+    resumo TEXT NOT NULL,
+    palavras_chave VARCHAR(255), 
+    status_arquivo ENUM('enviado', 'em avaliação', 'aceito', 'recusado') NOT NULL DEFAULT 'enviado',
+    caminho_arquivo VARCHAR(255) NOT NULL,
+    data_envio DATE NOT NULL,
+    hora_envio TIME NOT NULL,
+    UNIQUE(evento_id, funcao_usuario_id),
+    FOREIGN KEY (evento_id) REFERENCES evento(id_evento) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (funcao_usuario_id) REFERENCES funcao_usuario(id_funcao_usuario) ON DELETE CASCADE ON UPDATE CASCADE
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS coautores (
+    id_coautor INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    submissao_id INT NOT NULL,
+    nome_coautor VARCHAR(100) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    instituicao VARCHAR(255) NOT NULL,
+    FOREIGN KEY (submissao_id) REFERENCES submissao(id_submissao) ON DELETE CASCADE ON UPDATE CASCADE
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS avaliacao (
+    id_avaliacao INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    submissao_id INT NOT NULL,
+    funcao_usuario_id INT NOT NULL,
+    nota DECIMAL(5,2) NOT NULL,
+    parecer TEXT,
+    recomendacao ENUM('aceito', 'rejeitado', 'corrigir'),
+    data_avaliacao DATE NOT NULL,
+    hora_avaliacao TIME NOT NULL,
+    UNIQUE(submissao_id, funcao_usuario_id), 
+    FOREIGN KEY (submissao_id) REFERENCES submissao(id_submissao) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (funcao_usuario_id) REFERENCES funcao_usuario(id_funcao_usuario) ON DELETE CASCADE ON UPDATE CASCADE
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS patrocinador (
+    id_patrocinador INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    nome_empresa VARCHAR(150) NOT NULL,
+    logo VARCHAR(255) NULL,
+    site_empresa VARCHAR(255) NULL,
+    nivel_patrocinio ENUM('bronze', 'prata', 'ouro') NOT NULL,
+    beneficios TEXT NULL
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS certificado (
+    id_certificado INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    funcao_usuario_id INT NOT NULL,
+    evento_id INT NOT NULL,
+    tipo ENUM('participacao', 'apresentacao', 'avaliacao', 'palestrante') NOT NULL,
+    data_emissao DATE NOT NULL,
+    codigo_validacao VARCHAR(50) NOT NULL UNIQUE,
+    UNIQUE(funcao_usuario_id, evento_id, tipo),
+    FOREIGN KEY (funcao_usuario_id) REFERENCES funcao_usuario(id_funcao_usuario) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (evento_id) REFERENCES evento(id_evento) ON DELETE CASCADE ON UPDATE CASCADE
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS log_sistema (
+    id_log INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    usuario_id INT NOT NULL,
+    funcao_id INT NOT NULL,
+    acao VARCHAR(100) NOT NULL,
+    entidade_afetada VARCHAR(50) NOT NULL,
+    id_entidade INT NOT NULL,
+    data_log DATE NOT NULL,
+    hora_log TIME NOT NULL,
+    FOREIGN KEY (usuario_id) REFERENCES usuario(id_usuario) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (funcao_id) REFERENCES funcao(id_funcao) ON DELETE CASCADE ON UPDATE CASCADE
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+DELIMITER //
+
+CREATE TRIGGER trg_evento_after_insert 
+AFTER INSERT ON evento
+FOR EACH ROW
+BEGIN
+    SET @user_id = IFNULL(@usuario_ativo, 1); 
+    SET @role_id = IFNULL(@funcao_ativa, 1); 
+    INSERT INTO log_sistema (usuario_id, funcao_id, acao, entidade_afetada, id_entidade, data_log, hora_log)
+    VALUES (@user_id, @role_id, 'CRIOU EVENTO', 'evento', NEW.id_evento, CURDATE(), CURTIME());
+END //
+
+CREATE TRIGGER trg_evento_after_update 
+AFTER UPDATE ON evento
+FOR EACH ROW
+BEGIN
+    SET @user_id = IFNULL(@usuario_ativo, 1);
+    SET @role_id = IFNULL(@funcao_ativa, 1);
+    INSERT INTO log_sistema (usuario_id, funcao_id, acao, entidade_afetada, id_entidade, data_log, hora_log)
+    VALUES (@user_id, @role_id, 'EDITOU EVENTO', 'evento', NEW.id_evento, CURDATE(), CURTIME());
+END //
+
+CREATE TRIGGER trg_evento_after_delete 
+AFTER DELETE ON evento
+FOR EACH ROW
+BEGIN
+    SET @user_id = IFNULL(@usuario_ativo, 1);
+    SET @role_id = IFNULL(@funcao_ativa, 1);
+    INSERT INTO log_sistema (usuario_id, funcao_id, acao, entidade_afetada, id_entidade, data_log, hora_log)
+    VALUES (@user_id, @role_id, 'DELETOU EVENTO', 'evento', OLD.id_evento, CURDATE(), CURTIME());
+END //
+
+DELIMITER ;
