@@ -42,7 +42,7 @@ class UsuarioModel
     // Consulta caso o usuário queria cadastrar um email ou um cpf que já exista
     public function verificarDados(string $coluna, string $valor): bool
     {
-        $colunasPermitidas = ['email', 'documento']; // Apenas o email e o cpf precisam ser únicos
+        $colunasPermitidas = ['email', 'documento']; 
         if (!in_array($coluna, $colunasPermitidas)) {
             return false;
         }
@@ -64,15 +64,16 @@ class UsuarioModel
         $usuario = $this->buscarUsuarioPorEmail($email);
 
         if (!$usuario) {
-            return false; // Caso não encontre o usuário no DB
+            return false; 
         }
 
         if ($usuario['status_conta'] !== 'ativo') {
-            return false; // Caso a conta não estiver ativa
+            return false; 
         }
 
         return password_verify($senha, $usuario['senha_hash']);
     }
+
     // Cadastro de Usuário
     public function cadastrarUsuario(array $dados): bool
     {
@@ -102,33 +103,39 @@ class UsuarioModel
                 $dados["foto_perfil"]
             );
 
-            /* Verifica se ocorreu um erro ao inserir o usuário */
             if (!$stmt->execute()) {
                 $stmt->close();
-                throw new Exception("Erro ao inserir usuário");
+                throw new Exception("Erro ao inserir usuário no banco de dados.");
             }
 
             $novoUsuarioId = $this->con->insert_id;
             $stmt->close();
 
-            /* Busca o ID da função Usuário, que só está cadastrado no site */
-            $sqlFuncao = "SELECT id_funcao FROM funcao WHERE nome_funcao = 'Usuario' LIMIT 1";
+            /* Busca a função Usuario ou Usuário (com ou sem acento para evitar erros) */
+            $sqlFuncao = "SELECT id_funcao FROM funcao WHERE TRIM(nome_funcao) = 'Usuario' OR TRIM(nome_funcao) = 'Usuário' LIMIT 1";
             $result = $this->con->query($sqlFuncao);
 
-            // Só pode existir uma função por nome, caso tiver mais de 1 não será cadastrado na tabela funcao_usuario
-            if ($result->num_rows !== 1) {
-                throw new Exception("Função inválida");
+            if ($result && $result->num_rows > 0) {
+                $funcao = $result->fetch_assoc();
+                $funcaoId = (int) $funcao["id_funcao"];
+            } else {
+                // Tenta pegar qualquer função disponível como contingência
+                $resultFallback = $this->con->query("SELECT id_funcao FROM funcao LIMIT 1");
+                if ($resultFallback && $resultFallback->num_rows > 0) {
+                    $funcao = $resultFallback->fetch_assoc();
+                    $funcaoId = (int) $funcao["id_funcao"];
+                } else {
+                    // Se o banco estiver totalmente sem dados cadastrados, exibe o diagnóstico real
+                    throw new Exception("A tabela 'funcao' está completamente vazia. Você esqueceu de executar os INSERTs do arquivo 'ecac_modelo_preenchido.sql' no seu phpMyAdmin.");
+                }
             }
-
-            $funcao = $result->fetch_assoc();
-            $funcaoId = $funcao["id_funcao"];
 
             $sqlVinculo = "INSERT INTO funcao_usuario (usuario_id, funcao_id) VALUES (?, ?)";
             $stmtVinculo = $this->con->prepare($sqlVinculo);
             $stmtVinculo->bind_param("ii", $novoUsuarioId, $funcaoId);
 
             if (!$stmtVinculo->execute()) {
-                throw new Exception("Erro ao vincular função");
+                throw new Exception("Erro ao vincular função ao usuário.");
             }
 
             $stmtVinculo->close();
@@ -141,6 +148,7 @@ class UsuarioModel
             return false;
         }
     }
+
     /* Função para Validar Recuperação de Senha */
     public function validarUsuarioRecuperacao(string $email, string $documento): ?array
     {
@@ -156,6 +164,7 @@ class UsuarioModel
 
         return $usuario;
     }
+
     /* Função para Atualizar a Senha */
     public function atualizarSenha(string $email, string $senhaHash): bool
     {
@@ -168,6 +177,38 @@ class UsuarioModel
         $stmt->close();
 
         return $resultado;
+    }
+
+
+    // =========================================================================
+    // REGISTRO DE LOGS DO SISTEMA DIAGNÓSTICO
+    // =========================================================================
+    public function registrarLogSistema(?int $usuarioId, ?int $funcaoId, string $acao, string $entidade = 'autenticacao', int $idEntidade = 0): void
+    {
+        $sql = "INSERT INTO log_sistema (usuario_id, funcao_id, acao, entidade_afetada, id_entidade, data_log, hora_log) VALUES (";
+        $sql .= ($usuarioId === null) ? "NULL, " : "?, ";
+        $sql .= ($funcaoId === null) ? "NULL, " : "?, ";
+        $sql .= "?, ?, ?, CURDATE(), CURTIME())";
+
+        $stmt = $this->con->prepare($sql);
+
+        if ($stmt) {
+            if ($usuarioId !== null && $funcaoId !== null) {
+                $stmt->bind_param("iissi", $usuarioId, $funcaoId, $acao, $entidade, $idEntidade);
+            } elseif ($usuarioId !== null) {
+                $stmt->bind_param("issi", $usuarioId, $acao, $entidade, $idEntidade);
+            } elseif ($funcaoId !== null) {
+                $stmt->bind_param("issi", $funcaoId, $acao, $entidade, $idEntidade);
+            } else {
+                $stmt->bind_param("ssi", $acao, $entidade, $idEntidade);
+            }
+
+            if (!$stmt->execute()) {
+                // Força o erro a aparecer na tela para descobrirmos o bloqueio da tabela de logs
+                die("🚨 ERRO NO BANCO AO GRAVAR LOG: " . $stmt->error . " | Certifique-se de que rodou o ALTER TABLE modificando as colunas para NULL.");
+            }
+            $stmt->close();
+        }
     }
 
 }

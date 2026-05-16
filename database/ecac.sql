@@ -213,8 +213,8 @@ CREATE TABLE IF NOT EXISTS certificado (
 
 CREATE TABLE IF NOT EXISTS log_sistema (
     id_log INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-    usuario_id INT NOT NULL,
-    funcao_id INT NOT NULL,
+    usuario_id INT NULL,
+    funcao_id INT NULL,
     acao VARCHAR(100) NOT NULL,
     entidade_afetada VARCHAR(50) NOT NULL,
     id_entidade INT NOT NULL,
@@ -256,4 +256,4 @@ BEGIN
     VALUES (@user_id, @role_id, 'DELETOU EVENTO', 'evento', OLD.id_evento, CURDATE(), CURTIME());
 END //
 
-DELIMITER ;
+DELIMITER ; 

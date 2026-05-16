@@ -62,15 +62,17 @@ class AutentController
     {
         $this->iniciarSessao();
 
-        try {
-            $email = trim($_POST['email'] ?? '');
-            $senha = trim($_POST['senha'] ?? '');
+        $email = trim($_POST['email'] ?? '');
+        $senha = trim($_POST['senha'] ?? '');
 
+        try {
             if (empty($email) || empty($senha)) {
+                $this->usuarioModel->registrarLogSistema(null, null, "FALHA LOGIN (Campos vazios)");
                 throw new ErroLoginException("Erro de Validação", "Todos os campos devem ser preenchidos!");
             }
 
             if (!preg_match('/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/', $email)) {
+                $this->usuarioModel->registrarLogSistema(null, null, "FALHA LOGIN (E-mail com formato inválido): $email");
                 throw new ErroLoginException("Erro de Login", "Email ou senha inválidos!");
             }
 
@@ -78,14 +80,17 @@ class AutentController
 
             if (!$usuario) {
                 $_SESSION['redirecionar_cadastro'] = true;
+                $this->usuarioModel->registrarLogSistema(null, null, "FALHA LOGIN (Usuário não cadastrado): $email");
                 throw new ErroLoginException("Erro de Autenticação", "Usuário não cadastrado!");
             }
 
             if ($usuario['status_conta'] !== 'ativo') {
+                $this->usuarioModel->registrarLogSistema($usuario['id_usuario'], $usuario['id_funcao'], "FALHA LOGIN (Conta Inativa): $email");
                 throw new ErroLoginException("Conta Inativa", "Entre em contato com o suporte.");
             }
 
             if (!password_verify($senha, $usuario['senha_hash'])) {
+                $this->usuarioModel->registrarLogSistema($usuario['id_usuario'], $usuario['id_funcao'], "FALHA LOGIN (Senha Incorreta): $email");
                 throw new ErroLoginException("Erro de Login", "Email ou senha incorretos!");
             }
 
@@ -105,6 +110,9 @@ class AutentController
                 'nome_funcao' => $usuario['nome_funcao'],
                 'permissoes' => $permissoes, // Armazena nomes (strings) para legibilidade
             ];
+
+            // LOG DE SUCESSO
+            $this->usuarioModel->registrarLogSistema($usuario['id_usuario'], $usuario['id_funcao'], "LOGIN BEM SUCEDIDO");
 
             // Redireciona para o painel principal
             header('Location: ../views/painel.php');
@@ -126,11 +134,11 @@ class AutentController
     {
         $this->iniciarSessao();
 
-        try {
-            $email = trim($_POST['email'] ?? '');
-            $senha = trim($_POST['senha'] ?? '');
-            $doc = trim($_POST['documento'] ?? '');
+        $email = trim($_POST['email'] ?? '');
+        $senha = trim($_POST['senha'] ?? '');
+        $doc = trim($_POST['documento'] ?? '');
 
+        try {
             $dados = [
                 'nome' => trim($_POST['nome_usuario'] ?? ''),
                 'email' => $email,
@@ -147,27 +155,20 @@ class AutentController
                 'foto_perfil' => null,
             ];
 
-            // Lista de campos obrigatórios
             $camposObrigatorios = [
-                'nome',
-                'email',
-                'senha_hash',
-                'documento',
-                'data_nascimento',
-                'grau_academico',
-                'nome_curso',
-                'cidade',
-                'estado',
-                'pais',
+                'nome', 'email', 'senha_hash', 'documento', 'data_nascimento',
+                'grau_academico', 'nome_curso', 'cidade', 'estado', 'pais',
             ];
 
             foreach ($camposObrigatorios as $campo) {
                 if (empty(trim((string) $dados[$campo]))) {
+                    $this->usuarioModel->registrarLogSistema(null, null, "FALHA CADASTRO (Campos vazios): $email");
                     throw new ErroCadastroException("Erro de Validação", "Todos os campos devem ser preenchidos!");
                 }
             }
 
             if ($this->usuarioModel->verificarDados('email', $email)) {
+                $this->usuarioModel->registrarLogSistema(null, null, "FALHA CADASTRO (E-mail duplicado): $email");
                 throw new ErroCadastroException(
                     "Erro de Cadastro",
                     "Os dados informados já possuem uma conta vinculada. Verifique suas informações!",
@@ -176,6 +177,7 @@ class AutentController
             }
 
             if ($this->usuarioModel->verificarDados('documento', $doc)) {
+                $this->usuarioModel->registrarLogSistema(null, null, "FALHA CADASTRO (Documento duplicado): $doc");
                 throw new ErroCadastroException(
                     "Erro de Cadastro",
                     "Os dados informados já possuem uma conta vinculada. Verifique suas informações!",
@@ -183,11 +185,17 @@ class AutentController
                 );
             }
 
-            // Processa upload da foto
             $dados['foto_perfil'] = $this->processarFotoPerfil();
 
             if (!$this->usuarioModel->cadastrarUsuario($dados)) {
+                $this->usuarioModel->registrarLogSistema(null, null, "FALHA CADASTRO (Erro de Banco de Dados): $email");
                 throw new ErroCadastroException("Erro de Cadastro", "Não foi possível concluir o cadastro. Tente novamente!");
+            }
+
+            // LOG DE SUCESSO (Buscamos o usuário gerado para pegar o ID real dele)
+            $novoUser = $this->usuarioModel->buscarUsuarioPorEmail($email);
+            if($novoUser) {
+                $this->usuarioModel->registrarLogSistema($novoUser['id_usuario'], $novoUser['id_funcao'], "CADASTRO BEM SUCEDIDO");
             }
 
             $_SESSION['modal_sucesso_titulo'] = "Cadastro Realizado";
@@ -221,11 +229,13 @@ class AutentController
 
         $usuario = $this->usuarioModel->validarUsuarioRecuperacao($email, $cpf);
 
-        echo json_encode(
-            $usuario
-            ? ['sucesso' => true]
-            : ['sucesso' => false, 'mensagem' => 'E-mail ou CPF não conferem.']
-        );
+        if ($usuario) {
+            $this->usuarioModel->registrarLogSistema($usuario['id_usuario'], null, "RECUPERAÇÃO SENHA (Dados validados): $email");
+            echo json_encode(['sucesso' => true]);
+        } else {
+            $this->usuarioModel->registrarLogSistema(null, null, "FALHA RECUPERAÇÃO SENHA (Dados inválidos): $email - CPF: $cpf");
+            echo json_encode(['sucesso' => false, 'mensagem' => 'E-mail ou CPF não conferem.']);
+        }
         exit;
     }
 
@@ -240,7 +250,13 @@ class AutentController
         $email = trim($_POST['email'] ?? '');
         $novaSenha = trim($_POST['novaSenha'] ?? '');
 
+        // Pega os dados do usuário só para salvar no Log quem mudou a senha
+        $usuarioLog = $this->usuarioModel->buscarUsuarioPorEmail($email);
+        $uid = $usuarioLog['id_usuario'] ?? null;
+        $fid = $usuarioLog['id_funcao'] ?? null;
+
         if (empty($novaSenha) || strlen($novaSenha) < 6) {
+            $this->usuarioModel->registrarLogSistema($uid, $fid, "FALHA MUDANÇA SENHA (Senha muito curta): $email");
             echo json_encode(['sucesso' => false, 'mensagem' => 'Senha inválida.']);
             exit;
         }
@@ -250,11 +266,13 @@ class AutentController
             password_hash($novaSenha, PASSWORD_DEFAULT)
         );
 
-        echo json_encode(
-            $resultado
-            ? ['sucesso' => true]
-            : ['sucesso' => false, 'mensagem' => 'Erro ao atualizar banco.']
-        );
+        if ($resultado) {
+            $this->usuarioModel->registrarLogSistema($uid, $fid, "SENHA ATUALIZADA COM SUCESSO");
+            echo json_encode(['sucesso' => true]);
+        } else {
+            $this->usuarioModel->registrarLogSistema($uid, $fid, "FALHA MUDANÇA SENHA (Erro DB): $email");
+            echo json_encode(['sucesso' => false, 'mensagem' => 'Erro ao atualizar banco.']);
+        }
         exit;
     }
 
@@ -265,6 +283,13 @@ class AutentController
     public function logout(): void
     {
         $this->iniciarSessao();
+        
+        if (isset($_SESSION['user_logado'])) {
+            $id = $_SESSION['user_logado']['id'];
+            $funcao = $_SESSION['user_logado']['id_funcao'];
+            $this->usuarioModel->registrarLogSistema($id, $funcao, "REALIZOU LOGOUT");
+        }
+
         session_unset();
         session_destroy();
         header('Location: ../views/index.php');
@@ -293,17 +318,17 @@ class AutentController
 
         // Verifica permissão específica (RBAC)
         if ($permissaoExigida !== null && !in_array($permissaoExigida, $usuario['permissoes'] ?? [], true)) {
-            // ITEM 2 DA SUA LISTA: REGISTRO DE ACESSO NEGADO
+            // REGISTRO DE ACESSO NEGADO
             $id = (int) $usuario['id'];
             $funcao = (int) ($usuario['id_funcao'] ?? 8);
-            $acao = "TENTOU ACESSAR: " . $permissaoExigida;
+            $acao = "TENTOU ACESSAR ÁREA RESTRITA: " . $permissaoExigida;
             $con->query("INSERT INTO log_sistema (usuario_id, funcao_id, acao, entidade_afetada, id_entidade, data_log, hora_log) VALUES ($id, $funcao, '$acao', 'seguranca', 0, CURDATE(), CURTIME())");
 
             header("Location: ../views/sem-permissao.php");
             exit;
         }
 
-        // ITEM 3 DA SUA LISTA: AVISA OS TRIGGERS DO BANCO QUEM É O USUÁRIO
+        // AVISA OS TRIGGERS DO BANCO QUEM É O USUÁRIO
         $id_logado = (int) $usuario['id'];
         $funcao_logada = (int) ($usuario['id_funcao'] ?? 8);
         $con->query("SET @usuario_ativo = $id_logado, @funcao_ativa = $funcao_logada");
@@ -316,7 +341,6 @@ class AutentController
     // MÉTODOS PRIVADOS — auxiliares internos
     // ══════════════════════════════════════════════════════════════
 
-    // Inicia sessão com segurança
     private function iniciarSessao(): void
     {
         if (session_status() === PHP_SESSION_NONE) {
@@ -324,7 +348,6 @@ class AutentController
         }
     }
 
-    // Retorna array com os nomes das permissões do usuário via RBAC (MySQLi)
     private function buscarPermissoes(int $idUsuario): array
     {
         global $con;
@@ -338,19 +361,11 @@ class AutentController
             WHERE u.id_usuario = ? 
         ";
 
-        // Prepara consulta
         $stmt = $con->prepare($sql);
-
-        // Passa o ID (inteiro)
         $stmt->bind_param("i", $idUsuario);
-
-        // Executa
         $stmt->execute();
-
-        // Pega resultado
         $resultado = $stmt->get_result();
 
-        // Extrai nomes
         $permissoes = [];
         while ($linha = $resultado->fetch_assoc()) {
             $permissoes[] = $linha['nome_permissao'];
@@ -359,7 +374,6 @@ class AutentController
         return $permissoes;
     }
 
-    // Processa upload de foto e retorna o nome do arquivo (ou null)
     private function processarFotoPerfil(): ?string
     {
         if (!isset($_FILES['foto_perfil']) || $_FILES['foto_perfil']['error'] !== UPLOAD_ERR_OK) {
@@ -381,7 +395,7 @@ class AutentController
         $caminhoDestino = $diretorio . $nomeArquivo;
 
         if (!move_uploaded_file($_FILES['foto_perfil']['tmp_name'], $caminhoDestino)) {
-            return null; // Falha no upload
+            return null; 
         }
 
         return $nomeArquivo;
