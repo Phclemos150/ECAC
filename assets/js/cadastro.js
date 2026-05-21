@@ -4,6 +4,34 @@ document.addEventListener("DOMContentLoaded", () => {
   const modalSucesso    = document.getElementById("modalSucesso");
   const btnSucessoOk    = document.getElementById("btnSucessoOk");
 
+  // ── Função para exibir Modal de Erro via JavaScript ───────────────────────
+  const exibirErroJS = (titulo, mensagem) => {
+    let modalJS = document.getElementById("modalErroJS");
+    if (!modalJS) {
+      // Cria o modal dinamicamente na tela
+      modalJS = document.createElement("div");
+      modalJS.id = "modalErroJS";
+      modalJS.className = "modal"; 
+      modalJS.innerHTML = `
+        <div class="modal-box">
+          <h3 class="modal-titulo" id="tituloErroJS" style="color:#333; margin-bottom:10px;"></h3>
+          <p class="modal-mensagem" id="mensagemErroJS" style="color:#666; margin-bottom:20px;"></p>
+          <button class="btn-confirmar-erro" id="fecharModalErroJS" style="background:#243814; color:#fff; border:none; padding:10px 20px; border-radius:6px; cursor:pointer;">Ok, vou corrigir</button>
+        </div>
+      `;
+      document.body.appendChild(modalJS);
+
+      document.getElementById("fecharModalErroJS").addEventListener("click", (e) => {
+        e.preventDefault();
+        modalJS.classList.remove("ativo");
+      });
+    }
+
+    document.getElementById("tituloErroJS").innerText = titulo;
+    document.getElementById("mensagemErroJS").innerText = mensagem;
+    modalJS.classList.add("ativo");
+  };
+
   // ── Redirecionar para o login ─────────────────────────────────────────────
   const irParaLogin = () => {
     window.location.href = "../views/login.php";
@@ -246,14 +274,21 @@ document.addEventListener("DOMContentLoaded", () => {
     form.addEventListener("submit", (e) => {
       let tudoValido = true;
 
+      // Passa em todos os campos antes de enviar para conferir se tem algum inválido
       form.querySelectorAll("input, select, textarea").forEach((campo) => {
         const nome = campo.getAttribute("name");
         if (!nome || !(nome in regras)) return;
         if (!validarCampo(campo)) tudoValido = false;
       });
 
+      // SE TIVER ALGO ERRADO: Bloqueia o envio e avisa o usuário!
       if (!tudoValido) {
-        e.preventDefault();
+        e.preventDefault(); 
+        
+        // Exibe nosso Modal customizado feito no topo do arquivo
+        exibirErroJS("Erro de Validação", "Por favor, preencha corretamente os campos destacados em vermelho antes de concluir o cadastro.");
+
+        // Desce a tela de forma suave até o primeiro campo que estiver vermelho
         const primeiroInvalido = form.querySelector(".campo-invalido");
         if (primeiroInvalido) {
           primeiroInvalido.scrollIntoView({ behavior: "smooth", block: "center" });

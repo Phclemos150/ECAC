@@ -5,7 +5,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const modalSenha = document.getElementById("modalSenha");
   const fecharModalSenha = document.getElementById("fecharModalSenha");
   const formLogin = document.querySelector("form");
-  const novaSenhaInput = document.getElementById("novaSenha");
   const emailRecuperacao = document.getElementById("emailRecuperacao");
   const cpfRecuperacao = document.getElementById("cpfRecuperacao");
   const novaSenhaRecuperar = document.getElementById("novaSenhaRecuperar");
@@ -100,7 +99,7 @@ document.addEventListener("DOMContentLoaded", () => {
   toggleSenha("novaSenha", "toggleNovaSenha");
   toggleSenha("confirmarNovaSenha", "toggleConfirmarSenha");
 
-  /* Requesitos de Login e Recuperação de Senha */
+  /* Checklist Apenas para a Recuperação de Senha */
   const requisitos = [
     { id: "req-min", texto: "Mínimo 6 caracteres", teste: (v) => v.length >= 6 },
     { id: "req-maiuscula", texto: "Uma letra maiúscula", teste: (v) => /[A-Z]/.test(v) },
@@ -138,10 +137,12 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   };
 
-  criarChecklist(novaSenhaInput, "login");
+  // Aplica o checklist APENAS no input de criar nova senha
   criarChecklist(novaSenhaRecuperar, "recuperar");
 
-  // --- VALIDAÇÃO VISUAL (BORDAS) ---
+  // ═══════════════════════════════════════════════════════════════════════════
+  // VALIDAÇÃO VISUAL (BORDAS) EXCLUSIVA PARA A RECUPERAÇÃO DE SENHA
+  // ═══════════════════════════════════════════════════════════════════════════
   const marcarCampo = (campo, valido) => {
     if (!campo) return;
     if (campo.value.trim() === "") {
@@ -153,8 +154,6 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   const regras = {
-    email: (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()),
-    senha: (v) => v.length >= 6 && /[A-Z]/.test(v) && /[0-9]/.test(v) && /[^A-Za-z0-9]/.test(v),
     emailRecuperacao: (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()),
     cpfRecuperacao: (v) => v.replace(/\D/g, "").length === 11,
     novaSenhaRecuperar: (v) => v.length >= 6 && /[A-Z]/.test(v) && /[0-9]/.test(v) && /[^A-Za-z0-9]/.test(v),
@@ -171,26 +170,31 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
-  document.querySelectorAll("input").forEach(input => {
+  // Aplica os eventos em tempo real APENAS aos inputs do Modal de Senha
+  document.querySelectorAll("#modalSenha input").forEach(input => {
     input.addEventListener("input", () => validarCampo(input));
     input.addEventListener("blur", () => validarCampo(input));
   });
 
+  // ═══════════════════════════════════════════════════════════════════════════
+  // FORMULÁRIO DE LOGIN PRINCIPAL
+  // ═══════════════════════════════════════════════════════════════════════════
   if (formLogin) {
     formLogin.addEventListener("submit", (e) => {
       const email = formLogin.querySelector('input[name="email"]');
       const senha = formLogin.querySelector('input[name="senha"]');
-      const emailOk = regras.email(email.value);
-      const senhaOk = regras.senha(senha.value);
 
-      marcarCampo(email, emailOk);
-      marcarCampo(senha, senhaOk);
-
-      if (!emailOk || !senhaOk) e.preventDefault();
+      // Apenas impede o envio se a pessoa tentar logar com os campos 100% vazios
+      if (email.value.trim() === "" || senha.value.trim() === "") {
+        e.preventDefault();
+        exibirAlertaJS("Aviso", "Por favor, preencha o seu E-mail e Senha para continuar.");
+      }
+      
+      // Se não estiverem vazios, deixa o formulário ir para o AutentController.php trabalhar!
     });
   }
 
-  /* Recuperação de senha */
+  /* Ações da Recuperação de senha */
   const btnAcao = document.getElementById("btnAcaoRecuperar");
   const etapa1 = document.getElementById("etapaIdentificacao");
   const etapa2 = document.getElementById("etapaNovaSenha");
