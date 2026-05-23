@@ -10,6 +10,59 @@ INSERT INTO funcao (nome_funcao) VALUES
 ('Inscrito'), 
 ('Usuario');
 
+INSERT INTO permissao (id_permissao, nome_permissao, descricao) VALUES
+(1, 'ver_painel_admin', 'Acessa o painel administrativo completo'),
+(2, 'acessar_logs', 'Visualiza os logs de atividade do sistema'),
+(3, 'gerenciar_usuarios', 'Cria, edita e desativa usuários'),
+(4, 'criar_evento', 'Cria novos eventos'),
+(5, 'editar_evento', 'Edita eventos existentes'),
+(6, 'excluir_evento', 'Exclui eventos'),
+(7, 'consultar_evento', 'Consulta detalhes de qualquer evento'),
+(8, 'gerenciar_inscricoes', 'Gerencia inscrições de participantes'),
+(9, 'submeter_trabalho', 'Submete trabalhos para avaliação'),
+(10, 'editar_submissao', 'Edita a própria submissão'),
+(11, 'validar_trabalho', 'Avalia e emite parecer sobre trabalhos submetidos'),
+(12, 'atribuir_revisores', 'Atribui revisores às submissões'),
+(13, 'gerenciar_agenda', 'Gerencia a programação e agenda do evento'),
+(14, 'gerenciar_certificados', 'Configura e gerencia certificados'),
+(15, 'emitir_certificado', 'Emite certificados para participantes'),
+(16, 'gerenciar_palestrantes', 'Cadastra e edita palestrantes'),
+(17, 'gerar_cracha', 'Gera crachás para credenciamento'),
+(18, 'credenciamento', 'Realiza o credenciamento de participantes'),
+(19, 'gerenciar_patrocinador', 'Cadastra e edita patrocinadores'),
+(20, 'acessar_gestao_academica', 'Acessa o módulo de gestão acadêmica');
+
+-- 1. ADMIN (funcao_id = 1) -> Permissão Total
+INSERT INTO funcao_permissao (funcao_id, permissao_id) VALUES
+(1, 1), (1, 2), (1, 3), (1, 4), (1, 5), (1, 6), (1, 7), (1, 8), (1, 9), (1, 10),
+(1, 11), (1, 12), (1, 13), (1, 14), (1, 15), (1, 16), (1, 17), (1, 18), (1, 19), (1, 20);
+
+-- 2. ORGANIZADOR (funcao_id = 2) -> Permissão Total (Exceto acessar_logs)
+INSERT INTO funcao_permissao (funcao_id, permissao_id) VALUES
+(2, 1), (2, 3), (2, 4), (2, 5), (2, 6), (2, 7), (2, 8), (2, 9), (2, 10), 
+(2, 11), (2, 12), (2, 13), (2, 14), (2, 15), (2, 16), (2, 17), (2, 18), (2, 19), (2, 20);
+
+-- 3. STAFF (funcao_id = 3) -> Foco Operacional
+INSERT INTO funcao_permissao (funcao_id, permissao_id) VALUES
+(3, 1), (3, 7), (3, 8), (3, 17), (3, 18);
+
+-- 4. COMISSÃO ACADÊMICA (funcao_id = 4) -> Foco em Avaliação
+INSERT INTO funcao_permissao (funcao_id, permissao_id) VALUES
+(4, 1), (4, 7), (4, 11), (4, 12), (4, 20);
+
+-- 5. COMISSÃO CIENTÍFICA (funcao_id = 5) -> Foco em Programação e Avaliação
+INSERT INTO funcao_permissao (funcao_id, permissao_id) VALUES
+(5, 1), (5, 7), (5, 11), (5, 12), (5, 13);
+
+-- 6. AUTOR (funcao_id = 6) -> Foco em Submissões
+INSERT INTO funcao_permissao (funcao_id, permissao_id) VALUES
+(6, 7), (6, 9), (6, 10);
+
+-- 7. INSCRITO (funcao_id = 7) e 8. USUARIO (funcao_id = 8) -> Foco em Visualização
+INSERT INTO funcao_permissao (funcao_id, permissao_id) VALUES
+(7, 7),
+(8, 7);
+
 INSERT INTO `usuario` (`id_usuario`, `nome_usuario`, `email`, `senha_hash`, `documento`, `data_nascimento`, `telefone`, `instagram`, `grau_academico`, `nome_curso`, `cidade`, `estado`, `pais`, `foto_perfil`, `data_criacao`, `data_atualizacao`, `status_conta`) VALUES
 (1, 'Roberta', 'roberta@email.com', '$2y$10$KP2tANvF1EUwMXy1N1lCo.vqCz9Xg/No4NvhoV7c2Qq28OdQ8bbfC', '111.111.111-11', '2026-02-16', '(21) 99999-9999', '@roberta', 'Pós-graduação', 'Nutrição', 'Rio de Janeiro', 'RJ', 'Brasil', 'user_69ab0ba51f762.png', '2026-02-16 15:47:13', '2026-02-16 15:47:13', 'ativo'),
 (2, 'Raquel', 'raquel@email.com', '$2y$10$AiuC45d1Zi1lR8hJeOVz3.ZgqYhuhAMxjKY5FwDMA64i.eZbQRbWC', '222.222.222-22', '2026-02-20', '(21) 99999-9999', '@raquel', 'Graduação', 'Marketing', 'Rio de Janeiro', 'RJ', 'Brasil', 'user_69ab0b3a4a35d.png', '2026-02-16 15:47:13', '2026-02-16 15:47:13', 'ativo' ),
@@ -90,8 +143,5 @@ INSERT INTO `coautores` (`submissao_id`, `nome_coautor`, `email`, `instituicao`)
 
 INSERT INTO `comissao_org` (`id_comissao_org`, `funcao_usuario_id`, `funcao_org`, `linkedin_url`) VALUES
 (1, 1, 'Organizadora', 'https://br.linkedin.com/'),
-(2,2, 'Operador de Marketing', 'https://br.linkedin.com/'),
-(3,3, 'Gestor do Projeto', 'https://br.linkedin.com/');
-
--- INSERT INTO `comissao_cient` (`id_comissao_cient`, `funcao_usuario_id`, `funcao_cient`, `lindekin_url`) VALUES
--- ();
+(2, 2, 'Operador de Marketing', 'https://br.linkedin.com/'),
+(3, 3, 'Gestor do Projeto', 'https://br.linkedin.com/');

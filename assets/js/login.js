@@ -43,7 +43,11 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
   if (fecharModalSenha) {
-    fecharModalSenha.addEventListener("click", () => modalSenha.classList.remove("ativo"));
+    fecharModalSenha.addEventListener("click", () => {
+      modalSenha.classList.remove("ativo");
+      // Reseta o modal ao fechar para caso o usuário abra de novo
+      setTimeout(() => location.reload(), 200); 
+    });
   }
 
   const exibirAlertaJS = (titulo, mensagem) => {
@@ -96,8 +100,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
   toggleSenha("senha", "toggleSenha");
-  toggleSenha("novaSenha", "toggleNovaSenha");
-  toggleSenha("confirmarNovaSenha", "toggleConfirmarSenha");
 
   /* Checklist Apenas para a Recuperação de Senha */
   const requisitos = [
@@ -141,7 +143,8 @@ document.addEventListener("DOMContentLoaded", () => {
   criarChecklist(novaSenhaRecuperar, "recuperar");
 
   // ═══════════════════════════════════════════════════════════════════════════
-  // VALIDAÇÃO VISUAL (BORDAS) EXCLUSIVA PARA A RECUPERAÇÃO DE SENHA
+  // VALIDAÇÃO VISUAL (BORDAS) EXCLUSIVA PARA AS SENHAS DA RECUPERAÇÃO
+  // Removido o visual do E-mail e CPF para não dar brecha de segurança
   // ═══════════════════════════════════════════════════════════════════════════
   const marcarCampo = (campo, valido) => {
     if (!campo) return;
@@ -170,10 +173,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
-  // Aplica os eventos em tempo real APENAS aos inputs do Modal de Senha
-  document.querySelectorAll("#modalSenha input").forEach(input => {
-    input.addEventListener("input", () => validarCampo(input));
-    input.addEventListener("blur", () => validarCampo(input));
+  // Aplica os eventos visuais APENAS nos inputs de senha nova e confirmação
+  ["novaSenhaRecuperar", "confirmarNovaSenhaRecuperar"].forEach(id => {
+    const input = document.getElementById(id);
+    if(input) {
+      input.addEventListener("input", () => validarCampo(input));
+      input.addEventListener("blur", () => validarCampo(input));
+    }
   });
 
   // ═══════════════════════════════════════════════════════════════════════════
@@ -184,13 +190,10 @@ document.addEventListener("DOMContentLoaded", () => {
       const email = formLogin.querySelector('input[name="email"]');
       const senha = formLogin.querySelector('input[name="senha"]');
 
-      // Apenas impede o envio se a pessoa tentar logar com os campos 100% vazios
       if (email.value.trim() === "" || senha.value.trim() === "") {
         e.preventDefault();
         exibirAlertaJS("Aviso", "Por favor, preencha o seu E-mail e Senha para continuar.");
       }
-      
-      // Se não estiverem vazios, deixa o formulário ir para o AutentController.php trabalhar!
     });
   }
 
@@ -207,9 +210,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (!usuarioValidado) {
         if (!regras.emailRecuperacao(email) || !regras.cpfRecuperacao(cpf)) {
-          exibirAlertaJS("Dados Inválidos", "Por favor, preencha o e-mail e o CPF corretamente.");
-          marcarCampo(emailRecuperacao, regras.emailRecuperacao(email));
-          marcarCampo(cpfRecuperacao, regras.cpfRecuperacao(cpf));
+          // Aqui exibe erro, mas não pinta a borda para não revelar onde o usuário errou
+          exibirAlertaJS("Dados Inválidos", "Por favor, verifique se o e-mail e o CPF estão digitados corretamente.");
           return;
         }
 

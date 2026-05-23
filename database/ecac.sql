@@ -28,6 +28,21 @@ CREATE TABLE IF NOT EXISTS funcao (
     nome_funcao VARCHAR(50) NOT NULL UNIQUE
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
+CREATE TABLE IF NOT EXISTS permissao (
+    id_permissao INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    nome_permissao VARCHAR(100) NOT NULL UNIQUE,
+    descricao VARCHAR(255) NOT NULL
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS funcao_permissao (
+    id_funcao_permissao INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    funcao_id INT NOT NULL,
+    permissao_id INT NOT NULL,
+    FOREIGN KEY (funcao_id) REFERENCES funcao(id_funcao) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (permissao_id) REFERENCES permissao(id_permissao) ON DELETE CASCADE ON UPDATE CASCADE,
+    UNIQUE(funcao_id, permissao_id)
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
 CREATE TABLE IF NOT EXISTS funcao_usuario (
     id_funcao_usuario INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
     usuario_id INT NOT NULL,
@@ -121,7 +136,7 @@ CREATE TABLE IF NOT EXISTS inscricao (
 CREATE TABLE IF NOT EXISTS comissao_org (
 	id_comissao_org INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
     funcao_usuario_id INT NOT NULL,
-    funcao_org VARCHAR(100), -- mudar depois para enum, quando conseguir mais informações sobre as funções
+    funcao_org VARCHAR(100), 
     linkedin_url VARCHAR(255),
     UNIQUE(funcao_usuario_id),
     FOREIGN KEY (funcao_usuario_id) REFERENCES funcao_usuario(id_funcao_usuario) ON DELETE CASCADE ON UPDATE CASCADE
@@ -130,7 +145,7 @@ CREATE TABLE IF NOT EXISTS comissao_org (
 CREATE TABLE IF NOT EXISTS comissao_cient (
 	id_comissao_cient INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
     funcao_usuario_id INT NOT NULL,
-    funcao_cient VARCHAR(100), -- mudar depois para enum, quando conseguir mais informações sobre as funções
+    funcao_cient VARCHAR(100), 
     linkedin_url VARCHAR(255),
     UNIQUE(funcao_usuario_id),
     FOREIGN KEY (funcao_usuario_id) REFERENCES funcao_usuario(id_funcao_usuario) ON DELETE CASCADE ON UPDATE CASCADE
@@ -198,11 +213,44 @@ CREATE TABLE IF NOT EXISTS certificado (
 
 CREATE TABLE IF NOT EXISTS log_sistema (
     id_log INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-    funcao_usuario_id INT NOT NULL,
+    usuario_id INT NULL, 
+    funcao_id INT NULL,
     acao VARCHAR(100) NOT NULL,
+    detalhes TEXT NULL,
     entidade_afetada VARCHAR(50) NOT NULL,
-    id_entidade INT NOT NULL,
+    id_entidade INT NOT NULL DEFAULT 0,
     data_log DATE NOT NULL,
     hora_log TIME NOT NULL,
-    FOREIGN KEY (funcao_usuario_id) REFERENCES funcao_usuario(id_funcao_usuario) ON DELETE CASCADE ON UPDATE CASCADE
+    FOREIGN KEY (usuario_id) REFERENCES usuario(id_usuario) ON DELETE SET NULL ON UPDATE CASCADE,
+    FOREIGN KEY (funcao_id) REFERENCES funcao(id_funcao) ON DELETE SET NULL ON UPDATE CASCADE
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+DELIMITER //
+
+CREATE TRIGGER trg_log_edicao_evento
+AFTER UPDATE ON evento
+FOR EACH ROW
+BEGIN
+    DECLARE v_detalhes TEXT DEFAULT '';
+    
+    IF OLD.data_evento != NEW.data_evento THEN
+        SET v_detalhes = CONCAT('Data alterada de [', DATE_FORMAT(OLD.data_evento, '%d/%m/%Y'), '] para [', DATE_FORMAT(NEW.data_evento, '%d/%m/%Y'), '].');
+    END IF;
+    
+    IF OLD.descricao != NEW.descricao THEN
+        IF v_detalhes != '' THEN
+            SET v_detalhes = CONCAT(v_detalhes, ' ');
+        END IF;
+        SET v_detalhes = CONCAT(v_detalhes, 'Descrição alterada.');
+    END IF;
+
+    IF v_detalhes != '' THEN
+        INSERT INTO log_sistema (
+            usuario_id, funcao_id, acao, detalhes, entidade_afetada, id_entidade, data_log, hora_log
+        ) VALUES (
+            IFNULL(@usuario_logado, NULL), IFNULL(@funcao_logada, NULL), 'EDITOU EVENTO', v_detalhes, 'evento', NEW.id_evento, CURDATE(), CURTIME()
+        );
+    END IF;
+END //
+
+DELIMITER ;

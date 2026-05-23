@@ -72,8 +72,9 @@ class UsuarioModel
 
         return password_verify($senha, $usuario['senha_hash']);
     }
-    // Cadastro de Usuário
-    public function cadastrarUsuario(array $dados): bool
+
+    // Cadastro de Usuário (Modificado para retornar o ID ou null)
+    public function cadastrarUsuario(array $dados): ?int
     {
         $this->con->begin_transaction();
 
@@ -101,7 +102,6 @@ class UsuarioModel
                 $dados["foto_perfil"]
             );
 
-            /* Verifica se ocorreu um erro ao inserir o usuário */
             if (!$stmt->execute()) {
                 $stmt->close();
                 throw new Exception("Erro ao inserir usuário");
@@ -110,11 +110,9 @@ class UsuarioModel
             $novoUsuarioId = $this->con->insert_id;
             $stmt->close();
 
-            /* Busca o ID da função Usuário, que só está cadastrado no site */
             $sqlFuncao = "SELECT id_funcao FROM funcao WHERE nome_funcao = 'Usuario' LIMIT 1";
             $result = $this->con->query($sqlFuncao);
 
-            // Só pode existir uma função por nome, caso tiver mais de 1 não será cadastrado na tabela funcao_usuario
             if ($result->num_rows !== 1) {
                 throw new Exception("Função inválida");
             }
@@ -132,18 +130,22 @@ class UsuarioModel
 
             $stmtVinculo->close();
             $this->con->commit();
-            return true;
+            return (int)$novoUsuarioId; // Retorna o ID gerado para ser usado no Log!
 
         } catch (Throwable $e) {
             $this->con->rollback();
-            die("Erro no Banco: " . $e->getMessage());
-            return false;
+            // Evitamos usar die() para não quebrar a tela do usuário. O Controller lida com a falha.
+            return null;
         }
     }
-    /* Função para Validar Recuperação de Senha */ 
+
+    // Alterado para buscar também a função do usuário para o LOG
     public function validarUsuarioRecuperacao(string $email, string $documento): ?array
     {
-        $sql = "SELECT id_usuario FROM usuario WHERE email = ? AND documento = ? LIMIT 1";
+        $sql = "SELECT u.id_usuario, fu.funcao_id 
+                FROM usuario u
+                LEFT JOIN funcao_usuario fu ON u.id_usuario = fu.usuario_id
+                WHERE u.email = ? AND u.documento = ? LIMIT 1";
         
         $stmt = $this->con->prepare($sql);
         $stmt->bind_param("ss", $email, $documento);
@@ -155,7 +157,7 @@ class UsuarioModel
 
         return $usuario;
     }
-    /* Função para Atualizar a Senha */ 
+
     public function atualizarSenha(string $email, string $senhaHash): bool
     {
         $sql = "UPDATE usuario SET senha_hash = ? WHERE email = ?";
@@ -169,5 +171,17 @@ class UsuarioModel
         return $resultado;
     }
 
+    // =====================================================================
+    // FUNÇÃO DE LOG DE SISTEMA 
+    // =====================================================================
+    public function registrarLog(?int $usuario_id, ?int $funcao_id, string $acao, ?string $detalhes, string $entidade_afetada, int $id_entidade): void
+    {
+        $sql = "INSERT INTO log_sistema (usuario_id, funcao_id, acao, detalhes, entidade_afetada, id_entidade, data_log, hora_log) 
+                VALUES (?, ?, ?, ?, ?, ?, CURDATE(), CURTIME())";
+        $stmt = $this->con->prepare($sql);
+        $stmt->bind_param("iisssi", $usuario_id, $funcao_id, $acao, $detalhes, $entidade_afetada, $id_entidade);
+        $stmt->execute();
+        $stmt->close();
+    }
 }
-?>
+?>  
