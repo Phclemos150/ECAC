@@ -32,33 +32,31 @@ INSERT INTO permissao (id_permissao, nome_permissao, descricao) VALUES
 (19, 'gerenciar_patrocinador', 'Cadastra e edita patrocinadores'),
 (20, 'acessar_gestao_academica', 'Acessa o módulo de gestão acadêmica');
 
--- 1. ADMIN (funcao_id = 1) -> Permissão Total
+
 INSERT INTO funcao_permissao (funcao_id, permissao_id) VALUES
 (1, 1), (1, 2), (1, 3), (1, 4), (1, 5), (1, 6), (1, 7), (1, 8), (1, 9), (1, 10),
 (1, 11), (1, 12), (1, 13), (1, 14), (1, 15), (1, 16), (1, 17), (1, 18), (1, 19), (1, 20);
 
--- 2. ORGANIZADOR (funcao_id = 2) -> Permissão Total (Exceto acessar_logs)
 INSERT INTO funcao_permissao (funcao_id, permissao_id) VALUES
 (2, 1), (2, 3), (2, 4), (2, 5), (2, 6), (2, 7), (2, 8), (2, 9), (2, 10), 
 (2, 11), (2, 12), (2, 13), (2, 14), (2, 15), (2, 16), (2, 17), (2, 18), (2, 19), (2, 20);
 
--- 3. STAFF (funcao_id = 3) -> Foco Operacional
+
 INSERT INTO funcao_permissao (funcao_id, permissao_id) VALUES
 (3, 1), (3, 7), (3, 8), (3, 17), (3, 18);
 
--- 4. COMISSÃO ACADÊMICA (funcao_id = 4) -> Foco em Avaliação
+
 INSERT INTO funcao_permissao (funcao_id, permissao_id) VALUES
 (4, 1), (4, 7), (4, 11), (4, 12), (4, 20);
 
--- 5. COMISSÃO CIENTÍFICA (funcao_id = 5) -> Foco em Programação e Avaliação
 INSERT INTO funcao_permissao (funcao_id, permissao_id) VALUES
 (5, 1), (5, 7), (5, 11), (5, 12), (5, 13);
 
--- 6. AUTOR (funcao_id = 6) -> Foco em Submissões
+
 INSERT INTO funcao_permissao (funcao_id, permissao_id) VALUES
 (6, 7), (6, 9), (6, 10);
 
--- 7. INSCRITO (funcao_id = 7) e 8. USUARIO (funcao_id = 8) -> Foco em Visualização
+
 INSERT INTO funcao_permissao (funcao_id, permissao_id) VALUES
 (7, 7),
 (8, 7);

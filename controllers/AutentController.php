@@ -62,7 +62,8 @@ class AutentController
         // LOG: Sucesso no Login!
         $this->usuarioModel->registrarLog($usuario['id_usuario'], $usuario['id_funcao'], "LOGIN BEM SUCEDIDO", null, 'autenticacao', 0);
 
-        header('Location: ../views/index.php');
+        // REDIRECIONAMENTO ALTERADO PARA O PAINEL
+        header('Location: ../views/painel.php');
         exit;
     }
     
