@@ -10,51 +10,65 @@ class UsuarioModel
     }
 
     // Consulta do usuário pelo email
+    // Consulta do usuário pelo email com permissões
     public function buscarUsuarioPorEmail(string $email): ?array
     {
         $sql = "SELECT 
-                    u.id_usuario, 
-                    u.nome_usuario, 
-                    u.email, 
-                    u.senha_hash, 
-                    u.foto_perfil, 
-                    u.status_conta,
-                    f.id_funcao,
-                    f.nome_funcao
-                FROM usuario u
-                LEFT JOIN funcao_usuario fu ON u.id_usuario = fu.usuario_id
-                LEFT JOIN funcao f ON fu.funcao_id = f.id_funcao
-                WHERE u.email = ? 
-                LIMIT 1";
+                    usuario.id_usuario, 
+                    usuario.nome_usuario, 
+                    usuario.email, 
+                    usuario.senha_hash, 
+                    usuario.foto_perfil, 
+                    usuario.status_conta,
+                    funcao.id_funcao,
+                    funcao.nome_funcao,
+                    permissao.id_permissao,
+                    permissao.nome_permissao,
+                    permissao.descricao
+                FROM usuario
+                LEFT JOIN funcao_usuario ON usuario.id_usuario = funcao_usuario.usuario_id
+                LEFT JOIN funcao ON funcao_usuario.funcao_id = funcao.id_funcao
+                LEFT JOIN funcao_permissao ON funcao.id_funcao = funcao_permissao.funcao_id
+                LEFT JOIN permissao ON funcao_permissao.permissao_id = permissao.id_permissao
+                WHERE usuario.email = ?";
 
         $stmt = $this->con->prepare($sql);
         $stmt->bind_param("s", $email);
-        $stmt->execute();   
+        $stmt->execute();
 
         $result = $stmt->get_result();
-        $usuario = $result->fetch_assoc() ?: null;
+
+        $usuario = null;
+        $permissoes = [];
+
+        // O laço junta todas as permissões encontradas nas várias linhas
+        while ($row = $result->fetch_assoc()) {
+            if (!$usuario) {
+                // Guarda os dados básicos apenas na primeira passagem
+                $usuario = [
+                    'id_usuario' => $row['id_usuario'],
+                    'nome_usuario' => $row['nome_usuario'],
+                    'email' => $row['email'],
+                    'senha_hash' => $row['senha_hash'],
+                    'foto_perfil' => $row['foto_perfil'],
+                    'status_conta' => $row['status_conta'],
+                    'id_funcao' => $row['id_funcao'],
+                    'nome_funcao' => $row['nome_funcao']
+                ];
+            }
+            // Adiciona o nome da permissão na lista
+            if ($row['nome_permissao']) {
+                $permissoes[] = $row['nome_permissao'];
+            }
+        }
         $stmt->close();
 
-        return $usuario;
-    }
-
-    // Consulta caso o usuário queria cadastrar um email ou um cpf que já exista
-    public function verificarDados(string $coluna, string $valor): bool
-    {
-        $colunasPermitidas = ['email', 'documento']; // Apenas o email e o cpf precisam ser únicos
-        if (!in_array($coluna, $colunasPermitidas)) {
-            return false;
+        // Anexa as permissões dentro dos dados do usuário
+        if ($usuario) {
+            $usuario['permissoes'] = $permissoes;
         }
 
-        $sql = "SELECT id_usuario FROM usuario WHERE $coluna = ? LIMIT 1";
-        $stmt = $this->con->prepare($sql);
-        $stmt->bind_param("s", $valor);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $existe = $result->num_rows > 0;
-        $stmt->close();
-
-        return $existe;
+        return $usuario;
     }
 
     // Consulta para autenticar Usuário 
@@ -71,6 +85,29 @@ class UsuarioModel
         }
 
         return password_verify($senha, $usuario['senha_hash']);
+    }
+
+
+    // Verifica se um dado (email ou documento) já existe no banco
+    public function verificarDados(string $campo, string $valor): bool
+    {
+        // Proteção para aceitar apenas os campos corretos na query
+        if ($campo !== 'email' && $campo !== 'documento') {
+            return false;
+        }
+
+        $sql = "SELECT id_usuario FROM usuario WHERE $campo = ? LIMIT 1";
+        $stmt = $this->con->prepare($sql);
+        
+        $stmt->bind_param("s", $valor);
+        $stmt->execute();
+        
+        $result = $stmt->get_result();
+        $existe = $result->num_rows > 0;
+        
+        $stmt->close();
+
+        return $existe;
     }
 
     // Cadastro de Usuário (Modificado para retornar o ID ou null)
@@ -130,7 +167,7 @@ class UsuarioModel
 
             $stmtVinculo->close();
             $this->con->commit();
-            return (int)$novoUsuarioId; // Retorna o ID gerado para ser usado no Log!
+            return (int) $novoUsuarioId; // Retorna o ID gerado para ser usado no Log!
 
         } catch (Throwable $e) {
             $this->con->rollback();
@@ -146,11 +183,11 @@ class UsuarioModel
                 FROM usuario u
                 LEFT JOIN funcao_usuario fu ON u.id_usuario = fu.usuario_id
                 WHERE u.email = ? AND u.documento = ? LIMIT 1";
-        
+
         $stmt = $this->con->prepare($sql);
         $stmt->bind_param("ss", $email, $documento);
         $stmt->execute();
-        
+
         $result = $stmt->get_result();
         $usuario = $result->fetch_assoc() ?: null;
         $stmt->close();
@@ -161,10 +198,10 @@ class UsuarioModel
     public function atualizarSenha(string $email, string $senhaHash): bool
     {
         $sql = "UPDATE usuario SET senha_hash = ? WHERE email = ?";
-        
+
         $stmt = $this->con->prepare($sql);
         $stmt->bind_param("ss", $senhaHash, $email);
-        
+
         $resultado = $stmt->execute();
         $stmt->close();
 
@@ -184,4 +221,4 @@ class UsuarioModel
         $stmt->close();
     }
 }
-?>  
+?>

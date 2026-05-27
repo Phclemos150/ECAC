@@ -1,6 +1,20 @@
 <?php
-// Exemplo de variável (pode vir do banco depois)
-$usuario = "Admin";
+session_start();
+
+// Expulsa se não estiver logado
+if (!isset($_SESSION['user_logado'])) {
+    header("Location: ./login.php");
+    exit;
+}
+
+$usuario = $_SESSION['user_logado']['nome'];
+$permissoes = $_SESSION['user_logado']['permissoes'] ?? [];
+
+// PROTEÇÃO EXTRA: Se não tem permissão de ver o painel admin (Ex: Inscrito Comum/Usuário Base), volta pra home
+if (!in_array('ver_painel_admin', $permissoes)) {
+    header("Location: ./index.php");
+    exit;
+}
 ?>
 
 <!DOCTYPE html>
@@ -10,20 +24,16 @@ $usuario = "Admin";
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Painel</title>
 
-  <link rel="stylesheet" href="painel.css">
+  <link rel="stylesheet" href="../assets/css/painel.css">
 
-  <!-- LUCIDE ICONS -->
   <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 
 <body>
 
-<!-- HEADER -->
 <header class="header">
-
   <div class="header-left">
-    <img src="img/Só a Logo ECAC 2026.png" class="logo">
-    
+    <img src="../assets/img/Só a Logo ECAC 2026.png" class="logo">
     <div class="title">
       <span class="verde">Encontro</span>
       <span class="vermelho">Carioca</span>
@@ -34,28 +44,21 @@ $usuario = "Admin";
   </div>
 
   <div class="header-right">
-
     <div class="search-box">
       <input type="text" placeholder="Pesquisar...">
     </div>
-
-    <img src="img/icone_email_padrao.png" class="icon">
-
+    <img src="../assets/img/icone_email_padrao.png" class="icon">
     <div class="user">
-      <img src="img/default-user.png" class="avatar">
-      <span><?php echo $usuario; ?></span>
+      <img src="../assets/img/default-user.png" class="avatar">
+      <span><?php echo htmlspecialchars($usuario); ?></span>
       <span class="arrow">▾</span>
     </div>
-
   </div>
 </header>
 
-<!-- SIDEBAR -->
 <aside class="sidebar">
-
   <div class="menu-title">Menu</div>
 
-  <!-- VISÃO GERAL -->
   <div class="menu-group">
     <div class="menu-item active" data-page="visao-geral">
       <i data-lucide="home"></i>
@@ -63,7 +66,7 @@ $usuario = "Admin";
     </div>
   </div>
 
-  <!-- EVENTOS -->
+  <?php if (in_array('consultar_evento', $permissoes) || in_array('criar_evento', $permissoes)): ?>
   <div class="menu-group">
     <div class="menu-item" data-page="eventos">
       <i data-lucide="calendar"></i>
@@ -72,15 +75,24 @@ $usuario = "Admin";
     </div>
 
     <div class="submenu">
-      <a data-page="lista-eventos">Lista de Eventos</a>
-      <a data-page="atividades">Atividades e Programação</a>
-      <a data-page="inscricoes">Inscrições</a>
-      <a data-page="palestrantes">Palestrantes</a>
-      <a data-page="expositores">Expositores</a>
+      <?php if (in_array('criar_evento', $permissoes) || in_array('editar_evento', $permissoes)): ?>
+          <a data-page="lista-eventos">Lista de Eventos</a>
+      <?php endif; ?>
+      <?php if (in_array('gerenciar_agenda', $permissoes)): ?>
+          <a data-page="atividades">Atividades e Programação</a>
+      <?php endif; ?>
+      <?php if (in_array('gerenciar_inscricoes', $permissoes)): ?>
+          <a data-page="inscricoes">Inscrições</a>
+      <?php endif; ?>
+      <?php if (in_array('gerenciar_palestrantes', $permissoes)): ?>
+          <a data-page="palestrantes">Palestrantes</a>
+          <a data-page="expositores">Expositores</a>
+      <?php endif; ?>
     </div>
   </div>
+  <?php endif; ?>
 
-  <!-- USUÁRIOS -->
+  <?php if (in_array('gerenciar_usuarios', $permissoes)): ?>
   <div class="menu-group">
     <div class="menu-item" data-page="usuarios">
       <i data-lucide="users"></i>
@@ -93,8 +105,9 @@ $usuario = "Admin";
       <a data-page="funcoes">Funções de Usuários</a>
     </div>
   </div>
+  <?php endif; ?>
 
-  <!-- ACADÊMICO -->
+  <?php if (in_array('acessar_gestao_academica', $permissoes) || in_array('validar_trabalho', $permissoes)): ?>
   <div class="menu-group">
     <div class="menu-item" data-page="academico">
       <i data-lucide="book-open"></i>
@@ -109,16 +122,18 @@ $usuario = "Admin";
       <a data-page="comissao-academica">Comissão Acadêmica</a>
     </div>
   </div>
+  <?php endif; ?>
 
-  <!-- PATROCINADORES -->
+  <?php if (in_array('gerenciar_patrocinador', $permissoes)): ?>
   <div class="menu-group">
     <div class="menu-item" data-page="patrocinio">
       <i data-lucide="dollar-sign"></i>
       <p>Patrocinadores</p>
     </div>
   </div>
+  <?php endif; ?>
 
-  <!-- SISTEMA -->
+  <?php if (in_array('acessar_logs', $permissoes) || in_array('gerenciar_certificados', $permissoes)): ?>
   <div class="menu-group">
     <div class="menu-item" data-page="sistema">
       <i data-lucide="settings"></i>
@@ -127,18 +142,30 @@ $usuario = "Admin";
     </div>
 
     <div class="submenu">
-      <a data-page="certificados">Certificados</a>
-      <a data-page="avaliacoes-sistema">Avaliações</a>
-      <a data-page="backup">Backup do DB</a>
+      <?php if (in_array('gerenciar_certificados', $permissoes)): ?>
+          <a data-page="certificados">Certificados</a>
+      <?php endif; ?>
+      <?php if (in_array('acessar_logs', $permissoes)): ?>
+          <a data-page="avaliacoes-sistema">Avaliações do Sistema</a>
+          <a data-page="backup">Backup do DB</a>
+      <?php endif; ?>
     </div>
   </div>
+  <?php endif; ?>
 
+  <div class="menu-group" style="margin-top: 20px;">
+    <a href="../controllers/AutentController.php?acao=logout" style="text-decoration: none;">
+      <div class="menu-item" style="color: #e74c3c;">
+        <i data-lucide="log-out"></i>
+        <p>Sair</p>
+      </div>
+    </a>
+  </div>
 </aside>
 
 <main id="content"></main>
 
-<!-- JS -->
-<script src="painel.js"></script>
+<script src="../assets/js/painel.js"></script>
 
 </body>
 </html>

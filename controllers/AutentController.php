@@ -12,7 +12,7 @@ class AutentController
     {
         $this->usuarioModel = new UsuarioModel($con);
     }
-    
+
     public function login(): void
     {
         $email = trim($_POST['email'] ?? '');
@@ -49,14 +49,14 @@ class AutentController
 
         // BLINDAGEM 1: Gera um novo ID de sessão limpo
         session_regenerate_id(true);
-
         $_SESSION['user_logado'] = [
             'id' => $usuario['id_usuario'],
             'nome' => $usuario['nome_usuario'],
             'email' => $usuario['email'],
             'foto' => $usuario['foto_perfil'] ?? null,
             'id_funcao' => $usuario['id_funcao'],
-            'nome_funcao' => $usuario['nome_funcao']
+            'nome_funcao' => $usuario['nome_funcao'],
+            'permissoes' => $usuario['permissoes'] // <-- ESSA LINHA É NOVA
         ];
 
         // LOG: Sucesso no Login!
@@ -66,12 +66,12 @@ class AutentController
         header('Location: ../views/painel.php');
         exit;
     }
-    
+
     public function cadastro(): void
     {
-        $email = trim($_POST['email'] ?? '');  
-        $senha = trim($_POST['senha'] ?? ''); 
-        $doc = trim($_POST['documento'] ?? ''); 
+        $email = trim($_POST['email'] ?? '');
+        $senha = trim($_POST['senha'] ?? '');
+        $doc = trim($_POST['documento'] ?? '');
 
         $dados = [
             'nome' => trim($_POST['nome_usuario'] ?? ''),
@@ -90,10 +90,10 @@ class AutentController
         ];
 
         if (
-            trim(empty($dados['nome'])) || trim(empty($dados['email'])) || trim(empty($dados['senha_hash'])) ||
-            trim(empty($dados['documento'])) || trim(empty($dados['data_nascimento'])) ||
-            trim(empty($dados['grau_academico'])) || trim(empty($dados['nome_curso'])) ||
-            trim(empty($dados['cidade'])) || trim(empty($dados['estado'])) || trim(empty($dados['pais']))
+            empty($dados['nome']) || empty($dados['email']) || empty($dados['senha_hash']) ||
+            empty($dados['documento']) || empty($dados['data_nascimento']) ||
+            empty($dados['grau_academico']) || empty($dados['nome_curso']) ||
+            empty($dados['cidade']) || empty($dados['estado']) || empty($dados['pais'])
         ) {
             $this->erroCadastro("Erro de Validação", "Todos os campos devem ser preenchidos!");
         }
@@ -106,10 +106,10 @@ class AutentController
             $_SESSION['redirecionar_login'] = true;
             $motivo = $emailExiste ? "E-mail duplicado" : "Documento duplicado";
             $valorFalho = $emailExiste ? $email : $doc;
-            
+
             // LOG: Falha de Cadastro Duplicado
             $this->usuarioModel->registrarLog(null, null, "FALHA CADASTRO ($motivo): " . substr($valorFalho, 0, 20) . "...", null, 'autenticacao', 0);
-            
+
             $this->erroCadastro("Erro de Cadastro", "Os dados informados já possuem uma conta vinculada. Verifique suas informações!");
         }
 
@@ -121,14 +121,14 @@ class AutentController
                 $this->erroCadastro("Erro de Arquivo", "Apenas imagens (JPG, PNG ou WEBP) são permitidas para a foto de perfil!");
             }
 
-            $diretorioUploads = __DIR__ . '/../assets/uploads/fotos_perfil/'; 
-            $nomeArquivo = uniqid('user_') . '.' . $extensao; 
+            $diretorioUploads = __DIR__ . '/../assets/uploads/fotos_perfil/';
+            $nomeArquivo = uniqid('user_') . '.' . $extensao;
             $caminhoDestino = $diretorioUploads . $nomeArquivo;
 
             if (move_uploaded_file($_FILES['foto_perfil']['tmp_name'], $caminhoDestino)) {
-                $dados['foto_perfil'] = $nomeArquivo; 
+                $dados['foto_perfil'] = $nomeArquivo;
             } else {
-                $dados['foto_perfil'] = null; 
+                $dados['foto_perfil'] = null;
             }
         }
 
@@ -138,7 +138,7 @@ class AutentController
             $this->erroCadastro("Erro de Cadastro", "Não foi possível concluir o cadastro, Tente novamente!");
         } else {
             $this->usuarioModel->registrarLog($novoUsuarioId, 8, 'CADASTRO BEM SUCEDIDO', null, 'autenticacao', 0);
-            
+
             $this->sucessoCadastro("Cadastro Realizado", "Sua conta foi criada com sucesso!");
             header('Location: ../views/login.php');
             exit;
